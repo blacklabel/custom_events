@@ -13,7 +13,7 @@
                 }
         ],
         "dependencies": {
-                "highcharts": "2.3.5"
+                "highcharts": "3.0.7"
         },
         "demo": [
                 "http://jsfiddle.net/smEE9/2/"
