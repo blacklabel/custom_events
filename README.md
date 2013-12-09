@@ -174,7 +174,7 @@ window.chart = new Highcharts.Chart({
 
 ### Requirements
 
-* Plugin requires the latest Highcharts (tested with 2.3.5)
+* Plugin requires the latest Highcharts (tested with 3.0.7)
 
 ### Installation
 
