@@ -211,6 +211,18 @@ events: {
 * mouse down
 * mouse move
 
+### Elements
+
+* title
+* subtitle
+* axis labels
+* plotLines
+* plotBands, including labels
+* point
+* series
+* legend
+* datalabels
+
 ### Demo
 
 Demos are available at project's github page: [http://blacklabel.github.io/custom_events/](http://blacklabel.github.io/custom_events/)
