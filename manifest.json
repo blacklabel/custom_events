@@ -1,6 +1,6 @@
 {
         "name": "Custom-Events",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "title": "Custom-Events",
         "author": {
                 "name": "Black Label",
@@ -16,7 +16,7 @@
                 "highcharts": "3.0.7"
         },
         "demo": [
-                "http://jsfiddle.net/smEE9/2/"
+                "http://jsfiddle.net/smEE9/3/"
         ],
         "description": "Plugin that allows add extra events, like double / right click on each chart element, for Highcharts.",
         "keywords": [
