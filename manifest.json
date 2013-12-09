@@ -16,7 +16,7 @@
                 "highcharts": "2.3.5"
         },
         "demo": [
-                "http://jsfiddle.net/pmmu3/338/"
+                "http://jsfiddle.net/smEE9/2/"
         ],
         "description": "Plugin that allows add extra events, like double / right click on each chart element, for Highcharts.",
         "keywords": [
