@@ -187,3 +187,7 @@ sup {
         page-break-inside: avoid;
     }
 }
+#chart {
+    height: 500px;
+    width:854px; 
+}
