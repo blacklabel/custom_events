@@ -223,6 +223,10 @@ events: {
 * legend
 * datalabels
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 ### Demo
 
 Demos are available at project's github page: [http://blacklabel.github.io/custom_events/](http://blacklabel.github.io/custom_events/)

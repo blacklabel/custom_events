@@ -1,6 +1,6 @@
 {
         "name": "Custom-Events",
-        "version": "1.0.1",
+        "version": "1.0.3",
         "title": "Custom-Events",
         "author": {
                 "name": "Black Label",
@@ -9,14 +9,14 @@
         "licenses": [
                 {
                         "type": "Creative Commons Attribution (CC)",
-                        "url": "https://github.com/blacklabel/bubble_dragndrop/blob/master/license.txt"
+                        "url": "https://github.com/blacklabel/custom_events/blob/master/license.txt"
                 }
         ],
         "dependencies": {
                 "highcharts": "3.0.7"
         },
         "demo": [
-                "http://jsfiddle.net/smEE9/2/"
+                "http://jsfiddle.net/BlackLabel/Utx8g/"
         ],
         "description": "Plugin that allows add extra events, like double / right click on each chart element, for Highcharts.",
         "keywords": [
