@@ -35,11 +35,17 @@
 
                 //custom event body
                 var customEvent = HC.Chart.prototype.customEvent = function (obj, proto)  {
-                    customEvent.add = function (elem, events) {
+                    customEvent.add = function (elem, events, obj) {
                         for (var key in events) {
-                            if (events.hasOwnProperty(key)) {
-                                elem.on(key, events[key]);
-                            }
+                            
+                            (function(key) {
+                                if (events.hasOwnProperty(key)) {
+                                    elem.on(key, function(e) {
+                                        events[key].call(obj,e);
+                                    });
+                                }
+                            })(key)
+                            
                         }
                     };
 
@@ -81,16 +87,19 @@
                         }
 
                         if (events || eventsPoint) {
+                        
                             if (eventsPoint) {
                                 var len = elementPoint.length
                                     j = 0;
 
                                 for (; j < len; j++) {
                                     var elemPoint = elementPoint[j].graphic;
-                                    customEvent.add(elemPoint, eventsPoint);
+                                    
+                                    customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
                                 }
                             }
-                            customEvent.add(element, events);
+
+                            customEvent.add(element, events, this);
                         }
                     });
                 };
