@@ -3,39 +3,15 @@ body {
     font-size: 0.8em;
     line-height: 1.2em
 }
-.form {
-    margin-right: 10px;
-    width: 160px;
-    height:330px;
-    padding: 0px;
-    background-color: #e8eaeb;
-    padding: 5px;
-    float: left
+#flash {
+    width: 813px;
+    height: 30px;
+    background-color: rgb(90, 200, 90);
+    display: none;
+    color: black;
 }
-.form .form-header {
-    font-size: 1em;
-    padding: 10px;
-    background: #3d3d3d;
-    color: #fff;
-}
-.form > p {
-    padding: 5px 10px;
-    margin: 0px;
-}
-.form > p:nth-child(2n) {
-    background: #f7f7f7;
-}
-.form label {
-    width: 140px;
-    float: left;
-    margin-top: 5px;
-}
-.form input {
-    width: 140px;
-}
-.form input[type="radio"] {
-    width: auto;
-    margin-left: 55px;
+#report {
+    padding: 7px 0px 7px 10px;
 }
 .chart-title {
     background-color: #3d3d3d;
