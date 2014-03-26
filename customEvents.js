@@ -95,7 +95,9 @@
                                 for (; j < len; j++) {
                                     var elemPoint = elementPoint[j].graphic;
                                     
-                                    customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
+                                    if(elementPoint[j].y) {
+                                        customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
+                                    }
                                 }
                             }
 
