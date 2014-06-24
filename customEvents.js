@@ -8,7 +8,7 @@
  
 (function(HC){
 /*jshint expr:true, boss:true */
-
+var UNDEFINED;
                 //reseting all events, fired by Highcharts
                 HC.Chart.prototype.callbacks.push(function (chart) {
                     var i = 0,
@@ -95,7 +95,7 @@
                                 for (; j < len; j++) {
                                     var elemPoint = elementPoint[j].graphic;
                                     
-                                    if(elementPoint[j].y) {
+                                    if(elementPoint[j].y && elemPoint !== UNDEFINED) {
                                         customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
                                     }
                                 }
