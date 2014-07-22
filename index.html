@@ -9,6 +9,7 @@
 <body>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script src="./customEvents.js"></script>
 
 
@@ -36,6 +37,24 @@ $(function () {
             $("#flash").fadeOut();
         }
     }
+
+    (function(HC){
+
+        console.log(HC);
+        
+        HC.wrap(HC.Chart.prototype,'addButton',function(proceed, redraw, animation) {
+
+            proceed.call(this, redraw, animation);
+
+            var exportBtn = this.exportSVGElements[0];
+
+            exportBtn.on('dblclick',function(e){
+                console.log('dbl click');
+            });
+
+        });
+
+    })(Highcharts)
 
     $('#chart').highcharts({
         chart: {
@@ -66,7 +85,7 @@ $(function () {
             align: 'left',
             x: -5,
             y: 8,
-            text: '<span class="chart-title"> Custom events  <span class="chart-href"> <a href="http://www.blacklabel.pl/highcharts" target="_blank"> Black Label </a> </span> <span class="chart-subtitle">plugin by </span></span>',
+            //text: '<span class="chart-title"> Custom events  <span class="chart-href"> <a href="http://www.blacklabel.pl/highcharts" target="_blank"> Black Label </a> </span> <span class="chart-subtitle">plugin by </span></span>',
             events: {
                 dblclick: function () {
                     reloadFlash();
@@ -83,6 +102,23 @@ $(function () {
             }
         },
         yAxis: [{
+            title: {
+                text: 'Values',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on yAxis title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on yAxis title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on yAxis title');
+                    }
+                }
+            },
             plotLines: [{
                 color: '#a4c08e',
                 width: 10,
@@ -140,6 +176,23 @@ $(function () {
         }, {
             opposite: true,
             linkedTo: 0,
+            title: {
+                text: 'Values',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on yAxis2 title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on yAxis2 title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on yAxis2 title');
+                    }
+                }
+            },
             labels: {
                 events: {
                     dblclick: function () {
@@ -172,6 +225,23 @@ $(function () {
                     contextmenu: function () {
                         reloadFlash();
                         $('#report').html('context menu on xAxis label');
+                    }
+                }
+            },
+            title:{
+                text: 'xAxis title',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on xAxis title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on xAxis title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on xAxis title');
                     }
                 }
             }
@@ -240,6 +310,15 @@ $(function () {
                 contextmenu: function () {
                     reloadFlash();
                     $('#report').html('context menu on legend item ');
+                }
+            }
+        },
+        exporting: {
+            buttons: {
+                contextButton: {
+                    onclick: function(){
+                        console.log('aa');
+                    }
                 }
             }
         },
