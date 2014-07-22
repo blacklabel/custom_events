@@ -29,6 +29,23 @@ window.chart = new Highcharts.Chart({
                 }
             },
             yAxis: [{
+                title: {
+                    text: 'Values',
+                    events: {
+                        dblclick: function () {
+                            reloadFlash();
+                            $('#report').html('dbclick on yAxis title');
+                        },
+                        click: function () {
+                            reloadFlash();
+                            $('#report').html('click on yAxis title');
+                        },
+                        contextmenu: function () {
+                            reloadFlash();
+                            $('#report').html('context menu on yAxis title');
+                        }
+                    }
+                },
                 plotLines: [{
                     color: '#FF0000',
                     width: 10,
@@ -89,9 +106,43 @@ window.chart = new Highcharts.Chart({
                             $('#report').html('context menu yAXIS 2');
                         }
                     }
+                },
+                title: {
+                    text: 'Values',
+                    events: {
+                        dblclick: function () {
+                            reloadFlash();
+                            $('#report').html('dbclick on yAxis2 title');
+                        },
+                        click: function () {
+                            reloadFlash();
+                            $('#report').html('click on yAxis2 title');
+                        },
+                        contextmenu: function () {
+                            reloadFlash();
+                            $('#report').html('context menu on yAxis2 title');
+                        }
+                    }
                 }
             }],
             xAxis: {
+                title:{
+                    text: 'xAxis title',
+                    events: {
+                        dblclick: function () {
+                            reloadFlash();
+                            $('#report').html('dbclick on xAxis title');
+                        },
+                        click: function () {
+                            reloadFlash();
+                            $('#report').html('click on xAxis title');
+                        },
+                        contextmenu: function () {
+                            reloadFlash();
+                            $('#report').html('context menu on xAxis title');
+                        }
+                    }
+                },
                 labels: {
                     rotation: -45,
                     events: {
