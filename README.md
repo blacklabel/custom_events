@@ -216,6 +216,7 @@ events: {
 * title
 * subtitle
 * axis labels
+* axis title
 * plotLines
 * plotBands, including labels
 * point
