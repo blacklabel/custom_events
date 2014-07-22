@@ -1,6 +1,6 @@
 {
         "name": "Custom-Events",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "title": "Custom-Events",
         "author": {
                 "name": "Black Label",
@@ -25,7 +25,7 @@
         "maintainers": [
                 {
                         "name": "Sebastian Bochan",
-                        "email": "sebastian2@blacklabel.pl",
+                        "email": "sebastian@blacklabel.pl",
                         "url": "http://www.blacklabel.pl"
                 },{
                         "name": "Paweł Fus",
