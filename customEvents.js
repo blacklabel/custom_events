@@ -73,6 +73,12 @@ var UNDEFINED;
                                 events = this.dataLabelsGroup ? this.options.dataLabels.events : null;
                                 element = this.dataLabelsGroup ? this.dataLabelsGroup : null;
                                 break;
+                            case 'render':
+		                        if(this.axisTitle) {
+		                            events = this.options.title.events;
+		                            element = this.axisTitle;
+		                        }
+		                        break;
                             case 'drawPoints':
                                 op = this.options;
                                 events = op.customEvents ? op.customEvents.series : op,
@@ -109,6 +115,9 @@ var UNDEFINED;
 
                 //labels 
                 customEvent(HC.Tick.prototype, 'addLabel');
+
+                //title Axis
+                customEvent(HC.Axis.prototype, 'render');
 
                 //series events & point events
                 customEvent(HC.Series.prototype, 'drawPoints');

@@ -83,6 +83,23 @@ $(function () {
             }
         },
         yAxis: [{
+        	title: {
+                text: 'Values',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on yAxis title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on yAxis title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on yAxis title');
+                    }
+                }
+            },
             plotLines: [{
                 color: '#a4c08e',
                 width: 10,
@@ -140,6 +157,23 @@ $(function () {
         }, {
             opposite: true,
             linkedTo: 0,
+            title: {
+                text: 'Values',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on yAxis2 title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on yAxis2 title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on yAxis2 title');
+                    }
+                }
+            },
             labels: {
                 events: {
                     dblclick: function () {
@@ -172,6 +206,23 @@ $(function () {
                     contextmenu: function () {
                         reloadFlash();
                         $('#report').html('context menu on xAxis label');
+                    }
+                }
+            },
+            title:{
+                text: 'xAxis title',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on xAxis title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on xAxis title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on xAxis title');
                     }
                 }
             }
