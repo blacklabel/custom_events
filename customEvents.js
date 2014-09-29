@@ -95,7 +95,7 @@ var UNDEFINED;
                         if (events || eventsPoint) {
                         
                             if (eventsPoint) {
-                                var len = elementPoint.length
+                                var len = elementPoint.length,
                                     j = 0;
 
                                 for (; j < len; j++) {
