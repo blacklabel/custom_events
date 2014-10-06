@@ -6,7 +6,7 @@
      * License: Creative Commons Attribution (CC)
      */
 
-    (function (HC) {
+(function (HC) {
         /*jshint expr:true, boss:true */
         var UNDEFINED;
         //reseting all events, fired by Highcharts
@@ -59,17 +59,28 @@
                 }
             };
             
-            HC.Chart.prototype.customEvent.resetAxisEvents = function(axis,type, chart) {
+            HC.Chart.prototype.customEvent.resetAxisEvents = function(axis, type, chart) {
                 var axisLength = axis.length,
                     userOptions = chart.userOptions,
                     i = 0,
                     j = 0,
-                    customEvents, plotBandsLength, plotLinesLength;
+                    redraw = false,
+                    customEvents, plotBandsLength, plotLinesLength, plotLines, plotBands,cAxis;
                 
                 for(;i<axisLength;i++) {
-                    
-                    plotLines = type == 'xaxis' ? userOptions.xAxis[i].plotLines : userOptions.yAxis[i].plotLines;
-                    plotBands = type == 'xaxis' ? userOptions.xAxis[i].plotBands : userOptions.yAxis[i].plotBands;
+
+                    if(type === 'xAxis' && userOptions.xAxis !== UNDEFINED) {
+                        
+                            cAxis = HC.splat(userOptions.xAxis);
+                            plotLines = cAxis[i].plotLines;
+                            plotBands = cAxis[i].plotBands;
+
+                    } else if(type === 'yAxis' && userOptions.yAxis !== UNDEFINED) {
+                        
+                            cAxis = HC.splat(userOptions.yAxis);
+                            plotLines = cAxis[i].plotLines;
+                            plotBands = cAxis[i].plotBands;
+                    }
                     
                     if(plotLines !== UNDEFINED) {
                         plotLinesLength = plotLines.length;
@@ -81,24 +92,30 @@
                                 plotLines[j].events = null;
                             }
                         };
+                        
+                        redraw = true;
                     }
                     
                     if(plotBands !== UNDEFINED) {
                          plotBandsLength = plotBands.length;
                          
-                         for(j=0;j<plotBandsLength;j++) {
+                        for(j=0;j<plotBandsLength;j++) {
                              var t = plotBands[j].events;
                              if(t) {
                                  plotBands[j].customEvents = t;
                                  plotBands[j].events = null;
                              }
                         };
+                        
+                        redraw = true;
                     }
                     
-                    chart.yAxis[i].update({
-                        plotLines: plotLines,
-                        plotBands: plotBands
-                    },false);
+                    if(redraw) {
+                        chart.yAxis[i].update({
+                            plotLines: plotLines,
+                            plotBands: plotBands
+                        },false);
+                    }
                 };
             };
 
