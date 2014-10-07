@@ -127,8 +127,8 @@
                 elementPoint,
                 op;
 
-                //call default actions
-                proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+                //call default actions and preserve return value
+                var ret = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
                 //switch on object
                 switch (proto) {
@@ -185,6 +185,8 @@
 
                     customEvent.add(element, events, this);
                 }
+
+                return ret;
             });
         };
 
