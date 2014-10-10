@@ -214,11 +214,7 @@
         //legend items
         customEvent(HC.Legend.prototype, 'renderItem');
 
-<<<<<<< HEAD
         //bubble charts
-=======
-        //bubble chart
->>>>>>> master
         if(HC.seriesTypes.bubble) {
             customEvent(HC.seriesTypes.bubble.prototype, 'drawPoints');
             customEvent(HC.seriesTypes.bubble.prototype, 'drawDataLabels');
