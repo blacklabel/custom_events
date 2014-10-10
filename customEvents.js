@@ -214,4 +214,10 @@
         //legend items
         customEvent(HC.Legend.prototype, 'renderItem');
 
+        //bubble charts
+        if(HC.seriesTypes.bubble) {
+            customEvent(HC.seriesTypes.bubble.prototype, 'drawPoints');
+            customEvent(HC.seriesTypes.bubble.prototype, 'drawDataLabels');
+        }
+
     })(Highcharts);
