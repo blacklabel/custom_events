@@ -49,10 +49,14 @@
 
                     (function (key) {
                         if (events.hasOwnProperty(key)) {
-                            HC.addEvent(elem.element, key, function (e) {
-                                events[key].call(obj, e);
-                                return false;
-                            });
+                            if(!elem[key] || elem[key] === UNDEFINED) {
+                                HC.addEvent(elem.element, key, function (e) {
+                                    events[key].call(obj, e);
+                                    return false;
+                                });
+                            }
+                            
+                            elem[key] = true;
                         }
                     })(key)
 
@@ -130,64 +134,65 @@
                 //call default actions
                 proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
-                //switch on object
-                switch (proto) {
-                    case 'addLabel':
-                        events = this.axis.options.labels.events;
-                        element = this.label;
-                        break;
-                    case 'setTitle':
-                        events = this.options.title.events;
-                        element = this.title;
-                        break;
-                    case 'drawDataLabels':
-                        events = this.dataLabelsGroup ? this.options.dataLabels.events : null;
-                        element = this.dataLabelsGroup ? this.dataLabelsGroup : null;
-                        break;
-                    case 'render':
-                        if (this.axisTitle) {
+                    //switch on object
+                    switch (proto) {
+                        case 'addLabel':
+                            events = this.axis.options.labels.events;
+                            element = this.label;
+                            break;
+                        case 'setTitle':
                             events = this.options.title.events;
-                            element = this.axisTitle;
-                        }
-                        if (this.options.value || this.options.from) {
-                            events = this.options.customEvents;
-                            element = this.svgElem;
-                        }
-                        break;
-                    case 'drawPoints':
-                        op = this.options;
-                        events = op.customEvents ? op.customEvents.series : op,
-                        element = this.group;
-                        eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
-                        elementPoint = this.points;
-                        break;
-                    case 'renderItem':
-                        events = this.options.itemEvents;
-                        element = this.group;
-                        break;
-                }
-
-
-                if (events || eventsPoint) {
-
-                    if (eventsPoint) {
-                        var len = elementPoint.length
-                        j = 0;
-
-                        for (; j < len; j++) {
-                            var elemPoint = elementPoint[j].graphic;
-
-                            if (elementPoint[j].y && elemPoint !== UNDEFINED) {
-                                customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
+                            element = this.title;
+                            break;
+                        case 'drawDataLabels':
+                            events = this.dataLabelsGroup ? this.options.dataLabels.events : null;
+                            element = this.dataLabelsGroup ? this.dataLabelsGroup : null;
+                            break;
+                        case 'render':
+                            if (this.axisTitle) {
+                                events = this.options.title.events;
+                                element = this.axisTitle;
+                            }
+                            if (this.options.value || this.options.from) {
+                                events = this.options.customEvents;
+                                element = this.svgElem;
+                            }
+                            break;
+                        case 'drawPoints':
+                            op = this.options;
+                            events = op.customEvents ? op.customEvents.series : op,
+                            element = this.group;
+                            eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
+                            elementPoint = this.points;
+                            break;
+                        case 'renderItem':
+                            events = this.options.itemEvents;
+                            element = this.group;
+                            break;
+                    }
+    
+                    
+                    if (events || eventsPoint) {
+    
+                        if (eventsPoint) {
+                            var len = elementPoint.length
+                            j = 0;
+    
+                            for (; j < len; j++) {
+                                var elemPoint = elementPoint[j].graphic;
+    
+                                if (elementPoint[j].y && elemPoint !== UNDEFINED) {
+                                    customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
+                                }
                             }
                         }
+    
+                        customEvent.add(element, events, this);
                     }
-
-                    customEvent.add(element, events, this);
-                }
+                    
+                
             });
         };
-
 
         //labels 
         customEvent(HC.Tick.prototype, 'addLabel');
@@ -219,5 +224,5 @@
             customEvent(HC.seriesTypes.bubble.prototype, 'drawPoints');
             customEvent(HC.seriesTypes.bubble.prototype, 'drawDataLabels');
         }
-
+        
     })(Highcharts);
