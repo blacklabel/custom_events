@@ -132,7 +132,7 @@
                 op;
 
                 //call default actions
-                proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+                var ob = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
                     //switch on object
                     switch (proto) {
@@ -190,7 +190,7 @@
                         customEvent.add(element, events, this);
                     }
                     
-                
+                return ob;
             });
         };
 
