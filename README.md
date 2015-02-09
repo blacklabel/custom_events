@@ -180,6 +180,12 @@ window.chart = new Highcharts.Chart({
 
 * Like any other Highcharts module (e.g. exporting), add `<script>` tag pointing to `custom_events.js` below Highcharts script tag.
 
+#### bower
+
+```shell
+bower install highcharts-custom-events
+```
+
 ### Code
 
 The latest code is available on github: [https://github.com/blacklabel/custom_events/](https://github.com/blacklabel/custom_events/)
