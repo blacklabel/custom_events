@@ -1,7 +1,7 @@
 /**
-     * Custom events v1.0.5 (2013-12-09)
+     * Custom events v1.0.9 (2015-06-29)
      *
-     * (c) 2012-2013 Black Label
+     * (c) 2012-2015 Black Label
      *
      * License: Creative Commons Attribution (CC)
      */
@@ -49,14 +49,16 @@
 
                     (function (key) {
                         if (events.hasOwnProperty(key)) {
-                            if(!elem[key] || elem[key] === UNDEFINED) {
-                                HC.addEvent(elem.element, key, function (e) {
-                                    events[key].call(obj, e);
-                                    return false;
-                                });
+                            if(elem) {
+                                if(!elem[key] || elem[key] === UNDEFINED) {
+                                    HC.addEvent(elem.element, key, function (e) {
+                                        events[key].call(obj, e);
+                                        return false;
+                                    });
+                                }
+                                
+                                elem[key] = true;
                             }
-                            
-                            elem[key] = true;
                         }
                     })(key)
 
