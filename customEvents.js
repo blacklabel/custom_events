@@ -183,7 +183,7 @@
                             for (; j < len; j++) {
                                 var elemPoint = elementPoint[j].graphic;
     
-                                if (elementPoint[j].y && elemPoint !== UNDEFINED) {
+                                if (elementPoint[j].y && elemPoint && elemPoint !== UNDEFINED) {
                                     customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
                                 }
                             }
