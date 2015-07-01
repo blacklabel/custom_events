@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.0.9 (2015-06-29)
+     * Custom events v1.1.0 (2015-07-01)
      *
      * (c) 2012-2015 Black Label
      *
@@ -199,21 +199,14 @@
         //labels 
         customEvent(HC.Tick.prototype, 'addLabel');
 
-        //axis
-        //title
+        //axis / title
         customEvent(HC.Axis.prototype, 'render');
-        //plotbands + plotlines
-        customEvent(HC.PlotLineOrBand.prototype, 'render');
 
         //series events & point events
         customEvent(HC.Series.prototype, 'drawPoints');
-        customEvent(HC.seriesTypes.column.prototype, 'drawPoints');
-        customEvent(HC.seriesTypes.pie.prototype, 'drawPoints');
 
         //datalabels events
         customEvent(HC.Series.prototype, 'drawDataLabels');
-        customEvent(HC.seriesTypes.column.prototype, 'drawDataLabels');
-        customEvent(HC.seriesTypes.pie.prototype, 'drawDataLabels');
 
         //title events
         customEvent(HC.Chart.prototype, 'setTitle');
@@ -221,10 +214,26 @@
         //legend items
         customEvent(HC.Legend.prototype, 'renderItem');
 
+        //plotbands + plotlines
+        if (HC.PlotLineOrBand) {
+            customEvent(HC.PlotLineOrBand.prototype, 'render');
+        }
+
         //bubble charts
-        if(HC.seriesTypes.bubble) {
+        if (HC.seriesTypes.bubble) {
             customEvent(HC.seriesTypes.bubble.prototype, 'drawPoints');
             customEvent(HC.seriesTypes.bubble.prototype, 'drawDataLabels');
+        }
+
+        //column chart 
+        if (HC.seriesTypes.column) {
+            customEvent(HC.seriesTypes.column.prototype, 'drawDataLabels');
+            customEvent(HC.seriesTypes.column.prototype, 'drawPoints');
+        }
+
+        if (HC.seriesTypes.pie) {
+            customEvent(HC.seriesTypes.pie.prototype, 'drawDataLabels');
+            customEvent(HC.seriesTypes.pie.prototype, 'drawPoints');
         }
         
     })(Highcharts);
