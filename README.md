@@ -237,7 +237,7 @@ The latest code is available on github: [https://github.com/blacklabel/custom_ev
 
 ### Usage and demos
 
-It's quite simple and intuitive, just pass object as category:
+It's quite simple and intuitive, just pass function as other events:
 
 ```
 events: {
