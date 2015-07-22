@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.1.0 (2015-07-01)
+     * Custom events v1.1.2 (2015-07-22)
      *
      * (c) 2012-2015 Black Label
      *
@@ -8,81 +8,57 @@
 
     (function (HC) {
         /*jshint expr:true, boss:true */
-        var UNDEFINED;
+        var UNDEFINED,
+            seriesAnimate = HC.Series.prototype.animate,
+            columnAnimate = HC.seriesTypes.column.prototype.animate,
+            barAnimate = HC.seriesTypes.bar.prototype.animate,
+            pieAnimate = HC.seriesTypes.pie.prototype.animate;
 
-        HC.wrap(HC.Chart.prototype, 'renderSeries', function (proceed) {
-            var series = this.series,
-                chart = this;
-            
-            HC.each(this.series, function (serie) {
-                serie.translate();
-                if(serie.type !== 'column') {
-                    serie.customClipPath = serie.chart.renderer.clipRect({
-                        x: 0,
-                        y: 0,
-                        width: 0,
-                        height: chart.plotTop + chart.plotHeight
-                    });
-                }
-                serie.render();
+        HC.Series.prototype.afterAnimate = function() {};
+        HC.seriesTypes.column.prototype.afterAnimate = function() {};
+        HC.seriesTypes.pie.prototype.afterAnimate = function() {};
+        HC.seriesTypes.bar.prototype.afterAnimate = function() {};
+
+        var reanimate = HC.Chart.prototype.reAnimate = function() {
+            var chart = this;
+                Highcharts.each(chart.series, function (s) {
+                    var animation = s.options.animation,
+                        clipBox = s.clipBox || chart.clipBox,
+                        sharedClipKey = ['_sharedClip', animation.duration, animation.easing, clipBox.height].join(','),
+                        clipRect = chart[sharedClipKey],
+                        markerClipRect = chart[sharedClipKey + 'm'];
                 
-                if(serie.type !== 'column') {
-                    serie.markerGroup.clip(serie.customClipPath);
-                    serie.group.clip(serie.customClipPath);
-                }
-             
-            });
-        });
+                    if (clipRect) {
+                        clipRect.attr({
+                            width: 0
+                        });
+                    }
+                    if (markerClipRect) {
+                        markerClipRect.attr({
+                            width: 0
+                        });
+                    }
 
-        HC.wrap(HC.Series.prototype, 'redraw', function (proceed) {
-            var series = this,
-                chart = series.chart,
-                wasDirtyData = series.isDirtyData,
-                wasDirty = series.isDirty,
-                group = series.group,
-                xAxis = series.xAxis,
-                yAxis = series.yAxis;
-           
-            // reposition on resize
-            if (group) {
-                if (chart.inverted) {
-                    group.attr({
-                        width: chart.plotWidth,
-                        height: chart.plotHeight
-                    });
-                }
+                    switch(s.type) {
+                        case 'pie':
+                            s.animate = pieAnimate;
+                            break;
+                        case 'column':
+                            s.animate = columnAnimate;
+                            break;
+                         case 'bar':
+                            s.animate = barAnimate;
+                            break;
+                        default:
+                            s.animate = seriesAnimate;
+                            break;
+                    }
 
-                group.animate({
-                    translateX: HC.pick(xAxis && xAxis.left, chart.plotLeft),
-                    translateY: HC.pick(yAxis && yAxis.top, chart.plotTop)
+                    s.animate(true);
+                    s.isDirty = true;
                 });
-            }
-
-            series.translate();
-
-            if(series.type !== 'column') {
-                series.customClipPath = series.chart.renderer.clipRect({
-                    x: 0,
-                    y: 0,
-                    width: 0,
-                    height: chart.plotTop + chart.plotHeight
-                });
-            }
-
-            series.render();
-            
-            if(series.type !== 'column') {
-                series.markerGroup.clip(series.customClipPath);
-                series.group.clip(series.customClipPath);
-            }
-
-            if (wasDirtyData) {
-                window.HighchartsAdapter.fireEvent(series, 'updatedData');
-            }
-            if (wasDirty || wasDirtyData) { // #3945 recalculate the kdtree when dirty
-                delete this.kdTree; // #3868 recalculate the kdtree with dirty data
-            }
-        });
+                chart.redraw();
+        };
 
         //reseting all events, fired by Highcharts
         HC.Chart.prototype.callbacks.push(function (chart) {
@@ -98,6 +74,9 @@
 
             for (; i < serLen; i++) {
                 series[i].update({
+                    animation:{
+                        enabled:true
+                    },
                     customEvents: {
                         series: series[i].options.events,
                         point: series[i].options.point.events
@@ -114,26 +93,7 @@
             }
 
             chart.xAxis[0].isDirty = true;
-            chart.redraw();
-        });
-
-        HC.wrap(HC.Chart.prototype, 'redraw', function (proceed) {
-            proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-            
-            var chart = this,
-                serie = this.series,
-                duration = HC.getOptions().plotOptions.line.animation.duration,
-                clipPath;
-            
-            HC.each(serie, function (s, i) {
-                if(s.type !== 'column') {
-                    s.customClipPath.animate({
-                        width: chart.plotLeft + chart.plotWidth
-                    }, {
-                        duration: duration
-                    });
-                }
-            });
+            reanimate.call(chart);
         });
 
         //custom event body
