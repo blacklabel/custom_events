@@ -15,11 +15,6 @@
             pieAnimate = HC.seriesTypes.pie.prototype.animate;
 
         //reanimate
-        HC.Series.prototype.afterAnimate = function() {};
-        HC.seriesTypes.column.prototype.afterAnimate = function() {};
-        HC.seriesTypes.pie.prototype.afterAnimate = function() {};
-        HC.seriesTypes.bar.prototype.afterAnimate = function() {};
-
         var reanimate = HC.Chart.prototype.reAnimate = function() {
             var chart = this;
                 Highcharts.each(chart.series, function (s) {
