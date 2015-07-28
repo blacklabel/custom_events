@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.1.2 (2015-07-22)
+     * Custom events v1.1.3 (2015-07-28)
      *
      * (c) 2012-2015 Black Label
      *
@@ -14,6 +14,7 @@
             barAnimate = HC.seriesTypes.bar.prototype.animate,
             pieAnimate = HC.seriesTypes.pie.prototype.animate;
 
+        //reanimate
         HC.Series.prototype.afterAnimate = function() {};
         HC.seriesTypes.column.prototype.afterAnimate = function() {};
         HC.seriesTypes.pie.prototype.afterAnimate = function() {};
@@ -57,17 +58,22 @@
                     s.animate(true);
                     s.isDirty = true;
                 });
+
                 chart.redraw();
         };
 
         //reseting all events, fired by Highcharts
         HC.Chart.prototype.callbacks.push(function (chart) {
             var resetAxisEvents = chart.customEvent.resetAxisEvents,
+                forExport = chart.renderer.forExport,
                 series = chart.series,
                 serLen = series.length,
                 xAxis = chart.xAxis,
                 yAxis = chart.yAxis,
                 i = 0;
+
+            if(forExport) //skip custom events when chart is exported
+                return false;
 
             resetAxisEvents(xAxis, 'xAxis', chart);
             resetAxisEvents(yAxis, 'yAxis', chart);
@@ -75,7 +81,7 @@
             for (; i < serLen; i++) {
                 series[i].update({
                     animation:{
-                        enabled:true
+                        enabled: true
                     },
                     customEvents: {
                         series: series[i].options.events,
@@ -180,10 +186,10 @@
 
             HC.wrap(obj, proto, function (proceed) {
                 var events,
-                element,
-                eventsPoint,
-                elementPoint,
-                op;
+                    element,
+                    eventsPoint,
+                    elementPoint,
+                    op;
 
                 //call default actions
                 var ob = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
@@ -247,7 +253,6 @@
                 return ob;
             });
         };
-
         //labels 
         customEvent(HC.Tick.prototype, 'addLabel');
 
