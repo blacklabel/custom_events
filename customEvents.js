@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.1.3 (2015-07-28)
+     * Custom events v1.1.5 (2015-08-31)
      *
      * (c) 2012-2015 Black Label
      *
@@ -208,10 +208,19 @@
                             events = this.options.title.events;
                             element = this.axisTitle;
                         }
+                        
                         if (this.options.value || this.options.from) {
                             events = this.options.customEvents;
                             element = this.svgElem;
                         }
+
+                        if (this.options.stackLabels) { 
+                            events = this.options.stackLabels.events;
+                            element = this.stackTotalGroup;
+                            eventsPoint = this.options.stackLabels.events;
+                            elementPoint = this.stacks;
+                        }
+
                         break;
                     case 'drawPoints':
                         op = this.options;
