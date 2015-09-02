@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.1.5 (2015-08-31)
+     * Custom events v1.1.6 (2015-09-02)
      *
      * (c) 2012-2015 Black Label
      *
@@ -13,6 +13,11 @@
             columnAnimate = HC.seriesTypes.column.prototype.animate,
             barAnimate = HC.seriesTypes.bar.prototype.animate,
             pieAnimate = HC.seriesTypes.pie.prototype.animate;
+
+        //Highcharts functions
+        function isArray(obj) {
+            return Object.prototype.toString.call(obj) === '[object Array]';
+        }
 
         //reanimate
         var reanimate = HC.Chart.prototype.reAnimate = function() {
@@ -105,15 +110,20 @@
                     (function (key) {
                         if (events.hasOwnProperty(key) && elem) {
                                 if (!elem[key] || elem[key] === UNDEFINED) {
+
                                     HC.addEvent(elem.element, key, function (e) {
-                                        events[key].call(obj, e);
+
+                                        if(obj.textStr) //labels
+                                            obj.value = obj.textStr;
+                                        
+                                        events[key].call(obj);
                                         return false;
                                     });
                                 }
 
                                 elem[key] = true;
                         }
-                    })(key)
+                    })(key);
 
                 }
             };
@@ -184,7 +194,9 @@
                     element,
                     eventsPoint,
                     elementPoint,
-                    op;
+                    parent,
+                    op,
+                    len;
 
                 //call default actions
                 var ob = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
@@ -192,8 +204,33 @@
                 //switch on object
                 switch (proto) {
                     case 'addLabel':
-                        events = this.axis.options.labels.events;
-                        element = this.label;
+                        parent = this.parent;
+                        eventsPoint = this.axis.options.labels.events;
+                        elementPoint = [this.label];
+
+                        if(parent) {
+                            var step = this; //current label
+
+                            while (step) {
+                                if (isArray(step)) {
+                                    len = step.length;
+
+                                    for (i = 0; i < len; i++) {
+                                        callback(step[i]);
+                                    }
+                                }
+                                else {
+                                    callback(step);
+                                }
+
+                                step = step.parent;
+                            }
+
+                            function callback (element) {
+                                elementPoint.push(element.label);
+                            }
+                        }
+
                         break;
                     case 'setTitle':
                         events = this.options.title.events;
@@ -243,9 +280,9 @@
                         j = 0;
 
                         for (; j < len; j++) {
-                            var elemPoint = elementPoint[j].graphic;
+                            var elemPoint = HC.pick(elementPoint[j].graphic, elementPoint[j]);
 
-                            if (elementPoint[j].y && elemPoint && elemPoint !== UNDEFINED) {
+                            if (elemPoint && elemPoint !== UNDEFINED) {
                                 customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
                             }
                         }
