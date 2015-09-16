@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.1.6 (2015-09-02)
+     * Custom events v1.1.7 (2015-09-16)
      *
      * (c) 2012-2015 Black Label
      *
@@ -138,17 +138,10 @@
 
                 for (; i < axisLength; i++) {
 
-                    if (type === 'xAxis' && userOptions.xAxis !== UNDEFINED) {
-
-                        cAxis = HC.splat(userOptions.xAxis);
-                        plotLines = cAxis[i].plotLines;
-                        plotBands = cAxis[i].plotBands;
-
-                    } else if (type === 'yAxis' && userOptions.yAxis !== UNDEFINED) {
-
-                        cAxis = HC.splat(userOptions.yAxis);
-                        plotLines = cAxis[i].plotLines;
-                        plotBands = cAxis[i].plotBands;
+                    if (type) {
+                        cAxis = HC.splat(userOptions[type]);
+                        plotLines = cAxis[i] && cAxis[i].plotLines;
+                        plotBands = cAxis[i] && cAxis[i].plotBands;
                     }
 
                     if (plotLines !== UNDEFINED) {
