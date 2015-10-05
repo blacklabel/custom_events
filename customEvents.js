@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.1.7 (2015-09-16)
+     * Custom events v1.1.8 (2015-10-04)
      *
      * (c) 2012-2015 Black Label
      *
@@ -9,10 +9,20 @@
     (function (HC) {
         /*jshint expr:true, boss:true */
         var UNDEFINED,
-            seriesAnimate = HC.Series.prototype.animate,
-            columnAnimate = HC.seriesTypes.column.prototype.animate,
-            barAnimate = HC.seriesTypes.bar.prototype.animate,
-            pieAnimate = HC.seriesTypes.pie.prototype.animate;
+            _tick   = HC.Tick.prototype,
+            _axis   = HC.Axis.prototype,
+            _chart  = HC.Chart.prototype,
+            _legend = HC.Legend.prototype,
+            _series = HC.Series.prototype,
+            _column = HC.seriesTypes.column && HC.seriesTypes.column.prototype,
+            _bar    = HC.seriesTypes.bar && HC.seriesTypes.bar.prototype,
+            _pie    = HC.seriesTypes.pie &&  HC.seriesTypes.pie.prototype,
+            _bubble = HC.seriesTypes.bubble && HC.seriesTypes.bubble.prototype,
+            _plotBands = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
+            seriesAnimate = _series.animate,
+            columnAnimate = _column.animate,
+            barAnimate    = _bar.animate,
+            pieAnimate    = _pie.animate;
 
         //Highcharts functions
         function isArray(obj) {
@@ -28,6 +38,11 @@
                         sharedClipKey = ['_sharedClip', animation.duration, animation.easing, clipBox.height].join(','),
                         clipRect = chart[sharedClipKey],
                         markerClipRect = chart[sharedClipKey + 'm'];
+                
+                    if(!clipRect) { // HC < 4.0.0
+                        chart.redraw();
+                        return;
+                    }
                 
                     if (clipRect) {
                         clipRect.attr({
@@ -54,7 +69,7 @@
                             s.animate = seriesAnimate;
                             break;
                     }
-
+                    
                     s.animate(true);
                     s.isDirty = true;
                 });
@@ -288,43 +303,43 @@
             });
         };
         //labels 
-        customEvent(HC.Tick.prototype, 'addLabel');
+        customEvent(_tick, 'addLabel');
 
         //axis / title
-        customEvent(HC.Axis.prototype, 'render');
+        customEvent(_axis, 'render');
 
         //series events & point events
-        customEvent(HC.Series.prototype, 'drawPoints');
+        customEvent(_series, 'drawPoints');
 
         //datalabels events
-        customEvent(HC.Series.prototype, 'drawDataLabels');
+        customEvent(_series, 'drawDataLabels');
 
         //title events
-        customEvent(HC.Chart.prototype, 'setTitle');
+        customEvent(_chart, 'setTitle');
 
         //legend items
-        customEvent(HC.Legend.prototype, 'renderItem');
+        customEvent(_legend, 'renderItem');
 
         //plotbands + plotlines
-        if (HC.PlotLineOrBand) {
-            customEvent(HC.PlotLineOrBand.prototype, 'render');
+        if (_plotBands) {
+            customEvent(_plotBands, 'render');
         }
 
         //bubble charts
-        if (HC.seriesTypes.bubble) {
-            customEvent(HC.seriesTypes.bubble.prototype, 'drawPoints');
-            customEvent(HC.seriesTypes.bubble.prototype, 'drawDataLabels');
+        if (_bubble) {
+            customEvent(_bubble, 'drawPoints');
+            customEvent(_bubble, 'drawDataLabels');
         }
 
         //column chart 
-        if (HC.seriesTypes.column) {
-            customEvent(HC.seriesTypes.column.prototype, 'drawDataLabels');
-            customEvent(HC.seriesTypes.column.prototype, 'drawPoints');
+        if (_column) {
+            customEvent(_column, 'drawDataLabels');
+            customEvent(_column, 'drawPoints');
         }
 
-        if (HC.seriesTypes.pie) {
-            customEvent(HC.seriesTypes.pie.prototype, 'drawDataLabels');
-            customEvent(HC.seriesTypes.pie.prototype, 'drawPoints');
+        if (_pie) {
+            customEvent(_pie, 'drawDataLabels');
+            customEvent(_pie, 'drawPoints');
         }
 
     })(Highcharts);
