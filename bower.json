@@ -6,7 +6,7 @@
     "Sebastian Bochan <sebastian@blacklabel.pl>",
     "Paweł Fus <pawel@blacklabel.pl>"
   ],
-  "description": "Plugin that allows add extra events, like double / right click on each chart element, for Highcharts.",
+  "description": "Highcharts plugin that adds extra events, like double and right click on each chart element.",
   "main": "customEvents.js",
   "keywords": [
     "events",
