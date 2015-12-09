@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.1.9 (2015-12-09)
+     * Custom events v1.1.10 (2015-12-09)
      *
      * (c) 2012-2015 Black Label
      *
@@ -18,7 +18,8 @@
             _bar    = HC.seriesTypes.bar && HC.seriesTypes.bar.prototype,
             _pie    = HC.seriesTypes.pie &&  HC.seriesTypes.pie.prototype,
             _bubble = HC.seriesTypes.bubble && HC.seriesTypes.bubble.prototype,
-            _plotBands = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
+            _plotBands    = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
+            _flags        = HC.seriesTypes.flags && HC.seriesTypes.flags.prototype,
             seriesAnimate = _series.animate,
             columnAnimate = _column.animate,
             barAnimate    = _bar.animate,
@@ -340,6 +341,11 @@
         if (_pie) {
             customEvent(_pie, 'drawDataLabels');
             customEvent(_pie, 'drawPoints');
+        }
+
+        if(_flags) {
+                customEvent(_flags, 'drawDataLabels');
+            customEvent(_flags, 'drawPoints');
         }
 
     })(Highcharts);
