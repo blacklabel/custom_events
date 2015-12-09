@@ -1,5 +1,5 @@
 /**
-     * Custom events v1.1.8 (2015-10-04)
+     * Custom events v1.1.9 (2015-12-09)
      *
      * (c) 2012-2015 Black Label
      *
@@ -188,7 +188,7 @@
                     }
 
                     if (redraw) {
-                        chart.yAxis[i].update({
+                        axis[i].update({
                             plotLines: plotLines,
                             plotBands: plotBands
                         }, false);
