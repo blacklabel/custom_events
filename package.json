@@ -1,0 +1,23 @@
+{
+  "name": "highcharts-custom-events",
+  "version": "1.1.8",
+  "description": "Highcharts plugin that adds extra events, like double and right click on each chart element.",
+  "main": "customEvents.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blacklabel/custom_events.git"
+  },
+  "keywords": [
+    "events",
+    "highcharts"
+  ],
+  "author": "Sebastian Bochan <sebastian@blacklabel.pl>",
+  "contributors": [
+    "Paweł Fus <pawel@blacklabel.pl>"
+  ],
+  "license": "CC-BY-3.0",
+  "bugs": {
+    "url": "https://github.com/blacklabel/custom_events/issues"
+  },
+  "homepage": "https://github.com/blacklabel/custom_events#readme"
+}
