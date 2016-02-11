@@ -6,7 +6,14 @@
      * License: Creative Commons Attribution (CC)
      */
 
-    (function (HC) {
+(function (factory) {
+    if (typeof module === 'object' && module.exports) {
+        module.exports = factory;
+    } else {
+        factory(Highcharts);
+    }
+}(function (HC) {
+
         /*jshint expr:true, boss:true */
         var UNDEFINED,
             _tick   = HC.Tick.prototype,
@@ -348,4 +355,5 @@
             customEvent(_flags, 'drawPoints');
         }
 
-    })(Highcharts);
+}));
+
