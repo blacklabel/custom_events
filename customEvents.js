@@ -139,7 +139,7 @@
                                         if(obj.textStr) //labels
                                             obj.value = obj.textStr;
                                         
-                                        events[key].call(obj);
+                                        events[key].call(obj, e);
                                         return false;
                                     });
                                 }
