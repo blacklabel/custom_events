@@ -16,6 +16,7 @@
 
         /*jshint expr:true, boss:true */
         var UNDEFINED,
+            noop = function () {},
             _tick   = HC.Tick.prototype,
             _axis   = HC.Axis.prototype,
             _chart  = HC.Chart.prototype,
@@ -111,11 +112,11 @@
                         point: series[i].options.point.events
                     },
                     events: {
-                        click: null
+                        click: noop
                     },
                     point: {
                         events: {
-                            click: null
+                            click: noop
                         }
                     }
                 }, false);
@@ -132,7 +133,7 @@
 
                     (function (key) {
                         if (events.hasOwnProperty(key) && elem) {
-                                if (!elem[key] || elem[key] === UNDEFINED) {
+                                if ((!elem[key] || elem[key] === UNDEFINED) && elem.element) {
 
                                     HC.addEvent(elem.element, key, function (e) {
 
