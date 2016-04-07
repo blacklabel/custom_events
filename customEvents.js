@@ -23,7 +23,8 @@
             seriesAnimate = _series.animate,
             columnAnimate = _column.animate,
             barAnimate    = _bar.animate,
-            pieAnimate    = _pie.animate;
+            pieAnimate    = _pie.animate,
+            noop          = function() { };
 
         //Highcharts functions
         function isArray(obj) {
@@ -104,11 +105,11 @@
                         point: series[i].options.point.events
                     },
                     events: {
-                        click: null
+                        click: noop
                     },
                     point: {
                         events: {
-                            click: null
+                            click: noop
                         }
                     }
                 }, false);
@@ -121,18 +122,19 @@
         //custom event body
         var customEvent = HC.Chart.prototype.customEvent = function (obj, proto) {
             customEvent.add = function (elem, events, obj) {
+
                 for (var key in events) {
 
                     (function (key) {
                         if (events.hasOwnProperty(key) && elem) {
-                                if (!elem[key] || elem[key] === UNDEFINED) {
+                                if ((!elem[key] || elem[key] === UNDEFINED) && elem.element) {
+                                
 
                                     HC.addEvent(elem.element, key, function (e) {
-
                                         if(obj.textStr) //labels
                                             obj.value = obj.textStr;
                                         
-                                        events[key].call(obj);
+                                        events[key].call(obj, e);
                                         return false;
                                     });
                                 }
@@ -260,7 +262,7 @@
                             element = this.svgElem;
                         }
 
-                        if (this.options.stackLabels) { 
+                        if (this.options.stackLabels && this.options.stackLabels.enabled) { 
                             events = this.options.stackLabels.events;
                             element = this.stackTotalGroup;
                             eventsPoint = this.options.stackLabels.events;
