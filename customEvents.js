@@ -1,353 +1,370 @@
 /**
-     * Custom events v1.1.10 (2015-12-09)
-     *
-     * (c) 2012-2015 Black Label
-     *
-     * License: Creative Commons Attribution (CC)
-     */
+* Custom events v1.2.1 (2016-06-15)
+*
+* (c) 2012-2016 Black Label
+*
+* License: Creative Commons Attribution (CC)
+*/
 
-    (function (HC) {
-        /*jshint expr:true, boss:true */
-        var UNDEFINED,
-            _tick   = HC.Tick.prototype,
-            _axis   = HC.Axis.prototype,
-            _chart  = HC.Chart.prototype,
-            _legend = HC.Legend.prototype,
-            _series = HC.Series.prototype,
-            _column = HC.seriesTypes.column && HC.seriesTypes.column.prototype,
-            _bar    = HC.seriesTypes.bar && HC.seriesTypes.bar.prototype,
-            _pie    = HC.seriesTypes.pie &&  HC.seriesTypes.pie.prototype,
-            _bubble = HC.seriesTypes.bubble && HC.seriesTypes.bubble.prototype,
-            _plotBands    = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
-            _flags        = HC.seriesTypes.flags && HC.seriesTypes.flags.prototype,
-            seriesAnimate = _series.animate,
-            columnAnimate = _column.animate,
-            barAnimate    = _bar.animate,
-            pieAnimate    = _pie.animate,
-            noop          = function() { };
+(function (HC) {
+	/* global Highcharts :true */
 
-        //Highcharts functions
-        function isArray(obj) {
-            return Object.prototype.toString.call(obj) === '[object Array]';
-        }
+	'use strict';
 
-        //reanimate
-        var reanimate = HC.Chart.prototype.reAnimate = function() {
-            var chart = this;
-                Highcharts.each(chart.series, function (s) {
-                    var animation = s.options.animation,
-                        clipBox = s.clipBox || chart.clipBox,
-                        sharedClipKey = ['_sharedClip', animation.duration, animation.easing, clipBox.height].join(','),
-                        clipRect = chart[sharedClipKey],
-                        markerClipRect = chart[sharedClipKey + 'm'];
-                
-                    if(!clipRect) { // HC < 4.0.0
-                        chart.redraw();
-                        return;
-                    }
-                
-                    if (clipRect) {
-                        clipRect.attr({
-                            width: 0
-                        });
-                    }
-                    if (markerClipRect) {
-                        markerClipRect.attr({
-                            width: 0
-                        });
-                    }
+	var UNDEFINED,
+		each = Highcharts.each,
+		protoTick = HC.Tick.prototype,
+		protoAxis = HC.Axis.prototype,
+		protoChart = HC.Chart.prototype,
+		protoLegend = HC.Legend.prototype,
+		protoSeries = HC.Series.prototype,
+		protoColumn = HC.seriesTypes.column && HC.seriesTypes.column.prototype,
+		protoBar = HC.seriesTypes.bar && HC.seriesTypes.bar.prototype,
+		protoPie = HC.seriesTypes.pie && HC.seriesTypes.pie.prototype,
+		protoBubble = HC.seriesTypes.bubble && HC.seriesTypes.bubble.prototype,
+		protoPlotBands = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
+		protoFlags = HC.seriesTypes.flags && HC.seriesTypes.flags.prototype,
+		seriesAnimate = protoSeries.animate,
+		columnAnimate = protoColumn.animate,
+		barAnimate = protoBar.animate,
+		pieAnimate = protoPie.animate;
 
-                    switch(s.type) {
-                        case 'pie':
-                            s.animate = pieAnimate;
-                            break;
-                        case 'column':
-                            s.animate = columnAnimate;
-                            break;
-                         case 'bar':
-                            s.animate = barAnimate;
-                            break;
-                        default:
-                            s.animate = seriesAnimate;
-                            break;
-                    }
-                    
-                    s.animate(true);
-                    s.isDirty = true;
-                });
+	function noop() { return false; }
 
-                chart.redraw();
-        };
+	//	Highcharts functions
+	function isArray(obj) {
+		return Object.prototype.toString.call(obj) === '[object Array]';
+	}
 
-        //reseting all events, fired by Highcharts
-        HC.Chart.prototype.callbacks.push(function (chart) {
-            var resetAxisEvents = chart.customEvent.resetAxisEvents,
-                forExport = chart.renderer.forExport,
-                series = chart.series,
-                serLen = series.length,
-                xAxis = chart.xAxis,
-                yAxis = chart.yAxis,
-                i = 0;
+	//	reanimate
+	var reanimate = HC.Chart.prototype.reAnimate = function () {
+		
+		var chart = this;
+		
+		each(chart.series, function (s) {
+			var animation = s.options.animation,
+				clipBox = s.clipBox || chart.clipBox,
+				sharedClipKey = ['_sharedClip', animation.duration, animation.easing, clipBox.height].join(','),
+				clipRect = chart[sharedClipKey],
+				markerClipRect = chart[sharedClipKey + 'm'];
+		
+			if (!clipRect) { // HC < 4.0.0
+				chart.redraw();
+				return false;
+			}
+		
+			if (clipRect) {
+				clipRect.attr({
+					width: 0
+				});
+			}
+			if (markerClipRect) {
+				markerClipRect.attr({
+					width: 0
+				});
+			}
 
-            if(forExport) //skip custom events when chart is exported
-                return false;
+			switch (s.type) {
+				case 'pie':
+					s.animate = pieAnimate;
+					break;
+				case 'column':
+					s.animate = columnAnimate;
+					break;
+				case 'bar':
+					s.animate = barAnimate;
+					break;
+				default:
+					s.animate = seriesAnimate;
+					break;
+			}
+			
+			s.animate(true);
+			s.isDirty = true;
 
-            resetAxisEvents(xAxis, 'xAxis', chart);
-            resetAxisEvents(yAxis, 'yAxis', chart);
+			return false;
+		});
 
-            for (; i < serLen; i++) {
-                series[i].update({
-                    animation:{
-                        enabled: true
-                    },
-                    customEvents: {
-                        series: series[i].options.events,
-                        point: series[i].options.point.events
-                    },
-                    events: {
-                        click: noop
-                    },
-                    point: {
-                        events: {
-                            click: noop
-                        }
-                    }
-                }, false);
-            }
+		chart.redraw();
 
-            chart.xAxis[0].isDirty = true;
-            reanimate.call(chart);
-        });
+		return false;
+	};
 
-        //custom event body
-        var customEvent = HC.Chart.prototype.customEvent = function (obj, proto) {
-            customEvent.add = function (elem, events, obj) {
+	//	reseting all events, fired by Highcharts
+	HC.Chart.prototype.callbacks.push(function (chart) {
+		var resetAxisEvents = chart.customEvent.resetAxisEvents,
+			forExport = chart.renderer.forExport,
+			series = chart.series,
+			serLen = series.length,
+			xAxis = chart.xAxis,
+			yAxis = chart.yAxis,
+			i = 0;
 
-                for (var key in events) {
+		if (forExport) {	//	skip custom events when chart is exported
+			return false;
+		}
 
-                    (function (key) {
-                        if (events.hasOwnProperty(key) && elem) {
-                                if ((!elem[key] || elem[key] === UNDEFINED) && elem.element) {
-                                
+		resetAxisEvents(xAxis, 'xAxis', chart);
+		resetAxisEvents(yAxis, 'yAxis', chart);
 
-                                    HC.addEvent(elem.element, key, function (e) {
-                                        if(obj.textStr) //labels
-                                            obj.value = obj.textStr;
-                                        
-                                        events[key].call(obj, e);
-                                        return false;
-                                    });
-                                }
+		for (; i < serLen; i++) {
+			series[i].update({
+				animation: {
+					enabled: true
+				},
+				customEvents: {
+					series: series[i].options.events,
+					point: series[i].options.point.events
+				},
+				events: {
+					click: noop
+				},
+				point: {
+					events: {
+						click: noop
+					}
+				}
+			}, false);
+		}
 
-                                elem[key] = true;
-                        }
-                    })(key);
+		chart.xAxis[0].isDirty = true;
+		reanimate.call(chart);
 
-                }
-            };
+		return false;
+	});
 
-            HC.Chart.prototype.customEvent.resetAxisEvents = function (axis, type, chart) {
-                var axisLength = axis.length,
-                    userOptions = chart.userOptions,
-                    i = 0,
-                    j = 0,
-                    redraw = false,
-                    customEvents, plotBandsLength, plotLinesLength, plotLines, plotBands, cAxis;
+	//	custom event body
+	var customEvent = HC.Chart.prototype.customEvent = function (obj, proto) {
+		customEvent.add = function (elem, events) {
 
-                for (; i < axisLength; i++) {
+			for (var key in events) {
 
-                    if (type) {
-                        cAxis = HC.splat(userOptions[type]);
-                        plotLines = cAxis[i] && cAxis[i].plotLines;
-                        plotBands = cAxis[i] && cAxis[i].plotBands;
-                    }
+				if (key) {
+					(function (val) {
+						if (events.hasOwnProperty(val) && elem) {
+							if ((!elem[val] || elem[val] === UNDEFINED) && elem.element) {
+							
+								HC.addEvent(elem.element, val, function (e) {
+								
+									if (obj.textStr) { //	labels
+										obj.value = obj.textStr;
+									}
+									
+									events[val].call(obj, e);
+									return false;
+								});
+							}
 
-                    if (plotLines !== UNDEFINED) {
-                        plotLinesLength = plotLines.length;
+							elem[val] = true;
+						}
+					})(key);
+				}
 
-                        for (j = 0; j < plotLinesLength; j++) {
-                            var t = plotLines[j].events;
-                            if (t) {
-                                plotLines[j].customEvents = t;
-                                plotLines[j].events = null;
-                            }
-                        };
+			}
+		};
 
-                        redraw = true;
-                    }
+		HC.Chart.prototype.customEvent.resetAxisEvents = function (axis, type, chart) {
+			var axisLength = axis.length,
+				userOptions = chart.userOptions,
+				i = 0,
+				j = 0,
+				redraw = false,
+				plotBandsLength, plotLinesLength, plotLines, plotBands, cAxis, t;
 
-                    if (plotBands !== UNDEFINED) {
-                        plotBandsLength = plotBands.length;
+			for (; i < axisLength; i++) {
 
-                        for (j = 0; j < plotBandsLength; j++) {
-                            var t = plotBands[j].events;
-                            if (t) {
-                                plotBands[j].customEvents = t;
-                                plotBands[j].events = null;
-                            }
-                        };
+				if (type) {
+					cAxis = HC.splat(userOptions[type]);
+					plotLines = cAxis[i] && cAxis[i].plotLines;
+					plotBands = cAxis[i] && cAxis[i].plotBands;
+				}
 
-                        redraw = true;
-                    }
+				if (plotLines !== UNDEFINED) {
+					plotLinesLength = plotLines.length;
 
-                    if (redraw) {
-                        axis[i].update({
-                            plotLines: plotLines,
-                            plotBands: plotBands
-                        }, false);
-                    }
-                };
-            };
+					for (j = 0; j < plotLinesLength; j++) {
+						t = plotLines[j].events;
+						if (t) {
+							plotLines[j].customEvents = t;
+							plotLines[j].events = null;
+						}
+					}
 
+					redraw = true;
+				}
 
-            HC.wrap(obj, proto, function (proceed) {
-                var events,
-                    element,
-                    eventsPoint,
-                    elementPoint,
-                    parent,
-                    op,
-                    len;
+				if (plotBands !== UNDEFINED) {
+					plotBandsLength = plotBands.length;
 
-                //call default actions
-                var ob = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+					for (j = 0; j < plotBandsLength; j++) {
+						t = plotBands[j].events;
+						if (t) {
+							plotBands[j].customEvents = t;
+							plotBands[j].events = null;
+						}
+					}
 
-                //switch on object
-                switch (proto) {
-                    case 'addLabel':
-                        parent = this.parent;
-                        eventsPoint = this.axis.options.labels.events;
-                        elementPoint = [this.label];
+					redraw = true;
+				}
 
-                        if(parent) {
-                            var step = this; //current label
-
-                            while (step) {
-                                if (isArray(step)) {
-                                    len = step.length;
-
-                                    for (i = 0; i < len; i++) {
-                                        callback(step[i]);
-                                    }
-                                }
-                                else {
-                                    callback(step);
-                                }
-
-                                step = step.parent;
-                            }
-
-                            function callback (element) {
-                                elementPoint.push(element.label);
-                            }
-                        }
-
-                        break;
-                    case 'setTitle':
-                        events = this.options.title.events;
-                        element = this.title;
-                        break;
-                    case 'drawDataLabels':
-                        events = this.dataLabelsGroup ? this.options.dataLabels.events : null;
-                        element = this.dataLabelsGroup ? this.dataLabelsGroup : null;
-                        break;
-                    case 'render':
-                        if (this.axisTitle) {
-                            events = this.options.title.events;
-                            element = this.axisTitle;
-                        }
-                        
-                        if (this.options.value || this.options.from) {
-                            events = this.options.customEvents;
-                            element = this.svgElem;
-                        }
-
-                        if (this.options.stackLabels && this.options.stackLabels.enabled) { 
-                            events = this.options.stackLabels.events;
-                            element = this.stackTotalGroup;
-                            eventsPoint = this.options.stackLabels.events;
-                            elementPoint = this.stacks;
-                        }
-
-                        break;
-                    case 'drawPoints':
-                        op = this.options;
-                        events = op.customEvents ? op.customEvents.series : op,
-                        element = this.group;
-                        eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
-                        elementPoint = this.points;
-                        break;
-                    case 'renderItem':
-                        events = this.options.itemEvents;
-                        element = this.group;
-                        break;
-                }
+				if (redraw) {
+					axis[i].update({
+						plotLines: plotLines,
+						plotBands: plotBands
+					}, false);
+				}
+			}
+		};
 
 
-                if (events || eventsPoint) {
+		HC.wrap(obj, proto, function (proceed) {
+			var events,
+				element,
+				eventsPoint,
+				elementPoint,
+				parent,
+				op,
+				len,
+				i,
+				j;
 
-                    if (eventsPoint) {
-                        var len = elementPoint.length
-                        j = 0;
+			//	call default actions
+			var ob = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
-                        for (; j < len; j++) {
-                            var elemPoint = HC.pick(elementPoint[j].graphic, elementPoint[j]);
+			//	switch on object
+			switch (proto) {
+				case 'addLabel':
+					parent = this.parent;
+					eventsPoint = this.axis.options.labels.events;
+					elementPoint = [this.label];
 
-                            if (elemPoint && elemPoint !== UNDEFINED) {
-                                customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
-                            }
-                        }
-                    }
+					if (parent) {
+						var step = this; //	current label
 
-                    customEvent.add(element, events, this);
-                }
+						while (step) {
+							if (isArray(step)) {
+								len = step.length;
 
-                return ob;
-            });
-        };
-        //labels 
-        customEvent(_tick, 'addLabel');
+								for (i = 0; i < len; i++) {
+									elementPoint.push(step[i].label);
+								}
+							} else {
+								elementPoint.push(step.label);
+							}
 
-        //axis / title
-        customEvent(_axis, 'render');
+							step = step.parent;
+						}
 
-        //series events & point events
-        customEvent(_series, 'drawPoints');
+					}
 
-        //datalabels events
-        customEvent(_series, 'drawDataLabels');
+					break;
+				case 'setTitle':
+					events = this.options.title.events;
+					element = this.title;
+					break;
+				case 'drawDataLabels':
+					events = this.dataLabelsGroup ? this.options.dataLabels.events : null;
+					element = this.dataLabelsGroup ? this.dataLabelsGroup : null;
+					break;
+				case 'render':
+					if (this.axisTitle) {
+						events = this.options.title.events;
+						element = this.axisTitle;
+					}
+				
+					if (this.options.value || this.options.from) {
+						events = this.options.customEvents;
+						element = this.svgElem;
+					}
 
-        //title events
-        customEvent(_chart, 'setTitle');
+					if (this.options.stackLabels && this.options.stackLabels.enabled) {
+						events = this.options.stackLabels.events;
+						element = this.stackTotalGroup;
+						eventsPoint = this.options.stackLabels.events;
+						elementPoint = this.stacks;
+					}
 
-        //legend items
-        customEvent(_legend, 'renderItem');
+					break;
+				case 'drawPoints':
+					op = this.options;
+					events = op.customEvents ? op.customEvents.series : op;
+					element = this.group;
+					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
+					elementPoint = this.points;
+					break;
+				case 'renderItem':
+					events = this.options.itemEvents;
+					element = this.group;
+					break;
+				default:
+					return false;
+			}
 
-        //plotbands + plotlines
-        if (_plotBands) {
-            customEvent(_plotBands, 'render');
-        }
 
-        //bubble charts
-        if (_bubble) {
-            customEvent(_bubble, 'drawPoints');
-            customEvent(_bubble, 'drawDataLabels');
-        }
+			if (events || eventsPoint) {
 
-        //column chart 
-        if (_column) {
-            customEvent(_column, 'drawDataLabels');
-            customEvent(_column, 'drawPoints');
-        }
+				if (eventsPoint) {
+					len = elementPoint.length;
+					j = 0;
 
-        if (_pie) {
-            customEvent(_pie, 'drawDataLabels');
-            customEvent(_pie, 'drawPoints');
-        }
+					for (; j < len; j++) {
+						var elemPoint = HC.pick(elementPoint[j].graphic, elementPoint[j]);
 
-        if(_flags) {
-                customEvent(_flags, 'drawDataLabels');
-            customEvent(_flags, 'drawPoints');
-        }
+						if (elemPoint && elemPoint !== UNDEFINED) {
+							customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
+						}
+					}
+				}
 
-    })(Highcharts);
+				customEvent.add(element, events, this);
+			}
+
+			return ob;
+		});
+	};
+	//	labels
+	customEvent(protoTick, 'addLabel');
+
+	//	axis / title
+	customEvent(protoAxis, 'render');
+
+	//	series events & point events
+	customEvent(protoSeries, 'drawPoints');
+
+	//	datalabels events
+	customEvent(protoSeries, 'drawDataLabels');
+
+	//	title events
+	customEvent(protoChart, 'setTitle');
+
+	//	legend items
+	customEvent(protoLegend, 'renderItem');
+
+	//	plotbands + plotlines
+	if (protoPlotBands) {
+		customEvent(protoPlotBands, 'render');
+	}
+
+	//	bubble charts
+	if (protoBubble) {
+		customEvent(protoBubble, 'drawPoints');
+		customEvent(protoBubble, 'drawDataLabels');
+	}
+
+	//	column chart
+	if (protoColumn) {
+		customEvent(protoColumn, 'drawDataLabels');
+		customEvent(protoColumn, 'drawPoints');
+	}
+
+	if (protoPie) {
+		customEvent(protoPie, 'drawDataLabels');
+		customEvent(protoPie, 'drawPoints');
+	}
+
+	if (protoFlags) {
+		customEvent(protoFlags, 'drawDataLabels');
+		customEvent(protoFlags, 'drawPoints');
+	}
+
+})(Highcharts);
