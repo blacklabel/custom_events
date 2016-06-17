@@ -1,5 +1,5 @@
 /**
-* Custom events v1.2.1 (2016-06-15)
+* Custom events v1.2.3 (2016-06-17)
 *
 * (c) 2012-2016 Black Label
 *
@@ -19,7 +19,7 @@
 	'use strict';
 
 	var UNDEFINED,
-		each = Highcharts.each,
+		each = HC.each,
 		protoTick = HC.Tick.prototype,
 		protoAxis = HC.Axis.prototype,
 		protoChart = HC.Chart.prototype,
