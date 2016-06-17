@@ -12,6 +12,13 @@ Go to project page to see this module in action: [http://blacklabel.github.io/cu
 
 * Like any other Highcharts module (e.g. exporting), add `<script>` tag pointing to `custom_events.js` below Highcharts script tag.
 
+* For NPM users:
+```
+var Highcharts = require('highcharts'),
+    HighchartsCustomEvents = require('customEvents')(Highcharts);</code></pre>
+```
+
+
 ### Code
 
 The latest code is available on github: [https://github.com/blacklabel/custom_events/](https://github.com/blacklabel/custom_events/)
