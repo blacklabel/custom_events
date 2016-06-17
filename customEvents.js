@@ -6,7 +6,14 @@
 * License: Creative Commons Attribution (CC)
 */
 
-(function (HC) {
+/* global Highcharts window document module:true */
+(function (factory) {
+	if (typeof module === 'object' && module.exports) {
+		module.exports = factory;
+	} else {
+		factory(Highcharts);
+	}
+}(function (HC) {
 	/* global Highcharts :true */
 
 	'use strict';
@@ -367,4 +374,4 @@
 		customEvent(protoFlags, 'drawPoints');
 	}
 
-})(Highcharts);
+}));
