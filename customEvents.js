@@ -1,5 +1,5 @@
 /**
-* Custom events v1.2.3 (2016-06-17)
+* Custom events v1.2.4 (2016-06-17)
 *
 * (c) 2012-2016 Black Label
 *
