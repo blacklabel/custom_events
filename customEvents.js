@@ -1,5 +1,5 @@
 /**
-* Custom events v1.2.4 (2016-06-17)
+* Custom events v1.2.5 (2016-06-28)
 *
 * (c) 2012-2016 Black Label
 *
@@ -145,12 +145,12 @@
 		customEvent.add = function (elem, events) {
 
 			for (var key in events) {
-
 				if (key) {
 					(function (val) {
 						if (events.hasOwnProperty(val) && elem) {
+
 							if ((!elem[val] || elem[val] === UNDEFINED) && elem.element) {
-							
+
 								HC.addEvent(elem.element, val, function (e) {
 								
 									if (obj.textStr) { //	labels
@@ -158,11 +158,14 @@
 									}
 									
 									events[val].call(obj, e);
+
 									return false;
 								});
 							}
 
-							elem[val] = true;
+							elem[val] = function() {
+								return true;
+							};
 						}
 					})(key);
 				}

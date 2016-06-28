@@ -8,7 +8,7 @@
 </head>
 <body>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts.src.js"></script>
 <script src="./customEvents.js"></script>
 
 
@@ -48,6 +48,7 @@ $(function () {
             events: {
                 load: function () {
                     //add report div
+                    console.log('load');
                     var ch = this,
                         x = 20,
                         y = 57;
@@ -55,6 +56,15 @@ $(function () {
                     ch.flashText = ch.renderer.text('<div id="flash"><div id="report"></div></div>', x , y +10, true).attr({
                         zIndex: 101
                     }).add();
+                },
+                click:function () {
+                    console.log('a');
+                },
+                dbclick: function() {
+                    console.log('b');
+                },
+                contextmenu: function() {
+                    console.log('c');
                 }
             }
         },
@@ -82,7 +92,7 @@ $(function () {
                 }
             }
         },
-        yAxis: [{
+        /*yAxis: [{
         	title: {
                 text: 'Values',
                 events: {
@@ -293,7 +303,7 @@ $(function () {
                     $('#report').html('context menu on legend item ');
                 }
             }
-        },
+        },*/
         series: [{
             data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
         }, {
