@@ -6,7 +6,7 @@
 * License: Creative Commons Attribution (CC)
 */
 
-/* global Highcharts window document module:true */
+/* global Highcharts module:true */
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
 		module.exports = factory;
@@ -157,15 +157,15 @@
 										elemObj.value = elemObj.textStr;
 									}
 
-									if(chart) { //	#53, #54
+									if (chart) { //	#53, #54
 										var normalizedEvent = chart.pointer.normalize(e),
 											series = chart.series,
 											len = series.length,
 											i;
 
-										for(i = 0; i < len; i++) {
+										for (i = 0; i < len; i++) {
 											elemObj = series[i].searchPoint(normalizedEvent, true);
-										};
+										}
 									}
 
 									events[val].call(elemObj, e);
@@ -174,7 +174,7 @@
 								});
 							}
 
-							elem[val] = function() {
+							elem[val] = function () {
 								return true;
 							};
 						}
@@ -237,6 +237,96 @@
 			}
 		};
 
+		//	#50
+		HC.wrap(HC.Chart.prototype, 'renderSeries', function (proceed) {
+			var series = this.series,
+				chart = this;
+			
+			each(series, function (serie) {
+				serie.translate();
+				if (serie.type !== 'column') {
+					serie.customClipPath = serie.chart.renderer.clipRect({
+						x: 0,
+						y: 0,
+						width: 0,
+						height: chart.plotTop + chart.plotHeight
+					});
+				}
+				serie.render();
+				
+				if (serie.type !== 'column') {
+					serie.markerGroup.clip(serie.customClipPath);
+					serie.group.clip(serie.customClipPath);
+				}
+			
+			});
+		});
+  
+		HC.wrap(HC.Series.prototype, 'redraw', function (proceed) {
+			var series = this,
+				chart = series.chart,
+				wasDirtyData = series.isDirtyData,
+				wasDirty = series.isDirty,
+				group = series.group,
+				xAxis = series.xAxis,
+				yAxis = series.yAxis;
+			
+			// reposition on resize
+			if (group) {
+				if (chart.inverted) {
+					group.attr({
+						width: chart.plotWidth,
+						height: chart.plotHeight
+					});
+				}
+  
+				group.animate({
+					translateX: HC.pick(xAxis && xAxis.left, chart.plotLeft),
+					translateY: HC.pick(yAxis && yAxis.top, chart.plotTop)
+				});
+			}
+  
+			series.translate();
+  
+			if (series.type !== 'column') {
+				series.customClipPath = series.chart.renderer.clipRect({
+					x: 0,
+					y: 0,
+					width: 0,
+					height: chart.plotTop + chart.plotHeight
+				});
+			}
+  
+			series.render();
+			
+			if (series.type !== 'column') {
+				series.markerGroup.clip(series.customClipPath);
+				series.group.clip(series.customClipPath);
+			}
+			
+			if (wasDirty) { // #3945 recalculate the kdtree when dirty
+				delete this.kdTree; // #3868 recalculate the kdtree with dirty data
+			}
+		});
+
+		HC.wrap(HC.Chart.prototype, 'redraw', function (proceed) {
+			
+			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+			
+			var chart = this,
+				serie = this.series,
+				duration = HC.getOptions().plotOptions.line.animation.duration;
+			
+			each(serie, function (s, i) {
+				if (s.type !== 'column') {
+					s.customClipPath.animate({
+						width: chart.plotLeft + chart.plotWidth
+					}, {
+						duration: duration
+					});
+				}
+			});
+		});
 
 		HC.wrap(obj, proto, function (proceed) {
 			var events,
@@ -313,7 +403,7 @@
 					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
 					elementPoint = this.points;
 					
-					if(this.markerGroup) {
+					if (this.markerGroup) {
 						elementPoint.push(this.markerGroup);
 					}
 
