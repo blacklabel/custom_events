@@ -142,7 +142,7 @@
 
 	//	custom event body
 	var customEvent = HC.Chart.prototype.customEvent = function (obj, proto) {
-		customEvent.add = function (elem, events) {
+		customEvent.add = function (elem, events, elemObj, chart) {
 
 			for (var key in events) {
 				if (key) {
@@ -152,12 +152,23 @@
 							if ((!elem[val] || elem[val] === UNDEFINED) && elem.element) {
 
 								HC.addEvent(elem.element, val, function (e) {
-								
-									if (obj.textStr) { //	labels
-										obj.value = obj.textStr;
+		
+									if (elemObj.textStr) { //	labels
+										elemObj.value = elemObj.textStr;
 									}
-									
-									events[val].call(obj, e);
+
+									if(chart) { //	#53, #54
+										var normalizedEvent = chart.pointer.normalize(e),
+											series = chart.series,
+											len = series.length,
+											i;
+
+										for(i = 0; i < len; i++) {
+											elemObj = series[i].searchPoint(normalizedEvent, true);
+										};
+									}
+
+									events[val].call(elemObj, e);
 
 									return false;
 								});
@@ -301,6 +312,11 @@
 					element = this.group;
 					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
 					elementPoint = this.points;
+					
+					if(this.markerGroup) {
+						elementPoint.push(this.markerGroup);
+					}
+
 					break;
 				case 'renderItem':
 					events = this.options.itemEvents;
@@ -321,7 +337,7 @@
 						var elemPoint = HC.pick(elementPoint[j].graphic, elementPoint[j]);
 
 						if (elemPoint && elemPoint !== UNDEFINED) {
-							customEvent.add(elemPoint, eventsPoint, elementPoint[j]);
+							customEvent.add(elemPoint, eventsPoint, elementPoint[j], this.chart);
 						}
 					}
 				}
