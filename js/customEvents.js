@@ -1,12 +1,14 @@
 /**
-* Custom events v1.2.6 (2016-06-29)
+* Custom events v1.3.0 (2016-06-30)
 *
 * (c) 2012-2016 Black Label
 *
 * License: Creative Commons Attribution (CC)
 */
 
-/* global Highcharts module:true */
+/* global Highcharts setTimeout clearTimeout module:true */
+/* eslint no-loop-func: 0 */
+
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
 		module.exports = factory;
@@ -19,7 +21,13 @@
 	'use strict';
 
 	var UNDEFINED,
+		DBLCLICK = 'dblclick',
+		COLUMN = 'column',
+		TOUCHSTART = 'touchstart',
+		CLICK = 'click',
 		each = HC.each,
+		pick = HC.pick,
+		wrap = HC.wrap,
 		protoTick = HC.Tick.prototype,
 		protoAxis = HC.Axis.prototype,
 		protoChart = HC.Chart.prototype,
@@ -38,12 +46,12 @@
 
 	function noop() { return false; }
 
-	//	Highcharts functions
+	//  Highcharts functions
 	function isArray(obj) {
 		return Object.prototype.toString.call(obj) === '[object Array]';
 	}
 
-	//	reanimate
+	//  reanimate
 	var reanimate = HC.Chart.prototype.reAnimate = function () {
 		
 		var chart = this;
@@ -97,7 +105,7 @@
 		return false;
 	};
 
-	//	reseting all events, fired by Highcharts
+	//  reseting all events, fired by Highcharts
 	HC.Chart.prototype.callbacks.push(function (chart) {
 		var resetAxisEvents = chart.customEvent.resetAxisEvents,
 			forExport = chart.renderer.forExport,
@@ -105,16 +113,16 @@
 			serLen = series.length,
 			xAxis = chart.xAxis,
 			yAxis = chart.yAxis,
-			i = 0;
+			i;
 
-		if (forExport) {	//	skip custom events when chart is exported
+		if (forExport) {    //  skip custom events when chart is exported
 			return false;
 		}
 
 		resetAxisEvents(xAxis, 'xAxis', chart);
 		resetAxisEvents(yAxis, 'yAxis', chart);
 
-		for (; i < serLen; i++) {
+		for (i = 0; i < serLen; i++) {
 			series[i].update({
 				animation: {
 					enabled: true
@@ -140,7 +148,7 @@
 		return false;
 	});
 
-	//	custom event body
+	//  custom event body
 	var customEvent = HC.Chart.prototype.customEvent = function (obj, proto) {
 		customEvent.add = function (elem, events, elemObj, chart) {
 
@@ -151,13 +159,41 @@
 
 							if ((!elem[val] || elem[val] === UNDEFINED) && elem.element) {
 
+								if ((val === DBLCLICK)) { //  #30
+
+									var tapped = false;
+
+									HC.addEvent(elem.element, TOUCHSTART, function (e) {
+
+										if (!tapped) {
+
+											tapped = setTimeout(function () {
+												tapped = null;
+												events[CLICK].call(elemObj, e); //	call single click action
+											}, 300);
+
+										} else {
+											clearTimeout(tapped);
+
+											tapped = null;
+
+											events[val].call(elemObj, e);
+
+										}
+
+										return false;
+									});
+
+								}
+
 								HC.addEvent(elem.element, val, function (e) {
-		
-									if (elemObj.textStr) { //	labels
+			
+									if (elemObj && elemObj.textStr) { //   labels
 										elemObj.value = elemObj.textStr;
 									}
 
-									if (chart) { //	#53, #54
+									if (chart) { // #53, #54
+
 										var normalizedEvent = chart.pointer.normalize(e),
 											series = chart.series,
 											len = series.length,
@@ -187,12 +223,10 @@
 		HC.Chart.prototype.customEvent.resetAxisEvents = function (axis, type, chart) {
 			var axisLength = axis.length,
 				userOptions = chart.userOptions,
-				i = 0,
-				j = 0,
 				redraw = false,
-				plotBandsLength, plotLinesLength, plotLines, plotBands, cAxis, t;
+				plotBandsLength, plotLinesLength, plotLines, plotBands, cAxis, t, i, j;
 
-			for (; i < axisLength; i++) {
+			for (i = 0; i < axisLength; i++) {
 
 				if (type) {
 					cAxis = HC.splat(userOptions[type]);
@@ -237,14 +271,14 @@
 			}
 		};
 
-		//	#50
-		HC.wrap(HC.Chart.prototype, 'renderSeries', function (proceed) {
+		//  #50
+		wrap(HC.Chart.prototype, 'renderSeries', function () {
 			var series = this.series,
 				chart = this;
 			
 			each(series, function (serie) {
 				serie.translate();
-				if (serie.type !== 'column') {
+				if (serie.type !== COLUMN) {
 					serie.customClipPath = serie.chart.renderer.clipRect({
 						x: 0,
 						y: 0,
@@ -254,7 +288,7 @@
 				}
 				serie.render();
 				
-				if (serie.type !== 'column') {
+				if (serie.type !== COLUMN) {
 					serie.markerGroup.clip(serie.customClipPath);
 					serie.group.clip(serie.customClipPath);
 				}
@@ -262,11 +296,10 @@
 			});
 		});
   
-		HC.wrap(HC.Series.prototype, 'redraw', function (proceed) {
+		wrap(HC.Series.prototype, 'redraw', function () {
 			var series = this,
 				chart = series.chart,
-				wasDirtyData = series.isDirtyData,
-				wasDirty = series.isDirty,
+				wasDirty = series.isDirty || series.isDirtyData,
 				group = series.group,
 				xAxis = series.xAxis,
 				yAxis = series.yAxis;
@@ -281,14 +314,14 @@
 				}
   
 				group.animate({
-					translateX: HC.pick(xAxis && xAxis.left, chart.plotLeft),
-					translateY: HC.pick(yAxis && yAxis.top, chart.plotTop)
+					translateX: pick(xAxis && xAxis.left, chart.plotLeft),
+					translateY: pick(yAxis && yAxis.top, chart.plotTop)
 				});
 			}
   
 			series.translate();
   
-			if (series.type !== 'column') {
+			if (series.type !== COLUMN) {
 				series.customClipPath = series.chart.renderer.clipRect({
 					x: 0,
 					y: 0,
@@ -299,7 +332,7 @@
   
 			series.render();
 			
-			if (series.type !== 'column') {
+			if (series.type !== COLUMN) {
 				series.markerGroup.clip(series.customClipPath);
 				series.group.clip(series.customClipPath);
 			}
@@ -309,7 +342,7 @@
 			}
 		});
 
-		HC.wrap(HC.Chart.prototype, 'redraw', function (proceed) {
+		wrap(HC.Chart.prototype, 'redraw', function (proceed) {
 			
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 			
@@ -317,8 +350,8 @@
 				serie = this.series,
 				duration = HC.getOptions().plotOptions.line.animation.duration;
 			
-			each(serie, function (s, i) {
-				if (s.type !== 'column') {
+			each(serie, function (s) {
+				if (s.type !== COLUMN) {
 					s.customClipPath.animate({
 						width: chart.plotLeft + chart.plotWidth
 					}, {
@@ -328,7 +361,7 @@
 			});
 		});
 
-		HC.wrap(obj, proto, function (proceed) {
+		wrap(obj, proto, function (proceed) {
 			var events,
 				element,
 				eventsPoint,
@@ -339,10 +372,10 @@
 				i,
 				j;
 
-			//	call default actions
+			//  call default actions
 			var ob = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
-			//	switch on object
+			//  switch on object
 			switch (proto) {
 				case 'addLabel':
 					parent = this.parent;
@@ -350,7 +383,7 @@
 					elementPoint = [this.label];
 
 					if (parent) {
-						var step = this; //	current label
+						var step = this; // current label
 
 						while (step) {
 							if (isArray(step)) {
@@ -398,14 +431,10 @@
 					break;
 				case 'drawPoints':
 					op = this.options;
-					events = op.customEvents ? op.customEvents.series : op;
+					events = op.events;
 					element = this.group;
 					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
-					elementPoint = this.points;
-					
-					if (this.markerGroup) {
-						elementPoint.push(this.markerGroup);
-					}
+					elementPoint = [this.markerGroup];
 
 					break;
 				case 'renderItem':
@@ -413,17 +442,18 @@
 					element = this.group;
 					break;
 				default:
+					events = element = UNDEFINED;
 					return false;
 			}
 
 
-			if (events || eventsPoint) {
-
+			if ((events !== UNDEFINED) || (eventsPoint !== UNDEFINED)) {
+				
 				if (eventsPoint) {
-					len = elementPoint.length;
-					j = 0;
 
-					for (; j < len; j++) {
+					len = elementPoint.length;
+
+					for (j = 0; j < len; j++) {
 						var elemPoint = HC.pick(elementPoint[j].graphic, elementPoint[j]);
 
 						if (elemPoint && elemPoint !== UNDEFINED) {
@@ -438,46 +468,48 @@
 			return ob;
 		});
 	};
-	//	labels
+	//  labels
 	customEvent(protoTick, 'addLabel');
 
-	//	axis / title
+	//  axis / title
 	customEvent(protoAxis, 'render');
 
-	//	series events & point events
+	//  series events & point events
 	customEvent(protoSeries, 'drawPoints');
 
-	//	datalabels events
+	//  datalabels events
 	customEvent(protoSeries, 'drawDataLabels');
 
-	//	title events
+	//  title events
 	customEvent(protoChart, 'setTitle');
 
-	//	legend items
+	//  legend items
 	customEvent(protoLegend, 'renderItem');
 
-	//	plotbands + plotlines
+	//  plotbands + plotlines
 	if (protoPlotBands) {
 		customEvent(protoPlotBands, 'render');
 	}
 
-	//	bubble charts
+	//  bubble charts
 	if (protoBubble) {
 		customEvent(protoBubble, 'drawPoints');
 		customEvent(protoBubble, 'drawDataLabels');
 	}
 
-	//	column chart
+	//  column chart
 	if (protoColumn) {
 		customEvent(protoColumn, 'drawDataLabels');
 		customEvent(protoColumn, 'drawPoints');
 	}
 
+	//  pie chart
 	if (protoPie) {
 		customEvent(protoPie, 'drawDataLabels');
 		customEvent(protoPie, 'drawPoints');
 	}
 
+	//  flags
 	if (protoFlags) {
 		customEvent(protoFlags, 'drawDataLabels');
 		customEvent(protoFlags, 'drawPoints');
