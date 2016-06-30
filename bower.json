@@ -4,7 +4,7 @@
   "homepage": "http://blacklabel.github.io/custom_events/",
   "authors": [
     "Sebastian Bochan <sebastian@blacklabel.pl>",
-    "Paweł Fus <pawel@blacklabel.pl>"
+    "Paweł Fus <pawel@blacklabel.pl>",
     "Kacper Madej <kacper@blacklabel.pl>"
   ],
   "description": "Plugin that allows add extra events, like double / right click on each chart element, for Highcharts.",
