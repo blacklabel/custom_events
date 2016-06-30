@@ -43,7 +43,7 @@ events: {
 ### Available events
 
 * click
-* double click
+* double click (including mobile devices)
 * right click (context menu)
 * mouse over
 * mouse out
@@ -62,3 +62,4 @@ events: {
 * series
 * legend
 * datalabels
+* flags
