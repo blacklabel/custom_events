@@ -23,9 +23,6 @@
 	var UNDEFINED,
 		DBLCLICK = 'dblclick',
 		COLUMN = 'column',
-		BAR = 'bar',
-		PIE = 'pie',
-		COLUMNRANGE = 'columnrange',
 		TOUCHSTART = 'touchstart',
 		CLICK = 'click',
 		each = HC.each,
@@ -40,12 +37,18 @@
 		protoBar = HC.seriesTypes.bar && HC.seriesTypes.bar.prototype,
 		protoPie = HC.seriesTypes.pie && HC.seriesTypes.pie.prototype,
 		protoBubble = HC.seriesTypes.bubble && HC.seriesTypes.bubble.prototype,
+		protoColumnRange = HC.seriesTypes.columnrange && HC.seriesTypes.columnrange.prototype,
+		protoAreaRange = HC.seriesTypes.arearange && HC.seriesTypes.arearange.prototype,
+		protoAreaSplineRange = HC.seriesTypes.areasplinerange && HC.seriesTypes.areasplinerange.prototype,
+		protoErrorbar = HC.seriesTypes.errorbar && HC.seriesTypes.errorbar.prototype,
+		protoBoxplot = HC.seriesTypes.boxplot && HC.seriesTypes.boxplot.prototype,
 		protoPlotBands = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
 		protoFlags = HC.seriesTypes.flags && HC.seriesTypes.flags.prototype,
 		seriesAnimate = protoSeries.animate,
 		columnAnimate = protoColumn.animate,
 		barAnimate = protoBar.animate,
-		pieAnimate = protoPie.animate;
+		pieAnimate = protoPie.animate,
+		defaultOptions = HC.getOptions();
 
 	function noop() { return false; }
 
@@ -196,7 +199,7 @@
 										elemObj.value = elemObj.textStr;
 									}
 
-									if (series && series.type !== PIE && series.type !== COLUMN && series.type !== BAR) { // #53, #54
+									if (series && defaultOptions[series.type] && defaultOptions[series.type].marker) {
 
 										var chart = series.chart, 
 											normalizedEvent = chart.pointer.normalize(e),
@@ -438,11 +441,11 @@
 					events = op.events;
 					element = this.group;
 					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
-					
-					if(type === COLUMN || type === PIE || type === BAR) {
-						elementPoint = this.points;
-					} else {
+
+					if (defaultOptions[type] && defaultOptions[type].marker) {
 						elementPoint = [this.markerGroup];
+					} else {
+						elementPoint = this.points;
 					}
 
 					break;
@@ -516,6 +519,36 @@
 	if (protoPie) {
 		customEvent(protoPie, 'drawDataLabels');
 		customEvent(protoPie, 'drawPoints');
+	}
+
+	//	columnrange
+	if (protoColumnRange) {
+		customEvent(protoColumnRange, 'drawDataLabels');
+		customEvent(protoColumnRange, 'drawPoints');
+	}
+
+	//	arearange
+	if (protoAreaRange) {
+		customEvent(protoAreaRange, 'drawDataLabels');
+		customEvent(protoAreaRange, 'drawPoints');
+	}
+
+	//	areasplinerange
+	if (protoAreaSplineRange) {
+		customEvent(protoAreaSplineRange, 'drawDataLabels');
+		customEvent(protoAreaSplineRange, 'drawPoints');
+	}
+
+	//	errorbar
+	if (protoErrorbar) {
+		customEvent(protoErrorbar, 'drawDataLabels');
+		customEvent(protoErrorbar, 'drawPoints');
+	}
+
+	//	boxplot
+	if (protoBoxplot) {
+		customEvent(protoBoxplot, 'drawDataLabels');
+		customEvent(protoBoxplot, 'drawPoints');
 	}
 
 	//  flags
