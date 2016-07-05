@@ -48,7 +48,7 @@
 		columnAnimate = protoColumn.animate,
 		barAnimate = protoBar.animate,
 		pieAnimate = protoPie.animate,
-		defaultOptions = HC.getOptions();
+		defaultOptions = HC.getOptions().plotOptions;
 
 	function noop() { return false; }
 
