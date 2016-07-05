@@ -23,6 +23,9 @@
 	var UNDEFINED,
 		DBLCLICK = 'dblclick',
 		COLUMN = 'column',
+		BAR = 'bar',
+		PIE = 'pie',
+		COLUMNRANGE = 'columnrange',
 		TOUCHSTART = 'touchstart',
 		CLICK = 'click',
 		each = HC.each,
@@ -150,10 +153,11 @@
 
 	//  custom event body
 	var customEvent = HC.Chart.prototype.customEvent = function (obj, proto) {
-		customEvent.add = function (elem, events, elemObj, chart) {
+		customEvent.add = function (elem, events, elemObj, series) {
 
 			for (var key in events) {
 				if (key) {
+
 					(function (val) {
 						if (events.hasOwnProperty(val) && elem) {
 
@@ -192,16 +196,14 @@
 										elemObj.value = elemObj.textStr;
 									}
 
-									if (chart) { // #53, #54
+									if (series && series.type !== PIE && series.type !== COLUMN && series.type !== BAR) { // #53, #54
 
-										var normalizedEvent = chart.pointer.normalize(e),
-											series = chart.series,
-											len = series.length,
+										var chart = series.chart, 
+											normalizedEvent = chart.pointer.normalize(e),
 											i;
 
-										for (i = 0; i < len; i++) {
-											elemObj = series[i].searchPoint(normalizedEvent, true);
-										}
+										elemObj = series.searchPoint(normalizedEvent, true);
+										
 									}
 
 									events[val].call(elemObj, e);
@@ -367,6 +369,7 @@
 				eventsPoint,
 				elementPoint,
 				parent,
+				type,
 				op,
 				len,
 				i,
@@ -431,10 +434,16 @@
 					break;
 				case 'drawPoints':
 					op = this.options;
+					type = this.type;
 					events = op.events;
 					element = this.group;
 					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
-					elementPoint = [this.markerGroup];
+					
+					if(type === COLUMN || type === PIE || type === BAR) {
+						elementPoint = this.points;
+					} else {
+						elementPoint = [this.markerGroup];
+					}
 
 					break;
 				case 'renderItem':
@@ -456,8 +465,8 @@
 					for (j = 0; j < len; j++) {
 						var elemPoint = HC.pick(elementPoint[j].graphic, elementPoint[j]);
 
-						if (elemPoint && elemPoint !== UNDEFINED) {
-							customEvent.add(elemPoint, eventsPoint, elementPoint[j], this.chart);
+						if (elemPoint && elemPoint !== UNDEFINED) { 
+							customEvent.add(elemPoint, eventsPoint, elementPoint[j], this);
 						}
 					}
 				}
