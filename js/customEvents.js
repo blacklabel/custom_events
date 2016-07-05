@@ -1,5 +1,5 @@
 /**
-* Custom events v1.3.1 (2016-06-30)
+* Custom events v1.4.0 (2016-07-05)
 *
 * (c) 2012-2016 Black Label
 *
@@ -37,12 +37,18 @@
 		protoBar = HC.seriesTypes.bar && HC.seriesTypes.bar.prototype,
 		protoPie = HC.seriesTypes.pie && HC.seriesTypes.pie.prototype,
 		protoBubble = HC.seriesTypes.bubble && HC.seriesTypes.bubble.prototype,
+		protoColumnRange = HC.seriesTypes.columnrange && HC.seriesTypes.columnrange.prototype,
+		protoAreaRange = HC.seriesTypes.arearange && HC.seriesTypes.arearange.prototype,
+		protoAreaSplineRange = HC.seriesTypes.areasplinerange && HC.seriesTypes.areasplinerange.prototype,
+		protoErrorbar = HC.seriesTypes.errorbar && HC.seriesTypes.errorbar.prototype,
+		protoBoxplot = HC.seriesTypes.boxplot && HC.seriesTypes.boxplot.prototype,
 		protoPlotBands = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
 		protoFlags = HC.seriesTypes.flags && HC.seriesTypes.flags.prototype,
 		seriesAnimate = protoSeries.animate,
 		columnAnimate = protoColumn.animate,
 		barAnimate = protoBar.animate,
-		pieAnimate = protoPie.animate;
+		pieAnimate = protoPie.animate,
+		defaultOptions = HC.getOptions().plotOptions;
 
 	function noop() { return false; }
 
@@ -150,10 +156,11 @@
 
 	//  custom event body
 	var customEvent = HC.Chart.prototype.customEvent = function (obj, proto) {
-		customEvent.add = function (elem, events, elemObj, chart) {
+		customEvent.add = function (elem, events, elemObj, series) {
 
 			for (var key in events) {
 				if (key) {
+
 					(function (val) {
 						if (events.hasOwnProperty(val) && elem) {
 
@@ -192,16 +199,14 @@
 										elemObj.value = elemObj.textStr;
 									}
 
-									if (chart) { // #53, #54
+									if (series && defaultOptions[series.type] && defaultOptions[series.type].marker) {
 
-										var normalizedEvent = chart.pointer.normalize(e),
-											series = chart.series,
-											len = series.length,
+										var chart = series.chart, 
+											normalizedEvent = chart.pointer.normalize(e),
 											i;
 
-										for (i = 0; i < len; i++) {
-											elemObj = series[i].searchPoint(normalizedEvent, true);
-										}
+										elemObj = series.searchPoint(normalizedEvent, true);
+										
 									}
 
 									events[val].call(elemObj, e);
@@ -367,6 +372,7 @@
 				eventsPoint,
 				elementPoint,
 				parent,
+				type,
 				op,
 				len,
 				i,
@@ -431,10 +437,16 @@
 					break;
 				case 'drawPoints':
 					op = this.options;
+					type = this.type;
 					events = op.events;
 					element = this.group;
 					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
-					elementPoint = [this.markerGroup];
+
+					if (defaultOptions[type] && defaultOptions[type].marker) {
+						elementPoint = [this.markerGroup];
+					} else {
+						elementPoint = this.points;
+					}
 
 					break;
 				case 'renderItem':
@@ -456,8 +468,8 @@
 					for (j = 0; j < len; j++) {
 						var elemPoint = HC.pick(elementPoint[j].graphic, elementPoint[j]);
 
-						if (elemPoint && elemPoint !== UNDEFINED) {
-							customEvent.add(elemPoint, eventsPoint, elementPoint[j], this.chart);
+						if (elemPoint && elemPoint !== UNDEFINED) { 
+							customEvent.add(elemPoint, eventsPoint, elementPoint[j], this);
 						}
 					}
 				}
@@ -507,6 +519,36 @@
 	if (protoPie) {
 		customEvent(protoPie, 'drawDataLabels');
 		customEvent(protoPie, 'drawPoints');
+	}
+
+	//	columnrange
+	if (protoColumnRange) {
+		customEvent(protoColumnRange, 'drawDataLabels');
+		customEvent(protoColumnRange, 'drawPoints');
+	}
+
+	//	arearange
+	if (protoAreaRange) {
+		customEvent(protoAreaRange, 'drawDataLabels');
+		customEvent(protoAreaRange, 'drawPoints');
+	}
+
+	//	areasplinerange
+	if (protoAreaSplineRange) {
+		customEvent(protoAreaSplineRange, 'drawDataLabels');
+		customEvent(protoAreaSplineRange, 'drawPoints');
+	}
+
+	//	errorbar
+	if (protoErrorbar) {
+		customEvent(protoErrorbar, 'drawDataLabels');
+		customEvent(protoErrorbar, 'drawPoints');
+	}
+
+	//	boxplot
+	if (protoBoxplot) {
+		customEvent(protoBoxplot, 'drawDataLabels');
+		customEvent(protoBoxplot, 'drawPoints');
 	}
 
 	//  flags
