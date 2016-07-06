@@ -18,6 +18,11 @@ var Highcharts = require('highcharts'),
     HighchartsCustomEvents = require('customEvents')(Highcharts);
 ```
 
+* For BOWER users:
+
+```
+bower install highcharts-custom-events
+```
 
 ### Code
 
