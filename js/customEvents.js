@@ -371,6 +371,8 @@
 				element,
 				eventsPoint,
 				elementPoint,
+				eventsSubtitle,
+				elementSubtitle,
 				parent,
 				type,
 				op,
@@ -409,8 +411,10 @@
 
 					break;
 				case 'setTitle':
-					events = this.options.title.events;
+					events = this.options.title && this.options.title.events;
 					element = this.title;
+					eventsSubtitle = this.options.subtitle && this.options.subtitle.events;
+					elementSubtitle = this.subtitle;
 					break;
 				case 'drawDataLabels':
 					events = this.dataLabelsGroup ? this.options.dataLabels.events : null;
@@ -472,6 +476,10 @@
 							customEvent.add(elemPoint, eventsPoint, elementPoint[j], this);
 						}
 					}
+				}
+
+				if (eventsSubtitle) {
+					customEvent.add(elementSubtitle, eventsSubtitle, this);
 				}
 
 				customEvent.add(element, events, this);
