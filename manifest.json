@@ -1,6 +1,6 @@
 {
         "name": "Custom-Events",
-        "version": "1.4.0",
+        "version": "1.4.1",
         "title": "Custom-Events",
         "author": {
                 "name": "Black Label",
@@ -20,6 +20,9 @@
         ],
         "description": "Plugin that allows add extra events, like double / right click on each chart element, for Highcharts.",
         "keywords": [
+                "highcharts",
+                "highstock",
+                "highmaps",
                 "events"
         ],
         "maintainers": [
