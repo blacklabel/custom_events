@@ -44,10 +44,10 @@
 		protoBoxplot = HC.seriesTypes.boxplot && HC.seriesTypes.boxplot.prototype,
 		protoPlotBands = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
 		protoFlags = HC.seriesTypes.flags && HC.seriesTypes.flags.prototype,
-		seriesAnimate = protoSeries.animate,
-		columnAnimate = protoColumn.animate,
-		barAnimate = protoBar.animate,
-		pieAnimate = protoPie.animate,
+		seriesAnimate = protoSeries && protoSeries.animate,
+		columnAnimate = protoColumn && protoColumn.animate,
+		barAnimate = protoBar && protoBar.animate,
+		pieAnimate = protoPie && protoPie.animate,
 		defaultOptions = HC.getOptions().plotOptions;
 
 	function noop() { return false; }
