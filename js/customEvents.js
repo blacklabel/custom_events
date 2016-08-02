@@ -1,5 +1,5 @@
 /**
-* Custom events v1.4.0 (2016-07-05)
+* Custom events v1.4.1 (2016-07-05)
 *
 * (c) 2012-2016 Black Label
 *
@@ -23,6 +23,7 @@
 	var UNDEFINED,
 		DBLCLICK = 'dblclick',
 		COLUMN = 'column',
+		MAP = 'map',
 		TOUCHSTART = 'touchstart',
 		CLICK = 'click',
 		each = HC.each,
@@ -44,10 +45,10 @@
 		protoBoxplot = HC.seriesTypes.boxplot && HC.seriesTypes.boxplot.prototype,
 		protoPlotBands = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
 		protoFlags = HC.seriesTypes.flags && HC.seriesTypes.flags.prototype,
-		seriesAnimate = protoSeries.animate,
-		columnAnimate = protoColumn.animate,
-		barAnimate = protoBar.animate,
-		pieAnimate = protoPie.animate,
+		seriesAnimate = protoSeries && protoSeries.animate,
+		columnAnimate = protoColumn && protoColumn.animate,
+		barAnimate = protoBar && protoBar.animate,
+		pieAnimate = protoPie && protoPie.animate,
 		defaultOptions = HC.getOptions().plotOptions;
 
 	function noop() { return false; }
@@ -150,7 +151,6 @@
 
 		chart.xAxis[0].isDirty = true;
 		reanimate.call(chart);
-
 		return false;
 	});
 
@@ -279,11 +279,15 @@
 		//  #50
 		wrap(HC.Chart.prototype, 'renderSeries', function () {
 			var series = this.series,
-				chart = this;
+				chart = this,
+				type;
 			
 			each(series, function (serie) {
 				serie.translate();
-				if (serie.type !== COLUMN) {
+
+				type = (serie.type !== COLUMN) && (serie.type !== MAP);
+
+				if (type) {
 					serie.customClipPath = serie.chart.renderer.clipRect({
 						x: 0,
 						y: 0,
@@ -293,7 +297,7 @@
 				}
 				serie.render();
 				
-				if (serie.type !== COLUMN) {
+				if (type) {
 					serie.markerGroup.clip(serie.customClipPath);
 					serie.group.clip(serie.customClipPath);
 				}
@@ -307,7 +311,8 @@
 				wasDirty = series.isDirty || series.isDirtyData,
 				group = series.group,
 				xAxis = series.xAxis,
-				yAxis = series.yAxis;
+				yAxis = series.yAxis,
+				type = (series.type !== COLUMN) && (series.type !== MAP);
 			
 			// reposition on resize
 			if (group) {
@@ -326,7 +331,7 @@
   
 			series.translate();
   
-			if (series.type !== COLUMN) {
+			if (type) {
 				series.customClipPath = series.chart.renderer.clipRect({
 					x: 0,
 					y: 0,
@@ -337,7 +342,7 @@
   
 			series.render();
 			
-			if (series.type !== COLUMN) {
+			if (type) {
 				series.markerGroup.clip(series.customClipPath);
 				series.group.clip(series.customClipPath);
 			}
@@ -353,10 +358,13 @@
 			
 			var chart = this,
 				serie = this.series,
-				duration = HC.getOptions().plotOptions.line.animation.duration;
+				duration = HC.getOptions().plotOptions.line.animation.duration,
+				type;
 			
 			each(serie, function (s) {
-				if (s.type !== COLUMN) {
+				type = s.type !== COLUMN && s.type !== MAP;
+
+				if (type) {
 					s.customClipPath.animate({
 						width: chart.plotLeft + chart.plotWidth
 					}, {
@@ -371,6 +379,8 @@
 				element,
 				eventsPoint,
 				elementPoint,
+				eventsSubtitle,
+				elementSubtitle,
 				parent,
 				type,
 				op,
@@ -409,8 +419,10 @@
 
 					break;
 				case 'setTitle':
-					events = this.options.title.events;
+					events = this.options.title && this.options.title.events;
 					element = this.title;
+					eventsSubtitle = this.options.subtitle && this.options.subtitle.events;
+					elementSubtitle = this.subtitle;
 					break;
 				case 'drawDataLabels':
 					events = this.dataLabelsGroup ? this.options.dataLabels.events : null;
@@ -472,6 +484,10 @@
 							customEvent.add(elemPoint, eventsPoint, elementPoint[j], this);
 						}
 					}
+				}
+
+				if (eventsSubtitle) {
+					customEvent.add(elementSubtitle, eventsSubtitle, this);
 				}
 
 				customEvent.add(element, events, this);
