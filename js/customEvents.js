@@ -23,6 +23,7 @@
 	var UNDEFINED,
 		DBLCLICK = 'dblclick',
 		COLUMN = 'column',
+		MAP = 'map',
 		TOUCHSTART = 'touchstart',
 		CLICK = 'click',
 		each = HC.each,
@@ -150,7 +151,6 @@
 
 		chart.xAxis[0].isDirty = true;
 		reanimate.call(chart);
-
 		return false;
 	});
 
@@ -279,11 +279,15 @@
 		//  #50
 		wrap(HC.Chart.prototype, 'renderSeries', function () {
 			var series = this.series,
-				chart = this;
+				chart = this,
+				type;
 			
 			each(series, function (serie) {
 				serie.translate();
-				if (serie.type !== COLUMN) {
+
+				type = (serie.type !== COLUMN) && (serie.type !== MAP);
+
+				if (type) {
 					serie.customClipPath = serie.chart.renderer.clipRect({
 						x: 0,
 						y: 0,
@@ -293,7 +297,7 @@
 				}
 				serie.render();
 				
-				if (serie.type !== COLUMN) {
+				if (type) {
 					serie.markerGroup.clip(serie.customClipPath);
 					serie.group.clip(serie.customClipPath);
 				}
@@ -307,7 +311,8 @@
 				wasDirty = series.isDirty || series.isDirtyData,
 				group = series.group,
 				xAxis = series.xAxis,
-				yAxis = series.yAxis;
+				yAxis = series.yAxis,
+				type = (series.type !== COLUMN) && (series.type !== MAP);
 			
 			// reposition on resize
 			if (group) {
@@ -326,7 +331,7 @@
   
 			series.translate();
   
-			if (series.type !== COLUMN) {
+			if (type) {
 				series.customClipPath = series.chart.renderer.clipRect({
 					x: 0,
 					y: 0,
@@ -337,7 +342,7 @@
   
 			series.render();
 			
-			if (series.type !== COLUMN) {
+			if (type) {
 				series.markerGroup.clip(series.customClipPath);
 				series.group.clip(series.customClipPath);
 			}
@@ -353,10 +358,13 @@
 			
 			var chart = this,
 				serie = this.series,
-				duration = HC.getOptions().plotOptions.line.animation.duration;
+				duration = HC.getOptions().plotOptions.line.animation.duration,
+				type;
 			
 			each(serie, function (s) {
-				if (s.type !== COLUMN) {
+				type = s.type !== COLUMN && s.type !== MAP;
+
+				if (type) {
 					s.customClipPath.animate({
 						width: chart.plotLeft + chart.plotWidth
 					}, {
