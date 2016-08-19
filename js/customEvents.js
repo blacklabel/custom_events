@@ -1,5 +1,5 @@
 /**
-* Custom events v1.4.1 (2016-07-05)
+* Custom events v1.4.2 (2016-08-19)
 *
 * (c) 2012-2016 Black Label
 *
@@ -278,14 +278,15 @@
 
 		//  #50
 		wrap(HC.Chart.prototype, 'renderSeries', function () {
-			var series = this.series,
-				chart = this,
+			var chart = this,
+				series = chart.series,
+				forExport = chart.renderer.forExport,
 				type;
 			
 			each(series, function (serie) {
 				serie.translate();
 
-				type = (serie.type !== COLUMN) && (serie.type !== MAP);
+				type = (serie.type !== COLUMN) && (serie.type !== MAP) && (forExport === UNDEFINED); // #51
 
 				if (type) {
 					serie.customClipPath = serie.chart.renderer.clipRect({
