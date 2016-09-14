@@ -14,8 +14,8 @@ Go to project page to see this module in action: [http://blacklabel.github.io/cu
 
 * For NPM users:
 ```
-var Highcharts = require('highcharts'),
-    HighchartsCustomEvents = require('customEvents')(Highcharts);
+var Highcharts = require('highcharts/highstock');
+require('indicators')(Highcharts);
 ```
 
 * For BOWER users:

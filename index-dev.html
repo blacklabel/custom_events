@@ -1,0 +1,821 @@
+<!doctype html>
+<html>
+<head>
+<title>Custom events - Highcharts module</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.src.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+<!--<script src="http://code.highcharts.com/maps/highmaps.js"></script>
+<script src="http://code.highcharts.com/maps/modules/data.js"></script>
+<script src="http://code.highcharts.com/maps/modules/drilldown.js"></script>
+<script src="http://code.highcharts.com/mapdata/countries/us/us-all.js"></script>-->
+
+<script src="./js/customEvents.js"></script>
+<style>
+
+    body {
+        width:100%;
+    }
+
+    .chart {
+        float:left; 
+        width: 25%;
+        margin-bottom:20px;
+    }
+
+</style>
+
+<div id="flash"><div id="report"></div></div>
+<div id="chart1" class="chart"></div>
+<div id="chart2" class="chart"></div>
+<div id="chart3" class="chart"></div>
+<div id="chart4" class="chart"></div>
+<div id="chart5" class="chart"></div>
+<div id="chart6" class="chart"></div>
+<div id="chart7" class="chart"></div>
+<div id="chart8" class="chart"></div>
+<div id="chart9" class="chart"></div>
+<div id="chart10" class="chart"></div>
+<div id="chart11" class="chart"></div>
+<div id="chart12" class="chart"></div>
+<!--<div id="chart13" class="chart"></div>-->
+<div id="chart14" class="chart"></div>
+
+<script>
+$(function () {
+    var lastUpdate = +new Date(),
+        timeout = 3000;
+
+    function reloadFlash() {
+        $("#flash").fadeIn();
+        lastUpdate = +new Date();
+        setTimeout(hideFlash, timeout);
+    }
+
+    function hideFlash() {
+        var now = +new Date();
+        if (now >= lastUpdate + timeout) {
+            $("#flash").fadeOut();
+        }
+    }
+
+    var options = {
+        chart: {
+            borderWidth: 5,
+            borderColor: '#e8eaeb',
+            borderRadius: 0,
+            backgroundColor: '#f7f7f7',
+            marginTop: 70,
+            events: {
+                load: function () {
+                    //add report div
+                },
+                click:function () {
+                    console.log('a');
+                },
+                dbclick: function() {
+                    console.log('b');
+                },
+                contextmenu: function() {
+                    console.log('c');
+                }
+            }
+        },
+        title: {
+            style: {
+                'fontSize': '1em'
+            },
+            useHTML: true,
+            align: 'left',
+            x: -5,
+            y: 8,
+            text: '<span class="chart-title"> Custom events  <span class="chart-href"> <a href="http://www.blacklabel.pl/highcharts" target="_blank"> Black Label </a> </span> <span class="chart-subtitle">plugin by </span></span>',
+            events: {
+                dblclick: function () {
+                    reloadFlash();
+                    $('#report').html('dbclick on title');
+                },
+                click: function () {
+                    reloadFlash();
+                    $('#report').html('click on title');
+                },
+                contextmenu: function () {
+                    reloadFlash();
+                    $('#report').html('context menu on title ');
+                }
+            }
+        },
+        subtitle: {
+            style: {
+                'fontSize': '1em'
+            },
+            useHTML: true,
+            align: 'left',
+            text: 'subtitle',
+            events: {
+                dblclick: function () {
+                    reloadFlash();
+                    $('#report').html('dbclick on subtitle');
+                },
+                click: function () {
+                    reloadFlash();
+                    $('#report').html('click on subtitle');
+                },
+                contextmenu: function () {
+                    reloadFlash();
+                    $('#report').html('context menu on subtitle ');
+                }
+            }
+        },
+        yAxis: [{
+            title: {
+                text: 'Values',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on yAxis title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on yAxis title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on yAxis title');
+                    }
+                }
+            },
+            plotLines: [{
+                color: '#a4c08e',
+                width: 10,
+                value: 70,
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on plotline');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on plotline');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on plotline');
+                    }
+                }
+            }],
+            plotBands: [{ // mark the weekend
+                color: '#FCFFC5',
+                from: 100,
+                to: 200,
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on plotband');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on plotband');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on plotband');
+                    }
+                }
+            }],
+            labels: {
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on yAxis label');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on yAxis label');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on yAxis label');
+                    }
+                }
+            }
+        }, {
+            opposite: true,
+            linkedTo: 0,
+            title: {
+                text: 'Values',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on yAxis2 title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on yAxis2 title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on yAxis2 title');
+                    }
+                }
+            },
+            labels: {
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on second yAxis label');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on second yAxis label');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on second yAxis');
+                    }
+                }
+            }
+        }],
+        xAxis: {
+            labels: {
+                rotation: -45,
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on xAxis label');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on xAxis label');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on xAxis label');
+                    }
+                }
+            },
+            title:{
+                text: 'xAxis title',
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on xAxis title');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on xAxis title');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on xAxis title');
+                    }
+                }
+            }
+        },
+        plotOptions: {
+            series: {
+                marker: {
+                    enabled:false
+                },
+                dataLabels: {
+                    enabled: true,
+                    events: {
+                        dblclick: function () {
+                            reloadFlash();
+                            $('#report').html('dbclick on datalabel');
+                        },
+                        click: function () {
+                            reloadFlash();
+                            $('#report').html('click on datalabel');
+                        },
+                        contextmenu: function () {
+                            reloadFlash();
+                            $('#report').html('context menu on datalabel');
+                        }
+                    }
+                },
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on serie');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on serie');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on serie');
+                    }
+                },
+                point: {
+                    events: {
+                        _dblclick: function () {
+                            reloadFlash();
+                            $('#report').html('dbclick on serie point');
+                        },
+                        click: function () {
+                            console.log(this);
+                            reloadFlash();
+                            $('#report').html('click on serie point');
+                        },
+                        _contextmenu: function () {
+                            reloadFlash();
+                            $('#report').html('context menu on serie point');
+                        }
+                    }
+                }
+            }
+        },
+        legend: {
+            itemEvents: {
+                dblclick: function () {
+                    reloadFlash();
+                    $('#report').html('dbclick on legend item');
+                },
+                click: function () {
+                    reloadFlash();
+                    $('#report').html('click on legend item');
+                },
+                contextmenu: function () {
+                    reloadFlash();
+                    $('#report').html('context menu on legend item ');
+                }
+            }
+        }
+    };
+
+    $('#chart1').highcharts(Highcharts.merge(options, {
+        series: [{
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
+        }]
+    }));
+
+    $('#chart2').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'spline',
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
+        }]
+    }));
+
+    $('#chart3').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'column',
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
+        }]
+    }));
+
+    $('#chart4').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'pie',
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
+        }]
+    }));
+
+    $('#chart5').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'area',
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
+        }]
+    }));
+
+    $('#chart6').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'columnrange',
+            data: [[10,29.9], [20,71.5], [20,106.4]]
+        }]
+    }));
+
+    $('#chart7').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'arearange',
+            data: [[10,29.9], [20,71.5], [20,106.4]]
+        }]
+    }));
+
+    $('#chart8').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'areasplinerange',
+            data: [[10,29.9], [20,71.5], [20,106.4]]
+        }]
+    }));
+
+    $('#chart9').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'errorbar',
+            data: [[10,29.9], [20,71.5], [20,106.4]]
+        }]
+    }));
+
+    $('#chart10').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'boxplot',
+            data: [[760, 801, 848, 895, 965],
+                [733, 853, 939, 980, 1080],
+                [714, 762, 817, 870, 918],
+                [724, 802, 806, 871, 950],
+                [834, 836, 864, 882, 910]]
+        }]
+    }));
+
+
+    $('#chart11').highcharts('StockChart',Highcharts.merge(options, {
+        series: [{
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
+        }]
+    }));
+
+    $('#chart12').highcharts(Highcharts.merge(options, {
+        series: [{
+            type: 'polygon',
+            data: [[153, 42], [149, 46], [149, 55], [152, 60], [159, 70], [170, 77], [180, 70],
+                [180, 60], [173, 52], [166, 45]]
+        }]
+    }));
+
+    // ======== MAPS ========= 
+
+    /*var data = Highcharts.geojson(Highcharts.maps['countries/us/us-all']),
+            // Some responsiveness
+            small = $('#chart13').width() < 400;
+
+      var flagg = false;
+
+      // Set drilldown pointers
+      $.each(data, function(i) {
+        this.drilldown = this.properties['hc-key'];
+        this.value = i; // Non-random bogus data
+      });
+
+      // Instanciate the map
+      $('#chart13').highcharts('Map', {
+        chart: {
+          events: {
+            drilldown: function(e) {
+              if (flagg) {
+                if (!e.seriesOptions) {
+                  var chart = this,
+                    mapKey = 'countries/us/' + e.point.drilldown + '-all',
+                    // Handle error, the timeout is cleared on success
+                    fail = setTimeout(function() {
+                      if (!Highcharts.maps[mapKey]) {
+                        chart.showLoading('<i class="icon-frown"></i> Failed loading ' + e.point.name);
+
+                        fail = setTimeout(function() {
+                          chart.hideLoading();
+                        }, 1000);
+                      }
+                    }, 3000);
+
+                  // Show the spinner
+                  chart.showLoading('<i class="icon-spinner icon-spin icon-3x"></i>'); // Font Awesome spinner
+
+                  // Load the drilldown map
+                  $.getScript('https://code.highcharts.com/mapdata/' + mapKey + '.js', function() {
+                    data = Highcharts.geojson(Highcharts.maps[mapKey]);
+
+                    // Set a non-random bogus value
+                    $.each(data, function(i) {
+                      this.value = i;
+                    });
+
+                    // Hide loading and add series
+                    chart.hideLoading();
+                    clearTimeout(fail);
+                    chart.addSeriesAsDrilldown(e.point, {
+                      name: e.point.name,
+                      data: data,
+                      dataLabels: {
+                        enabled: true,
+                        format: '{point.name}'
+                      }
+                    });
+                  });
+                }
+                this.setTitle(null, {
+                  text: e.point.name
+                });
+                flagg = !flagg;
+              }
+            },
+            drillup: function() {
+              this.setTitle(null, {
+                text: 'USA'
+              });
+              flagg = false;
+            }
+          }
+        },
+        title: {
+          text: 'Highcharts Map Drilldown'
+        },
+        subtitle: {
+          text: 'USA',
+          floating: true,
+          align: 'right',
+          y: 50,
+          style: {
+            fontSize: '16px'
+          }
+        },
+        legend: small ? {} : {
+          layout: 'vertical',
+          align: 'right',
+          verticalAlign: 'middle'
+        },
+        colorAxis: {
+          min: 0,
+          minColor: '#E6E7E8',
+          maxColor: '#005645'
+        },
+        mapNavigation: {
+          enabled: true,
+          buttonOptions: {
+            verticalAlign: 'bottom'
+          }
+        },
+        plotOptions: {
+          map: {
+            states: {
+              hover: {
+                color: '#EEDD66'
+              }
+            }
+          },
+          series: {
+            point: {
+              events: {
+                dblclick: function() {
+                  flagg = !flagg;
+                  this.firePointEvent('click');
+                },
+                click: function() {
+                  if (!flagg) {
+                    console.log(this);
+                  }
+                }
+              }
+            }
+          }
+        },
+        series: [{
+          data: data,
+          name: 'USA',
+          dataLabels: {
+            enabled: true,
+            format: '{point.properties.postal-code}'
+          }
+        }],
+
+        drilldown: {
+          //series: drilldownSeries,
+          activeDataLabelStyle: {
+            color: '#FFFFFF',
+            textDecoration: 'none',
+            textShadow: '0 0 3px #000000'
+          },
+          drillUpButton: {
+            relativeTo: 'spacingBox',
+            position: {
+              x: 0,
+              y: 60
+            }
+          }
+        }
+      });*/
+
+      // DRILLDOWN
+    // Create the chart
+    $('#chart14').highcharts(Highcharts.merge(options, {
+        series: [{
+            type:'column',
+            name: 'Brands',
+            colorByPoint: true,
+            data: [{
+                name: 'Microsoft Internet Explorer',
+                y: 56.33,
+                drilldown: 'Microsoft Internet Explorer'
+            }, {
+                name: 'Chrome',
+                y: 24.03,
+                drilldown: 'Chrome'
+            }, {
+                name: 'Firefox',
+                y: 10.38,
+                drilldown: 'Firefox'
+            }, {
+                name: 'Safari',
+                y: 4.77,
+                drilldown: 'Safari'
+            }, {
+                name: 'Opera',
+                y: 0.91,
+                drilldown: 'Opera'
+            }, {
+                name: 'Proprietary or Undetectable',
+                y: 0.2,
+                drilldown: null
+            }]
+        }],
+        drilldown: {
+            series: [{
+                type:'column',
+                name: 'Microsoft Internet Explorer',
+                id: 'Microsoft Internet Explorer',
+                data: [
+                    [
+                        'v11.0',
+                        24.13
+                    ],
+                    [
+                        'v8.0',
+                        17.2
+                    ],
+                    [
+                        'v9.0',
+                        8.11
+                    ],
+                    [
+                        'v10.0',
+                        5.33
+                    ],
+                    [
+                        'v6.0',
+                        1.06
+                    ],
+                    [
+                        'v7.0',
+                        0.5
+                    ]
+                ]
+            }, {
+                type:'column',
+                name: 'Chrome',
+                id: 'Chrome',
+                data: [
+                    [
+                        'v40.0',
+                        5
+                    ],
+                    [
+                        'v41.0',
+                        4.32
+                    ],
+                    [
+                        'v42.0',
+                        3.68
+                    ],
+                    [
+                        'v39.0',
+                        2.96
+                    ],
+                    [
+                        'v36.0',
+                        2.53
+                    ],
+                    [
+                        'v43.0',
+                        1.45
+                    ],
+                    [
+                        'v31.0',
+                        1.24
+                    ],
+                    [
+                        'v35.0',
+                        0.85
+                    ],
+                    [
+                        'v38.0',
+                        0.6
+                    ],
+                    [
+                        'v32.0',
+                        0.55
+                    ],
+                    [
+                        'v37.0',
+                        0.38
+                    ],
+                    [
+                        'v33.0',
+                        0.19
+                    ],
+                    [
+                        'v34.0',
+                        0.14
+                    ],
+                    [
+                        'v30.0',
+                        0.14
+                    ]
+                ]
+            }, {
+                type:'column',
+                name: 'Firefox',
+                id: 'Firefox',
+                data: [
+                    [
+                        'v35',
+                        2.76
+                    ],
+                    [
+                        'v36',
+                        2.32
+                    ],
+                    [
+                        'v37',
+                        2.31
+                    ],
+                    [
+                        'v34',
+                        1.27
+                    ],
+                    [
+                        'v38',
+                        1.02
+                    ],
+                    [
+                        'v31',
+                        0.33
+                    ],
+                    [
+                        'v33',
+                        0.22
+                    ],
+                    [
+                        'v32',
+                        0.15
+                    ]
+                ]
+            }, {
+                type:'column',
+                name: 'Safari',
+                id: 'Safari',
+                data: [
+                    [
+                        'v8.0',
+                        2.56
+                    ],
+                    [
+                        'v7.1',
+                        0.77
+                    ],
+                    [
+                        'v5.1',
+                        0.42
+                    ],
+                    [
+                        'v5.0',
+                        0.3
+                    ],
+                    [
+                        'v6.1',
+                        0.29
+                    ],
+                    [
+                        'v7.0',
+                        0.26
+                    ],
+                    [
+                        'v6.2',
+                        0.17
+                    ]
+                ]
+            }, {
+                type:'column',
+                name: 'Opera',
+                id: 'Opera',
+                data: [
+                    [
+                        'v12.x',
+                        0.34
+                    ],
+                    [
+                        'v28',
+                        0.24
+                    ],
+                    [
+                        'v27',
+                        0.17
+                    ],
+                    [
+                        'v29',
+                        0.16
+                    ]
+                ]
+            }]
+        }
+    }));
+
+});
+</script>
+</body>
+</html>
