@@ -9,6 +9,10 @@ body {
     background-color: rgb(90, 200, 90);
     display: none;
     color: black;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
 }
 #report {
     padding: 7px 0px 7px 10px;

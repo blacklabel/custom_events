@@ -45,7 +45,7 @@
 <div id="chart10" class="chart"></div>
 <div id="chart11" class="chart"></div>
 <div id="chart12" class="chart"></div>
-<!--<div id="chart13" class="chart"></div>-->
+<div id="chart13" class="chart"></div>
 <div id="chart14" class="chart"></div>
 
 <script>
@@ -68,6 +68,9 @@ $(function () {
 
     var options = {
         chart: {
+            animation:{
+                duration: 2000
+            },
             borderWidth: 5,
             borderColor: '#e8eaeb',
             borderRadius: 0,
@@ -77,13 +80,13 @@ $(function () {
                 load: function () {
                     //add report div
                 },
-                click:function () {
+                _click:function () {
                     console.log('a');
                 },
-                dbclick: function() {
+                _dbclick: function() {
                     console.log('b');
                 },
-                contextmenu: function() {
+                _contextmenu: function() {
                     console.log('c');
                 }
             }
@@ -162,6 +165,7 @@ $(function () {
                         $('#report').html('dbclick on plotline');
                     },
                     click: function () {
+                        console.log('aa');
                         reloadFlash();
                         $('#report').html('click on plotline');
                     },
@@ -181,6 +185,7 @@ $(function () {
                         $('#report').html('dbclick on plotband');
                     },
                     click: function () {
+                        console.log('bb');
                         reloadFlash();
                         $('#report').html('click on plotband');
                     },
@@ -203,6 +208,26 @@ $(function () {
                     contextmenu: function () {
                         reloadFlash();
                         $('#report').html('context menu on yAxis label');
+                    }
+                }
+            },
+            stackLabels: {
+                style: {
+                    color: 'black'
+                },
+                enabled: true,
+                events: {
+                    dblclick: function () {
+                        reloadFlash();
+                        $('#report').html('dbclick on yAxis stacklabel');
+                    },
+                    click: function () {
+                        reloadFlash();
+                        $('#report').html('click on yAxis stacklabel');
+                    },
+                    contextmenu: function () {
+                        reloadFlash();
+                        $('#report').html('context menu on yAxis stacklabel');
                     }
                 }
             }
@@ -281,6 +306,9 @@ $(function () {
         },
         plotOptions: {
             series: {
+                animation:{
+                    duration: 2000
+                },
                 marker: {
                     enabled:false
                 },
@@ -317,16 +345,16 @@ $(function () {
                 },
                 point: {
                     events: {
-                        _dblclick: function () {
+                        dblclick: function () {
                             reloadFlash();
                             $('#report').html('dbclick on serie point');
                         },
                         click: function () {
-                            console.log(this);
-                            reloadFlash();
-                            $('#report').html('click on serie point');
+                            console.log(this, 'click point');
+                            //reloadFlash();
+                            //$('#report').html('click on serie point');
                         },
-                        _contextmenu: function () {
+                        contextmenu: function () {
                             reloadFlash();
                             $('#report').html('context menu on serie point');
                         }
@@ -366,6 +394,11 @@ $(function () {
     }));
 
     $('#chart3').highcharts(Highcharts.merge(options, {
+        plotOptions: {
+            series: {
+                allowPointSelect: true
+            }
+        },
         series: [{
             type: 'column',
             data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
@@ -373,6 +406,11 @@ $(function () {
     }));
 
     $('#chart4').highcharts(Highcharts.merge(options, {
+        plotOptions: {
+            pie: {
+                allowPointSelect: true
+            }
+        },
         series: [{
             type: 'pie',
             data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
@@ -437,6 +475,30 @@ $(function () {
             type: 'polygon',
             data: [[153, 42], [149, 46], [149, 55], [152, 60], [159, 70], [170, 77], [180, 70],
                 [180, 60], [173, 52], [166, 45]]
+        }]
+    }));
+
+    $('#chart13').highcharts(Highcharts.merge(options, {
+        chart:{
+            type:'column'
+        },
+        plotOptions:{
+            series:{
+                stacking: 'normal'
+            }
+        },
+        /*yAxis: {
+            stackLabels: {
+                style: {
+                    color: 'black'
+                },
+                enabled: true
+            }
+        },*/
+        series: [{
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
+        },{
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
         }]
     }));
 
