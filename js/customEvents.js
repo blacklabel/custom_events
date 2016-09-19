@@ -1,5 +1,5 @@
 /**
-* Custom events v1.4.2 (2016-08-19)
+* Custom events v2.0.0 (2016-09-19)
 *
 * (c) 2012-2016 Black Label
 *
@@ -9,6 +9,10 @@
 /* global Highcharts setTimeout clearTimeout module:true */
 /* eslint no-loop-func: 0 */
 
+/**
+ * @namespace customEvents
+ **/
+
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
 		module.exports = factory;
@@ -16,562 +20,423 @@
 		factory(Highcharts);
 	}
 }(function (HC) {
+
 	/* global Highcharts :true */
 
 	'use strict';
 
 	var UNDEFINED,
 		DBLCLICK = 'dblclick',
-		COLUMN = 'column',
-		MAP = 'map',
 		TOUCHSTART = 'touchstart',
 		CLICK = 'click',
 		each = HC.each,
 		pick = HC.pick,
 		wrap = HC.wrap,
-		protoTick = HC.Tick.prototype,
-		protoAxis = HC.Axis.prototype,
-		protoChart = HC.Chart.prototype,
-		protoLegend = HC.Legend.prototype,
-		protoSeries = HC.Series.prototype,
-		protoColumn = HC.seriesTypes.column && HC.seriesTypes.column.prototype,
-		protoBar = HC.seriesTypes.bar && HC.seriesTypes.bar.prototype,
-		protoPie = HC.seriesTypes.pie && HC.seriesTypes.pie.prototype,
-		protoBubble = HC.seriesTypes.bubble && HC.seriesTypes.bubble.prototype,
-		protoColumnRange = HC.seriesTypes.columnrange && HC.seriesTypes.columnrange.prototype,
-		protoAreaRange = HC.seriesTypes.arearange && HC.seriesTypes.arearange.prototype,
-		protoAreaSplineRange = HC.seriesTypes.areasplinerange && HC.seriesTypes.areasplinerange.prototype,
-		protoErrorbar = HC.seriesTypes.errorbar && HC.seriesTypes.errorbar.prototype,
-		protoBoxplot = HC.seriesTypes.boxplot && HC.seriesTypes.boxplot.prototype,
-		protoPlotBands = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
-		protoFlags = HC.seriesTypes.flags && HC.seriesTypes.flags.prototype,
-		seriesAnimate = protoSeries && protoSeries.animate,
-		columnAnimate = protoColumn && protoColumn.animate,
-		barAnimate = protoBar && protoBar.animate,
-		pieAnimate = protoPie && protoPie.animate,
-		defaultOptions = HC.getOptions().plotOptions;
+		merge = HC.merge,
+		addEvent = HC.addEvent,
+		isTouchDevice = HC.isTouchDevice,
+		defaultOptions = HC.getOptions().plotOptions,
+		plotLineOrBandProto = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
+		seriesTypes = HC.seriesTypes,
+		seriesProto = HC.Series && HC.Series.prototype,
+		customEvents,
+		proto,
+		methods;
 
-	function noop() { return false; }
+	/**
+	 * @memberof customEvents
+	 * @returns {Boolean} true if object is array
+	 **/
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
 
-	//  Highcharts functions
-	function isArray(obj) {
-		return Object.prototype.toString.call(obj) === '[object Array]';
+    /**
+     * WRAPPED FUNCTIONS
+     */
+
+	// reset exis events
+	if (plotLineOrBandProto) { // # condition for highmaps and custom builds
+		wrap(plotLineOrBandProto, 'render', function (proceed) {
+			var defaultEvents = this.options && this.options.events;
+		
+			// reset default events on plot lines or bands
+			if (defaultEvents) {	
+				defaultEvents = false;
+			}
+
+			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		});
 	}
 
-	//  reanimate
-	var reanimate = HC.Chart.prototype.reAnimate = function () {
-		
-		var chart = this;
-		
-		each(chart.series, function (s) {
-			var animation = s.options.animation,
-				clipBox = s.clipBox || chart.clipBox,
-				sharedClipKey = ['_sharedClip', animation.duration, animation.easing, clipBox.height].join(','),
-				clipRect = chart[sharedClipKey],
-				markerClipRect = chart[sharedClipKey + 'm'];
-		
-			if (!clipRect) { // HC < 4.0.0
-				chart.redraw();
+	if (seriesProto) { // # condition for highmaps and custom builds
+		wrap(seriesProto, 'init', function (proceed, chart, options) {
+				
+			var chartOptions = chart.options,
+				plotOptions = chartOptions.plotOptions,
+				seriesOptions = chartOptions.plotOptions.series,
+				userOptions = merge(seriesOptions, plotOptions[this.type]);
+
+			// reset default events on series and series point
+			options.events = false;
+			options.point = {
+				events: false
+			};
+
+			// attach events to custom object, which is used in attach event 
+			options.customEvents = {
+				series: userOptions && userOptions.events,
+				point: userOptions && userOptions.point && userOptions.point.events
+			};
+
+			// call default action
+			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+
+		});
+	}
+
+	HC.Chart.prototype.customEvent = {
+		/**
+		 * @description Example: [HC.Series, ['drawPoints', 'drawDataLabels']]
+		 * @memberof customEvents
+		 * @returns {Array} array of pairs: prototype, array of methods to wrap
+		 **/
+		getEventsProtoMethods: function () {
+			return [
+				[HC.Tick, ['addLabel']],
+				[HC.Axis, ['render']],
+				[HC.Chart, ['setTitle']],
+				[HC.Legend, ['renderItem']],
+				[HC.PlotLineOrBand, ['render']],
+				[HC.Series, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.column, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.bar, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.pie, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.bubble, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.columnrange, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.arearange, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.areasplinerange, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.errorbar, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.boxplot, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']]
+			];
+		},
+		/**
+		 * @description Init method, based on getEventsProtoMethods() array. Iterates on array of prototypes and methods to wrap 
+		 * @memberof customEvents
+		 **/
+		init: function () {
+			var eventsProtoMethods = this.getEventsProtoMethods(); // array of pairs [object, [methods]]
+
+			each(eventsProtoMethods, function (protoMethod) {
+
+				proto = protoMethod[0] && protoMethod[0].prototype;
+				methods = protoMethod[1];
+
+				if (proto) {
+					each(methods, function (method) {
+						customEvents.attach(proto, method);
+					});
+				}
+			});
+		},
+		/**
+		 * @description Wraps methods i.e drawPoints to extract SVG element and set an event by calling customEvents.add()  
+		 * @param {Object} proto Highcharts prototype i.e Highcharts.Series.prototype
+ 		 * @param {Object} hcMethod name of wrapped method i.e drawPoints
+		 * @memberof customEvents
+		 **/
+		attach: function (proto, hcMethod) {
+			
+			wrap(proto, hcMethod, function (proceed) {
+				var eventElement = {
+						events: UNDEFINED,
+						element: UNDEFINED
+					},
+					len,
+					j;
+
+				//  call default actions
+				proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+
+				//	call 
+				eventElement = customEvents.eventElement[hcMethod].call(this);
+
+				//  stop, when events and SVG element do not exist
+				if (!eventElement.events && !eventElement.eventsPoint) {
+					return false;
+				}
+				
+				if (eventElement.eventsPoint) { //
+
+					len = eventElement.elementPoint.length;
+
+					// attach events per each point
+					for (j = 0; j < len; j++) {
+						var elemPoint = pick(eventElement.elementPoint[j].graphic, eventElement.elementPoint[j]);
+
+						if (elemPoint && elemPoint !== UNDEFINED) {
+							customEvents.add(elemPoint, eventElement.eventsPoint, eventElement.elementPoint[j], this);
+						}
+					}
+				}
+
+				// attach event to subtitle
+				if (eventElement.eventsSubtitle) {
+					customEvents.add(eventElement.elementSubtitle, eventElement.eventsSubtitle, this);
+				}
+
+				// attach event to stackLabels
+				if (eventElement.eventsStackLabel) {
+					customEvents.add(eventElement.elementStackLabel, eventElement.eventsStackLabel, this);
+				}
+
+				customEvents.add(eventElement.element, eventElement.events, this);
+
+			});
+		},
+		/**
+		 * @description adds event on a SVG element
+		 * @param {Object} SVGelem graphic element
+		 * @param {Object} events object with all events
+		 * @param {Object} elemObj "this" object, which is available in the event
+		 * @param {Object} series chart series 
+		 * @memberof customEvents
+		 **/
+		add: function (SVGelem, events, elemObj, series) {
+
+			// stop when SVG element does not exist
+			if (!SVGelem || !SVGelem.element) {
 				return false;
 			}
-		
-			if (clipRect) {
-				clipRect.attr({
-					width: 0
-				});
-			}
-			if (markerClipRect) {
-				markerClipRect.attr({
-					width: 0
-				});
-			}
 
-			switch (s.type) {
-				case 'pie':
-					s.animate = pieAnimate;
-					break;
-				case 'column':
-					s.animate = columnAnimate;
-					break;
-				case 'bar':
-					s.animate = barAnimate;
-					break;
-				default:
-					s.animate = seriesAnimate;
-					break;
-			}
-			
-			s.animate(true);
-			s.isDirty = true;
+			for (var action in events) {
 
-			return false;
-		});
+				(function (event) {
+					if (events.hasOwnProperty(event) && !SVGelem[event]) {
+						if (isTouchDevice && event === DBLCLICK) { //  #30 - fallback for iPad
+							
+							var tapped = false;
 
-		chart.redraw();
+							addEvent(SVGelem.element, TOUCHSTART, function (e) {
+								e.stopPropagation();
+								e.preventDefault();
 
-		return false;
-	};
+								if (!tapped) {
 
-	//  reseting all events, fired by Highcharts
-	HC.Chart.prototype.callbacks.push(function (chart) {
-		var resetAxisEvents = chart.customEvent.resetAxisEvents,
-			forExport = chart.renderer.forExport,
-			series = chart.series,
-			serLen = series.length,
-			xAxis = chart.xAxis,
-			yAxis = chart.yAxis,
-			i;
+									tapped = setTimeout(function () {
+										tapped = null;
+										events[CLICK].call(elemObj, e); //	call single click action
+									}, 300);
 
-		if (forExport) {    //  skip custom events when chart is exported
-			return false;
-		}
+								} else {
+									clearTimeout(tapped);
 
-		resetAxisEvents(xAxis, 'xAxis', chart);
-		resetAxisEvents(yAxis, 'yAxis', chart);
-
-		for (i = 0; i < serLen; i++) {
-			series[i].update({
-				animation: {
-					enabled: true
-				},
-				customEvents: {
-					series: series[i].options.events,
-					point: series[i].options.point.events
-				},
-				events: {
-					click: noop
-				},
-				point: {
-					events: {
-						click: noop
-					}
-				}
-			}, false);
-		}
-
-		chart.xAxis[0].isDirty = true;
-		reanimate.call(chart);
-		return false;
-	});
-
-	//  custom event body
-	var customEvent = HC.Chart.prototype.customEvent = function (obj, proto) {
-		customEvent.add = function (elem, events, elemObj, series) {
-
-			for (var key in events) {
-				if (key) {
-
-					(function (val) {
-						if (events.hasOwnProperty(val) && elem) {
-
-							if ((!elem[val] || elem[val] === UNDEFINED) && elem.element) {
-
-								if ((val === DBLCLICK)) { //  #30
-
-									var tapped = false;
-
-									HC.addEvent(elem.element, TOUCHSTART, function (e) {
-
-										if (!tapped) {
-
-											tapped = setTimeout(function () {
-												tapped = null;
-												events[CLICK].call(elemObj, e); //	call single click action
-											}, 300);
-
-										} else {
-											clearTimeout(tapped);
-
-											tapped = null;
-
-											events[val].call(elemObj, e);
-
-										}
-
-										return false;
-									});
+									tapped = null;
+									events[event].call(elemObj, e);
 
 								}
 
-								HC.addEvent(elem.element, val, function (e) {
-			
-									if (elemObj && elemObj.textStr) { //   labels
-										elemObj.value = elemObj.textStr;
-									}
+								return false;
 
-									if (series && defaultOptions[series.type] && defaultOptions[series.type].marker) {
+							});
 
-										var chart = series.chart, 
-											normalizedEvent = chart.pointer.normalize(e),
-											i;
+						} else {
 
-										elemObj = series.searchPoint(normalizedEvent, true);
-										
-									}
-
-									events[val].call(elemObj, e);
-
-									return false;
-								});
-							}
-
-							elem[val] = function () {
-								return true;
-							};
-						}
-					})(key);
-				}
-
-			}
-		};
-
-		HC.Chart.prototype.customEvent.resetAxisEvents = function (axis, type, chart) {
-			var axisLength = axis.length,
-				userOptions = chart.userOptions,
-				redraw = false,
-				plotBandsLength, plotLinesLength, plotLines, plotBands, cAxis, t, i, j;
-
-			for (i = 0; i < axisLength; i++) {
-
-				if (type) {
-					cAxis = HC.splat(userOptions[type]);
-					plotLines = cAxis[i] && cAxis[i].plotLines;
-					plotBands = cAxis[i] && cAxis[i].plotBands;
-				}
-
-				if (plotLines !== UNDEFINED) {
-					plotLinesLength = plotLines.length;
-
-					for (j = 0; j < plotLinesLength; j++) {
-						t = plotLines[j].events;
-						if (t) {
-							plotLines[j].customEvents = t;
-							plotLines[j].events = null;
-						}
-					}
-
-					redraw = true;
-				}
-
-				if (plotBands !== UNDEFINED) {
-					plotBandsLength = plotBands.length;
-
-					for (j = 0; j < plotBandsLength; j++) {
-						t = plotBands[j].events;
-						if (t) {
-							plotBands[j].customEvents = t;
-							plotBands[j].events = null;
-						}
-					}
-
-					redraw = true;
-				}
-
-				if (redraw) {
-					axis[i].update({
-						plotLines: plotLines,
-						plotBands: plotBands
-					}, false);
-				}
-			}
-		};
-
-		//  #50
-		wrap(HC.Chart.prototype, 'renderSeries', function () {
-			var chart = this,
-				series = chart.series,
-				forExport = chart.renderer.forExport,
-				type;
-			
-			each(series, function (serie) {
-				serie.translate();
-
-				type = (serie.type !== COLUMN) && (serie.type !== MAP) && (forExport === UNDEFINED); // #51
-
-				if (type) {
-					serie.customClipPath = serie.chart.renderer.clipRect({
-						x: 0,
-						y: 0,
-						width: 0,
-						height: chart.plotTop + chart.plotHeight
-					});
-				}
-				serie.render();
+							addEvent(SVGelem.element, event, function (e) {
 				
-				if (type) {
-					serie.markerGroup.clip(serie.customClipPath);
-					serie.group.clip(serie.customClipPath);
-				}
-			
-			});
-		});
-  
-		wrap(HC.Series.prototype, 'redraw', function () {
-			var series = this,
-				chart = series.chart,
-				wasDirty = series.isDirty || series.isDirtyData,
-				group = series.group,
-				xAxis = series.xAxis,
-				yAxis = series.yAxis,
-				type = (series.type !== COLUMN) && (series.type !== MAP);
-			
-			// reposition on resize
-			if (group) {
-				if (chart.inverted) {
-					group.attr({
-						width: chart.plotWidth,
-						height: chart.plotHeight
-					});
-				}
-  
-				group.animate({
-					translateX: pick(xAxis && xAxis.left, chart.plotLeft),
-					translateY: pick(yAxis && yAxis.top, chart.plotTop)
-				});
-			}
-  
-			series.translate();
-  
-			if (type) {
-				series.customClipPath = series.chart.renderer.clipRect({
-					x: 0,
-					y: 0,
-					width: 0,
-					height: chart.plotTop + chart.plotHeight
-				});
-			}
-  
-			series.render();
-			
-			if (type) {
-				series.markerGroup.clip(series.customClipPath);
-				series.group.clip(series.customClipPath);
-			}
-			
-			if (wasDirty) { // #3945 recalculate the kdtree when dirty
-				delete this.kdTree; // #3868 recalculate the kdtree with dirty data
-			}
-		});
-
-		wrap(HC.Chart.prototype, 'redraw', function (proceed) {
-			
-			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-			
-			var chart = this,
-				serie = this.series,
-				duration = HC.getOptions().plotOptions.line.animation.duration,
-				type;
-			
-			each(serie, function (s) {
-				type = s.type !== COLUMN && s.type !== MAP;
-
-				if (type) {
-					s.customClipPath.animate({
-						width: chart.plotLeft + chart.plotWidth
-					}, {
-						duration: duration
-					});
-				}
-			});
-		});
-
-		wrap(obj, proto, function (proceed) {
-			var events,
-				element,
-				eventsPoint,
-				elementPoint,
-				eventsSubtitle,
-				elementSubtitle,
-				parent,
-				type,
-				op,
-				len,
-				i,
-				j;
-
-			//  call default actions
-			var ob = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-
-			//  switch on object
-			switch (proto) {
-				case 'addLabel':
-					parent = this.parent;
-					eventsPoint = this.axis.options.labels.events;
-					elementPoint = [this.label];
-
-					if (parent) {
-						var step = this; // current label
-
-						while (step) {
-							if (isArray(step)) {
-								len = step.length;
-
-								for (i = 0; i < len; i++) {
-									elementPoint.push(step[i].label);
+								if (elemObj && elemObj.textStr) { // labels
+									elemObj.value = elemObj.textStr;
 								}
-							} else {
-								elementPoint.push(step.label);
-							}
 
-							step = step.parent;
+								if (series && defaultOptions[series.type] && defaultOptions[series.type].marker) {
+
+									var chart = series.chart,
+										normalizedEvent = chart.pointer.normalize(e); 
+
+									elemObj = series.searchPoint(normalizedEvent, true);
+								
+								}
+
+								events[event].call(elemObj, e);
+
+								return false;
+							});
 						}
 
+						SVGelem[event] = function () {
+							return true;
+						};
 					}
+				})(action);
+			}
+		},
+		eventElement: {
+			/**
+ 			* @typedef {Object} eventElement 
+			**/
+			/**
+			 * @description Extracts SVG elements from points 
+			 * @property {Object} eventsPoint events for point
+			 * @property {Array} elementPoint array of SVG point elements
+			 * @return {Object} { events: object, element: object }
+			 * @memberof customEvents
+			 **/
+			addLabel: function () {
+				var parent = this.parent,
+					axisOptions = this.axis.options,
+					eventsPoint = axisOptions.labels && axisOptions.labels.events,
+					elementPoint = [this.label],
+					len, i;
 
-					break;
-				case 'setTitle':
-					events = this.options.title && this.options.title.events;
-					element = this.title;
-					eventsSubtitle = this.options.subtitle && this.options.subtitle.events;
+				if (parent) {
+					var step = this; // current label
+
+					while (step) {
+						if (isArray(step)) {
+							len = step.length;
+
+							for (i = 0; i < len; i++) {
+								elementPoint.push(step[i].label);
+							}
+						} else {
+							elementPoint.push(step.label);
+						}
+
+						step = step.parent;
+					}
+				}
+
+				return {
+					eventsPoint: eventsPoint,
+					elementPoint: elementPoint
+				};
+			},
+			/**
+			 * @description Extracts SVG elements from title and subtitle 
+			 * @property {Object} events events for title
+			 * @property {Array} elementPoint title SVG element
+			 * @property {Object} eventsSubtitle events for subtitle
+			 * @property {Array} elementSubtitle subtitle SVG element
+			 * @return {Object} {event: object, element: object, eventsSubtitle: object, elementSubtitle: object }
+			 * @memberof customEvents
+			 **/
+			setTitle: function () {
+				var events = this.options.title && this.options.title.events,
+					element = this.title,
+					eventsSubtitle = this.options.subtitle && this.options.subtitle.events,
 					elementSubtitle = this.subtitle;
-					break;
-				case 'drawDataLabels':
-					events = this.dataLabelsGroup ? this.options.dataLabels.events : null;
-					element = this.dataLabelsGroup ? this.dataLabelsGroup : null;
-					break;
-				case 'render':
-					if (this.axisTitle) {
-						events = this.options.title.events;
-						element = this.axisTitle;
-					}
-				
-					if (this.options.value || this.options.from) {
-						events = this.options.customEvents;
-						element = this.svgElem;
-					}
 
-					if (this.options.stackLabels && this.options.stackLabels.enabled) {
-						events = this.options.stackLabels.events;
-						element = this.stackTotalGroup;
-						eventsPoint = this.options.stackLabels.events;
-						elementPoint = this.stacks;
-					}
+				return {
+					events: events,
+					element: element,
+					eventsSubtitle: eventsSubtitle,
+					elementSubtitle: elementSubtitle
+				};
+			},
+			/**
+			 * @description Extracts SVG elements from dataLabels
+			 * @property {Object} events events for dataLabels
+			 * @property {Array} element dataLabels SVG element
+			 * @return {Object} { events: object, element: object }
+			 * @memberof customEvents
+			 **/
+			drawDataLabels: function () {
+				var dataLabelsGroup = this.dataLabelsGroup;
 
-					break;
-				case 'drawPoints':
-					op = this.options;
-					type = this.type;
-					events = op.events;
-					element = this.group;
-					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events;
+				return {
+					events: dataLabelsGroup ? this.options.dataLabels.events : UNDEFINED,
+					element: dataLabelsGroup ? this.dataLabelsGroup : UNDEFINED
+				};
+			},
+			/**
+			 * @description Extracts SVG elements from axis title and stackLabels
+			 * @property {Object} events events for axis title
+			 * @property {Array} element axis title SVG element
+			 * @property {Object} eventsPoint events for stacklabels
+			 * @property {Array} elementPoint stacklabels SVG element
+			 * @property {Object} eventsStackLabel events for stacklabels
+			 * @property {Array} elementStackLabel stacklabels group SVG element
+			 * @return {Object} { events: object, element: object, eventsPoint: object, elementPoint: object, eventsStackLabel: object, elementStackLabel: object }
+			 * @memberof customEvents
+			 **/
+			render: function () {
+				var stackLabels = this.options.stackLabels,
+					events,
+					element,
+					eventsPoint,
+					elementPoint,
+					eventsStackLabel,
+					elementStackLabel;
 
-					if (defaultOptions[type] && defaultOptions[type].marker) {
-						elementPoint = [this.markerGroup];
-					} else {
-						elementPoint = this.points;
-					}
-
-					break;
-				case 'renderItem':
-					events = this.options.itemEvents;
-					element = this.group;
-					break;
-				default:
-					events = element = UNDEFINED;
-					return false;
-			}
-
-
-			if ((events !== UNDEFINED) || (eventsPoint !== UNDEFINED)) {
-				
-				if (eventsPoint) {
-
-					len = elementPoint.length;
-
-					for (j = 0; j < len; j++) {
-						var elemPoint = HC.pick(elementPoint[j].graphic, elementPoint[j]);
-
-						if (elemPoint && elemPoint !== UNDEFINED) { 
-							customEvent.add(elemPoint, eventsPoint, elementPoint[j], this);
-						}
-					}
+				if (this.axisTitle) {
+					events = this.options.title.events;
+					element = this.axisTitle;
 				}
 
-				if (eventsSubtitle) {
-					customEvent.add(elementSubtitle, eventsSubtitle, this);
+				if (stackLabels && stackLabels.enabled) {
+					eventsPoint = stackLabels.events;
+					elementPoint = this.stacks;
+					eventsStackLabel = stackLabels.events;
+					elementStackLabel = this.stackTotalGroup;
 				}
 
-				customEvent.add(element, events, this);
-			}
+				return {
+					events: events,
+					element: element,
+					eventsPoint: eventsPoint,
+					elementPoint: elementPoint,
+					eventsStackLabel: eventsStackLabel,
+					elementStackLabel: elementStackLabel
+				};
+			},
+			/**
+			 * @description Extracts SVG elements from series and series points 
+			 * @property {Object} events events for series
+			 * @property {Array} element series SVG element
+			 * @property {Object} events events for series points
+			 * @property {Array} element series points SVG element
+			 * @return {Object} { events: object, element: object, eventsPoint: object, elementPoint: object }
+			 * @memberof customEvents
+			 **/
+			drawPoints: function () {
+				var op = this.options,
+					type = this.type,
+					events = op.customEvents ? op.customEvents.series : op.events,
+					element = this.group,
+					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events,
+					elementPoint;
 
-			return ob;
-		});
+				if (defaultOptions[type] && defaultOptions[type].marker) {
+					elementPoint = [this.markerGroup]; //	get markers when enabled
+				} else {
+					elementPoint = this.points; //	extract points
+				}
+
+				return {
+					events: events,
+					element: element,
+					eventsPoint: eventsPoint,
+					elementPoint: elementPoint
+				};
+			},
+			/**
+			 * @description Extracts SVG elements from legend item
+			 * @property {Object} events events for legend item
+			 * @property {Array} element legend item SVG element
+			 * @return {Object} { events: object, element: object } 
+			 * @memberof customEvents
+			 **/
+			renderItem: function () {
+				return {
+					events: this.options.itemEvents,
+					element: this.group
+				};
+			}
+		}
 	};
-	//  labels
-	customEvent(protoTick, 'addLabel');
 
-	//  axis / title
-	customEvent(protoAxis, 'render');
-
-	//  series events & point events
-	customEvent(protoSeries, 'drawPoints');
-
-	//  datalabels events
-	customEvent(protoSeries, 'drawDataLabels');
-
-	//  title events
-	customEvent(protoChart, 'setTitle');
-
-	//  legend items
-	customEvent(protoLegend, 'renderItem');
-
-	//  plotbands + plotlines
-	if (protoPlotBands) {
-		customEvent(protoPlotBands, 'render');
-	}
-
-	//  bubble charts
-	if (protoBubble) {
-		customEvent(protoBubble, 'drawPoints');
-		customEvent(protoBubble, 'drawDataLabels');
-	}
-
-	//  column chart
-	if (protoColumn) {
-		customEvent(protoColumn, 'drawDataLabels');
-		customEvent(protoColumn, 'drawPoints');
-	}
-
-	//  pie chart
-	if (protoPie) {
-		customEvent(protoPie, 'drawDataLabels');
-		customEvent(protoPie, 'drawPoints');
-	}
-
-	//	columnrange
-	if (protoColumnRange) {
-		customEvent(protoColumnRange, 'drawDataLabels');
-		customEvent(protoColumnRange, 'drawPoints');
-	}
-
-	//	arearange
-	if (protoAreaRange) {
-		customEvent(protoAreaRange, 'drawDataLabels');
-		customEvent(protoAreaRange, 'drawPoints');
-	}
-
-	//	areasplinerange
-	if (protoAreaSplineRange) {
-		customEvent(protoAreaSplineRange, 'drawDataLabels');
-		customEvent(protoAreaSplineRange, 'drawPoints');
-	}
-
-	//	errorbar
-	if (protoErrorbar) {
-		customEvent(protoErrorbar, 'drawDataLabels');
-		customEvent(protoErrorbar, 'drawPoints');
-	}
-
-	//	boxplot
-	if (protoBoxplot) {
-		customEvent(protoBoxplot, 'drawDataLabels');
-		customEvent(protoBoxplot, 'drawPoints');
-	}
-
-	//  flags
-	if (protoFlags) {
-		customEvent(protoFlags, 'drawDataLabels');
-		customEvent(protoFlags, 'drawPoints');
-	}
+	customEvents = HC.Chart.prototype.customEvent;
+	customEvents.init();
 
 }));
