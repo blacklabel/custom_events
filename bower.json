@@ -1,6 +1,6 @@
 {
   "name": "highcharts-custom-events",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "homepage": "http://blacklabel.github.io/custom_events/",
   "authors": [
     "Sebastian Bochan <sebastian@blacklabel.pl>",
@@ -8,7 +8,7 @@
     "Kacper Madej <kacper@blacklabel.pl>"
   ],
   "description": "Plugin that allows you to add extra events, like double / right click on each chart element, for Highcharts.",
-  "main": "customEvents.js",
+  "main": "js/customEvents.js",
   "keywords": [
     "highcharts",
     "highstock",
