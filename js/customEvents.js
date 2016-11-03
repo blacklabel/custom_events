@@ -59,9 +59,9 @@
 	if (plotLineOrBandProto) { // # condition for highmaps and custom builds
 		wrap(plotLineOrBandProto, 'render', function (proceed) {
 			var defaultEvents = this.options && this.options.events;
-		
+
 			// reset default events on plot lines or bands
-			if (defaultEvents) {	
+			if (defaultEvents) {
 				defaultEvents = false;
 			}
 
@@ -71,7 +71,7 @@
 
 	if (seriesProto) { // # condition for highmaps and custom builds
 		wrap(seriesProto, 'init', function (proceed, chart, options) {
-				
+
 			var chartOptions = chart.options,
 				plotOptions = chartOptions.plotOptions,
 				seriesOptions = chartOptions.plotOptions.series,
@@ -83,7 +83,13 @@
 				events: false
 			};
 
-			// attach events to custom object, which is used in attach event 
+			// Add support for legendItemClick.
+			if (userOptions.events.legendItemClick) {
+				options.events = {
+					legendItemClick: userOptions.events.legendItemClick
+				};
+			}
+			// attach events to custom object, which is used in attach event
 			options.customEvents = {
 				series: userOptions && userOptions.events,
 				point: userOptions && userOptions.point && userOptions.point.events
@@ -122,7 +128,7 @@
 			];
 		},
 		/**
-		 * @description Init method, based on getEventsProtoMethods() array. Iterates on array of prototypes and methods to wrap 
+		 * @description Init method, based on getEventsProtoMethods() array. Iterates on array of prototypes and methods to wrap
 		 * @memberof customEvents
 		 **/
 		init: function () {
@@ -141,13 +147,13 @@
 			});
 		},
 		/**
-		 * @description Wraps methods i.e drawPoints to extract SVG element and set an event by calling customEvents.add()  
+		 * @description Wraps methods i.e drawPoints to extract SVG element and set an event by calling customEvents.add()
 		 * @param {Object} proto Highcharts prototype i.e Highcharts.Series.prototype
  		 * @param {Object} hcMethod name of wrapped method i.e drawPoints
 		 * @memberof customEvents
 		 **/
 		attach: function (proto, hcMethod) {
-			
+
 			wrap(proto, hcMethod, function (proceed) {
 				var eventElement = {
 						events: UNDEFINED,
@@ -159,14 +165,14 @@
 				//  call default actions
 				proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
-				//	call 
+				//	call
 				eventElement = customEvents.eventElement[hcMethod].call(this);
 
 				//  stop, when events and SVG element do not exist
 				if (!eventElement.events && !eventElement.eventsPoint) {
 					return false;
 				}
-				
+
 				if (eventElement.eventsPoint) { //
 
 					len = eventElement.elementPoint.length;
@@ -200,7 +206,7 @@
 		 * @param {Object} SVGelem graphic element
 		 * @param {Object} events object with all events
 		 * @param {Object} elemObj "this" object, which is available in the event
-		 * @param {Object} series chart series 
+		 * @param {Object} series chart series
 		 * @memberof customEvents
 		 **/
 		add: function (SVGelem, events, elemObj, series) {
@@ -215,7 +221,7 @@
 				(function (event) {
 					if (events.hasOwnProperty(event) && !SVGelem[event]) {
 						if (isTouchDevice && event === DBLCLICK) { //  #30 - fallback for iPad
-							
+
 							var tapped = false;
 
 							addEvent(SVGelem.element, TOUCHSTART, function (e) {
@@ -244,7 +250,7 @@
 						} else {
 
 							addEvent(SVGelem.element, event, function (e) {
-				
+
 								if (elemObj && elemObj.textStr) { // labels
 									elemObj.value = elemObj.textStr;
 								}
@@ -252,10 +258,10 @@
 								if (series && defaultOptions[series.type] && defaultOptions[series.type].marker) {
 
 									var chart = series.chart,
-										normalizedEvent = chart.pointer.normalize(e); 
+										normalizedEvent = chart.pointer.normalize(e);
 
 									elemObj = series.searchPoint(normalizedEvent, true);
-								
+
 								}
 
 								events[event].call(elemObj, e);
@@ -273,10 +279,10 @@
 		},
 		eventElement: {
 			/**
- 			* @typedef {Object} eventElement 
+ 			* @typedef {Object} eventElement
 			**/
 			/**
-			 * @description Extracts SVG elements from points 
+			 * @description Extracts SVG elements from points
 			 * @property {Object} eventsPoint events for point
 			 * @property {Array} elementPoint array of SVG point elements
 			 * @return {Object} { events: object, element: object }
@@ -313,7 +319,7 @@
 				};
 			},
 			/**
-			 * @description Extracts SVG elements from title and subtitle 
+			 * @description Extracts SVG elements from title and subtitle
 			 * @property {Object} events events for title
 			 * @property {Array} elementPoint title SVG element
 			 * @property {Object} eventsSubtitle events for subtitle
@@ -391,7 +397,7 @@
 				};
 			},
 			/**
-			 * @description Extracts SVG elements from series and series points 
+			 * @description Extracts SVG elements from series and series points
 			 * @property {Object} events events for series
 			 * @property {Array} element series SVG element
 			 * @property {Object} events events for series points
@@ -424,7 +430,7 @@
 			 * @description Extracts SVG elements from legend item
 			 * @property {Object} events events for legend item
 			 * @property {Array} element legend item SVG element
-			 * @return {Object} { events: object, element: object } 
+			 * @return {Object} { events: object, element: object }
 			 * @memberof customEvents
 			 **/
 			renderItem: function () {
