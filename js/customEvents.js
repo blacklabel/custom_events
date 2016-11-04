@@ -76,14 +76,13 @@
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 		});
 	}
-
 	if (seriesProto) { // # condition for highmaps and custom builds
 		wrap(seriesProto, 'init', function (proceed, chart, options) {
-				
+
 			var chartOptions = chart.options,
 				plotOptions = chartOptions.plotOptions,
 				seriesOptions = chartOptions.plotOptions.series,
-				userOptions = merge(seriesOptions, plotOptions[this.type]);
+				userOptions = merge(seriesOptions, plotOptions[this.type], options); // Fixed #70
 
 			// reset default events on series and series point
 			options.events = false;
