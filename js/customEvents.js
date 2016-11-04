@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.1 (2016-09-23)
+* Custom events v2.0.2 (2016-11-04)
 *
 * (c) 2012-2016 Black Label
 *
@@ -82,6 +82,13 @@
 			options.point = {
 				events: false
 			};
+
+			// Add support for legendItemClick.
+			if (userOptions && userOptions.events && userOptions.events.legendItemClick) {
+				options.events = {
+					legendItemClick: userOptions.events.legendItemClick
+				};
+			}
 
 			// attach events to custom object, which is used in attach event 
 			options.customEvents = {
