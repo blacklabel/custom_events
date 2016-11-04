@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.1 (2016-09-23)
+* Custom events v2.0.2 (2016-11-04)
 *
 * (c) 2012-2016 Black Label
 *
@@ -52,6 +52,14 @@
     }
 
     /**
+	 * @memberof customEvents
+	 * @returns {false} disable browser menu
+	 **/
+    window.oncontextmenu = function() {
+		return false;
+	};
+
+    /**
      * WRAPPED FUNCTIONS
      */
 
@@ -68,20 +76,26 @@
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 		});
 	}
-
 	if (seriesProto) { // # condition for highmaps and custom builds
 		wrap(seriesProto, 'init', function (proceed, chart, options) {
-				
+
 			var chartOptions = chart.options,
 				plotOptions = chartOptions.plotOptions,
 				seriesOptions = chartOptions.plotOptions.series,
-				userOptions = merge(seriesOptions, plotOptions[this.type]);
+				userOptions = merge(seriesOptions, plotOptions[this.type], options); // Fixed #70
 
 			// reset default events on series and series point
 			options.events = false;
 			options.point = {
 				events: false
 			};
+
+			// Add support for legendItemClick.
+			if (userOptions && userOptions.events && userOptions.events.legendItemClick) {
+				options.events = {
+					legendItemClick: userOptions.events.legendItemClick
+				};
+			}
 
 			// attach events to custom object, which is used in attach event 
 			options.customEvents = {
