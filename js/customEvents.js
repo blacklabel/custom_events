@@ -178,7 +178,7 @@
 
 				//  stop, when events and SVG element do not exist
 				if (!eventElement.events && !eventElement.eventsPoint) {
-					return false;
+					return this;
 				}
 				
 				if (eventElement.eventsPoint) { //
