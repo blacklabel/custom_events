@@ -52,14 +52,6 @@
     }
 
     /**
-	 * @memberof customEvents
-	 * @returns {false} disable browser menu
-	 **/
-    window.oncontextmenu = function() {
-		return false;
-	};
-
-    /**
      * WRAPPED FUNCTIONS
      */
 
