@@ -52,14 +52,6 @@
     }
 
     /**
-	 * @memberof customEvents
-	 * @returns {false} disable browser menu
-	 **/
-    window.oncontextmenu = function() {
-		return false;
-	};
-
-    /**
      * WRAPPED FUNCTIONS
      */
 
@@ -178,7 +170,7 @@
 
 				//  stop, when events and SVG element do not exist
 				if (!eventElement.events && !eventElement.eventsPoint) {
-					return false;
+					return this;
 				}
 				
 				if (eventElement.eventsPoint) { //
