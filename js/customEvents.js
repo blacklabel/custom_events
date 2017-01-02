@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.2 (2016-11-04)
+* Custom events v2.0.3 (2017-01-02)
 *
 * (c) 2012-2016 Black Label
 *
@@ -21,7 +21,7 @@
 	}
 }(function (HC) {
 
-	/* global Highcharts :true */
+	/* global Highcharts :true, window */
 
 	'use strict';
 
@@ -47,21 +47,21 @@
 	 * @memberof customEvents
 	 * @returns {Boolean} true if object is array
 	 **/
-    function isArray(obj) {
-        return Object.prototype.toString.call(obj) === '[object Array]';
-    }
+	function isArray(obj) {
+		return Object.prototype.toString.call(obj) === '[object Array]';
+	}
 
-    /**
+	/**
 	 * @memberof customEvents
 	 * @returns {false} disable browser menu
 	 **/
-    window.oncontextmenu = function() {
+	window.oncontextmenu = function () {
 		return false;
 	};
 
-    /**
-     * WRAPPED FUNCTIONS
-     */
+	/**
+	 * WRAPPED FUNCTIONS
+	 */
 
 	// reset exis events
 	if (plotLineOrBandProto) { // # condition for highmaps and custom builds
@@ -69,7 +69,7 @@
 			var defaultEvents = this.options && this.options.events;
 		
 			// reset default events on plot lines or bands
-			if (defaultEvents) {	
+			if (defaultEvents) {
 				defaultEvents = false;
 			}
 
@@ -97,7 +97,7 @@
 				};
 			}
 
-			// attach events to custom object, which is used in attach event 
+			// attach events to custom object, which is used in attach event
 			options.customEvents = {
 				series: userOptions && userOptions.events,
 				point: userOptions && userOptions.point && userOptions.point.events
@@ -136,7 +136,7 @@
 			];
 		},
 		/**
-		 * @description Init method, based on getEventsProtoMethods() array. Iterates on array of prototypes and methods to wrap 
+		 * @description Init method, based on getEventsProtoMethods() array. Iterates on array of prototypes and methods to wrap
 		 * @memberof customEvents
 		 **/
 		init: function () {
@@ -155,9 +155,9 @@
 			});
 		},
 		/**
-		 * @description Wraps methods i.e drawPoints to extract SVG element and set an event by calling customEvents.add()  
+		 * @description Wraps methods i.e drawPoints to extract SVG element and set an event by calling customEvents.add()
 		 * @param {Object} proto Highcharts prototype i.e Highcharts.Series.prototype
- 		 * @param {Object} hcMethod name of wrapped method i.e drawPoints
+		 * @param {Object} hcMethod name of wrapped method i.e drawPoints
 		 * @memberof customEvents
 		 **/
 		attach: function (proto, hcMethod) {
@@ -173,7 +173,7 @@
 				//  call default actions
 				proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
-				//	call 
+				//	call
 				eventElement = customEvents.eventElement[hcMethod].call(this);
 
 				//  stop, when events and SVG element do not exist
@@ -187,25 +187,27 @@
 
 					// attach events per each point
 					for (j = 0; j < len; j++) {
-						var elemPoint = pick(eventElement.elementPoint[j].graphic, eventElement.elementPoint[j]);
+						if (eventElement.elementPoint[j]) {
+							var elemPoint = pick(eventElement.elementPoint[j].graphic, eventElement.elementPoint[j]);
 
-						if (elemPoint && elemPoint !== UNDEFINED) {
-							customEvents.add(elemPoint, eventElement.eventsPoint, eventElement.elementPoint[j], this);
+							if (elemPoint && elemPoint !== UNDEFINED) {
+								customEvents.add(elemPoint, eventElement.eventsPoint, eventElement.elementPoint[j], eventElement, this);
+							}
 						}
 					}
 				}
 
 				// attach event to subtitle
 				if (eventElement.eventsSubtitle) {
-					customEvents.add(eventElement.elementSubtitle, eventElement.eventsSubtitle, this);
+					customEvents.add(eventElement.elementSubtitle, eventElement.eventsSubtitle, eventElement, this);
 				}
 
 				// attach event to stackLabels
 				if (eventElement.eventsStackLabel) {
-					customEvents.add(eventElement.elementStackLabel, eventElement.eventsStackLabel, this);
+					customEvents.add(eventElement.elementStackLabel, eventElement.eventsStackLabel, eventElement, this);
 				}
 
-				customEvents.add(eventElement.element, eventElement.events, this);
+				customEvents.add(eventElement.element, eventElement.events, eventElement, this);
 
 			});
 		},
@@ -214,10 +216,12 @@
 		 * @param {Object} SVGelem graphic element
 		 * @param {Object} events object with all events
 		 * @param {Object} elemObj "this" object, which is available in the event
-		 * @param {Object} series chart series 
+		 * @param {Object} series chart series
 		 * @memberof customEvents
 		 **/
-		add: function (SVGelem, events, elemObj, series) {
+		add: function (SVGelem, events, elemObj, eventElement, series) {
+
+			var eventObject = eventElement.eventObject;
 
 			// stop when SVG element does not exist
 			if (!SVGelem || !SVGelem.element) {
@@ -266,10 +270,14 @@
 								if (series && defaultOptions[series.type] && defaultOptions[series.type].marker) {
 
 									var chart = series.chart,
-										normalizedEvent = chart.pointer.normalize(e); 
+										normalizedEvent = chart.pointer.normalize(e);
 
 									elemObj = series.searchPoint(normalizedEvent, true);
 								
+								}
+
+								if (eventObject) {
+									elemObj = eventObject;
 								}
 
 								events[event].call(elemObj, e);
@@ -287,18 +295,20 @@
 		},
 		eventElement: {
 			/**
- 			* @typedef {Object} eventElement 
+			* @typedef {Object} eventElement
 			**/
 			/**
-			 * @description Extracts SVG elements from points 
+			 * @description Extracts SVG elements from points
 			 * @property {Object} eventsPoint events for point
 			 * @property {Array} elementPoint array of SVG point elements
+			 * @property {Object} eventObject object kept in this on i.e click
 			 * @return {Object} { events: object, element: object }
 			 * @memberof customEvents
 			 **/
 			addLabel: function () {
 				var parent = this.parent,
-					axisOptions = this.axis.options,
+					axis = this.axis,
+					axisOptions = axis.options,
 					eventsPoint = axisOptions.labels && axisOptions.labels.events,
 					elementPoint = [this.label],
 					len, i;
@@ -323,11 +333,19 @@
 
 				return {
 					eventsPoint: eventsPoint,
-					elementPoint: elementPoint
+					elementPoint: elementPoint,
+					eventObject: {
+						axis: axis,
+						isFirst: this.isFirst,
+						isLast: this.isLast,
+						chart: axis.chart,
+						dateTimeLabelFormat: axisOptions.dateTimeLabelFormats,
+						value: this.pos
+					}
 				};
 			},
 			/**
-			 * @description Extracts SVG elements from title and subtitle 
+			 * @description Extracts SVG elements from title and subtitle
 			 * @property {Object} events events for title
 			 * @property {Array} elementPoint title SVG element
 			 * @property {Object} eventsSubtitle events for subtitle
@@ -405,7 +423,7 @@
 				};
 			},
 			/**
-			 * @description Extracts SVG elements from series and series points 
+			 * @description Extracts SVG elements from series and series points
 			 * @property {Object} events events for series
 			 * @property {Array} element series SVG element
 			 * @property {Object} events events for series points
@@ -438,7 +456,7 @@
 			 * @description Extracts SVG elements from legend item
 			 * @property {Object} events events for legend item
 			 * @property {Array} element legend item SVG element
-			 * @return {Object} { events: object, element: object } 
+			 * @return {Object} { events: object, element: object }
 			 * @memberof customEvents
 			 **/
 			renderItem: function () {
