@@ -48,7 +48,6 @@ $(function () {
             events: {
                 load: function () {
                     //add report div
-                    console.log('load');
                     var ch = this,
                         x = 20,
                         y = 57;
@@ -57,14 +56,17 @@ $(function () {
                         zIndex: 101
                     }).add();
                 },
-                click:function () {
-                    console.log('a');
+                dblclick: function () {
+                    reloadFlash();
+                    $('#report').html('dbclick on chart');
                 },
-                dbclick: function() {
-                    console.log('b');
+                click: function () {
+                    reloadFlash();
+                    $('#report').html('click on chart');
                 },
-                contextmenu: function() {
-                    console.log('c');
+                contextmenu: function () {
+                    reloadFlash();
+                    $('#report').html('context menu on chart');
                 }
             }
         },

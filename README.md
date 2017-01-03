@@ -45,6 +45,26 @@ events: {
                         }
 }
 ```
+
+Crosshairs
+
+```
+crosshair: {
+    enabled: true,
+    events: {
+                        dblclick: function () {
+                            $('#report').html('dbclick on xAxis label');
+                        },
+                        click: function () {
+                            $('#report').html('click on xAxis label');
+                        },
+                        contextmenu: function () {
+                            $('#report').html('context menu on xAxis label');
+                        }
+    }
+}
+```
+
 ### Available events
 
 * click
@@ -68,3 +88,4 @@ events: {
 * legend
 * datalabels
 * flags
+* crosshairs

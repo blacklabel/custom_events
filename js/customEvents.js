@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.3 (2017-01-02)
+* Custom events v2.0.4 (2017-01-03)
 *
 * (c) 2012-2016 Black Label
 *
@@ -35,7 +35,9 @@
 		merge = HC.merge,
 		addEvent = HC.addEvent,
 		isTouchDevice = HC.isTouchDevice,
+		isObject = HC.isObject,
 		defaultOptions = HC.getOptions().plotOptions,
+		axisProto = HC.Axis && HC.Axis.prototype,
 		plotLineOrBandProto = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
 		seriesTypes = HC.seriesTypes,
 		seriesProto = HC.Series && HC.Series.prototype,
@@ -109,6 +111,27 @@
 		});
 	}
 
+	if (axisProto) { // # condition for highmaps and custom builds
+		wrap(HC.Axis.prototype, 'render', function (proceed, e, point) {
+			
+			var axis = this,
+				crosshair = axis.crosshair;
+
+			if (isObject(crosshair)) {
+				this.crosshair = crosshair.enabled;
+			}
+
+			// call default action
+			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		});
+
+		wrap(HC.Axis.prototype, 'drawCrosshair', function (proceed, e, point) {
+			
+			// call default action
+			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		});
+	}
+
 	HC.Chart.prototype.customEvent = {
 		/**
 		 * @description Example: [HC.Series, ['drawPoints', 'drawDataLabels']]
@@ -117,9 +140,10 @@
 		 **/
 		getEventsProtoMethods: function () {
 			return [
-				[HC.Tick, ['addLabel']],
-				[HC.Axis, ['render']],
-				[HC.Chart, ['setTitle']],
+				//[HC.Tick, ['addLabel']],
+				//[HC.Axis, ['render']],
+				[HC.Axis, ['drawCrosshair']]
+				/*[HC.Chart, ['setTitle']],
 				[HC.Legend, ['renderItem']],
 				[HC.PlotLineOrBand, ['render']],
 				[HC.Series, ['drawPoints', 'drawDataLabels']],
@@ -132,7 +156,7 @@
 				[seriesTypes.areasplinerange, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.errorbar, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.boxplot, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']]
+				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']]*/
 			];
 		},
 		/**
@@ -464,6 +488,21 @@
 					events: this.options.itemEvents,
 					element: this.group
 				};
+			},
+			/**
+			 * @description Extracts SVG elements from crosshair 
+			 * @property {Object} events events for crosshair
+			 * @property {Array} element crosshair SVG element
+			 * @return {Object} { events: object, element: object }
+			 * @memberof customEvents
+			 **/
+			drawCrosshair: function() {
+				var crosshair = this.options.crosshair;
+
+				return {
+					events: crosshair && crosshair.events,
+					element: this.cross
+				}
 			}
 		}
 	};
