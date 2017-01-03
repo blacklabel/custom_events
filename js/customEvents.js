@@ -140,10 +140,10 @@
 		 **/
 		getEventsProtoMethods: function () {
 			return [
-				//[HC.Tick, ['addLabel']],
-				//[HC.Axis, ['render']],
+				[HC.Tick, ['addLabel']],
+				[HC.Axis, ['render']],
 				[HC.Axis, ['drawCrosshair']]
-				/*[HC.Chart, ['setTitle']],
+				[HC.Chart, ['setTitle']],
 				[HC.Legend, ['renderItem']],
 				[HC.PlotLineOrBand, ['render']],
 				[HC.Series, ['drawPoints', 'drawDataLabels']],
@@ -156,7 +156,7 @@
 				[seriesTypes.areasplinerange, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.errorbar, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.boxplot, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']]*/
+				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']]
 			];
 		},
 		/**
