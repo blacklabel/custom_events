@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.4 (2017-01-03)
+* Custom events v2.0.5 (2017-01-04)
 *
 * (c) 2012-2016 Black Label
 *
@@ -142,7 +142,7 @@
 			return [
 				[HC.Tick, ['addLabel']],
 				[HC.Axis, ['render']],
-				[HC.Axis, ['drawCrosshair']]
+				[HC.Axis, ['drawCrosshair']],
 				[HC.Chart, ['setTitle']],
 				[HC.Legend, ['renderItem']],
 				[HC.PlotLineOrBand, ['render']],
