@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.5 (2017-01-04)
+* Custom events v2.0.6 (2017-01-12)
 *
 * (c) 2012-2016 Black Label
 *
@@ -52,14 +52,6 @@
 	function isArray(obj) {
 		return Object.prototype.toString.call(obj) === '[object Array]';
 	}
-
-	/**
-	 * @memberof customEvents
-	 * @returns {false} disable browser menu
-	 **/
-	window.oncontextmenu = function () {
-		return false;
-	};
 
 	/**
 	 * WRAPPED FUNCTIONS
@@ -261,6 +253,7 @@
 							var tapped = false;
 
 							addEvent(SVGelem.element, TOUCHSTART, function (e) {
+								
 								e.stopPropagation();
 								e.preventDefault();
 
@@ -286,7 +279,10 @@
 						} else {
 
 							addEvent(SVGelem.element, event, function (e) {
-				
+								
+								e.stopPropagation();
+								e.preventDefault();
+
 								if (elemObj && elemObj.textStr) { // labels
 									elemObj.value = elemObj.textStr;
 								}
