@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.6 (2017-01-12)
+* Custom events v2.0.7 (2017-01-19)
 *
 * (c) 2012-2016 Black Label
 *
@@ -67,7 +67,7 @@
 				defaultEvents = false;
 			}
 
-			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+			return proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 		});
 	}
 	if (seriesProto) { // # condition for highmaps and custom builds
@@ -183,18 +183,19 @@
 						events: UNDEFINED,
 						element: UNDEFINED
 					},
+					proceedObject,
 					len,
 					j;
 
 				//  call default actions
-				proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+				proceedObject = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
 				//	call
 				eventElement = customEvents.eventElement[hcMethod].call(this);
 
 				//  stop, when events and SVG element do not exist
 				if (!eventElement.events && !eventElement.eventsPoint) {
-					return false;
+					return proceedObject;
 				}
 				
 				if (eventElement.eventsPoint) { //
@@ -224,6 +225,8 @@
 				}
 
 				customEvents.add(eventElement.element, eventElement.events, eventElement, this);
+
+				return proceedObject;
 
 			});
 		},
