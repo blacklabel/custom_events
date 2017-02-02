@@ -140,6 +140,7 @@
 				[HC.PlotLineOrBand, ['render']],
 				[HC.Series, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.column, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.heatmap, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.bar, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.pie, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.bubble, ['drawPoints', 'drawDataLabels']],
