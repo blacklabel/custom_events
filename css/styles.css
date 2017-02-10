@@ -1,5 +1,9 @@
 @import 'https://code.highcharts.com/css/highcharts.css';
 
+/* content wrapper */
+#main-content { max-width:900px; margin:0px auto; font-size: 1.3em; } 
+#main-content ul li { margin-bottom:10px; }
+
 /* Highcharts */
 
 .highcharts-title { width: calc(100% - 30px)!important; }
