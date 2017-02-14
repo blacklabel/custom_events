@@ -103,27 +103,6 @@
 		});
 	}
 
-	if (axisProto) { // # condition for highmaps and custom builds
-		wrap(HC.Axis.prototype, 'render', function (proceed, e, point) {
-			
-			var axis = this,
-				crosshair = axis.crosshair;
-
-			if (isObject(crosshair)) {
-				this.crosshair = crosshair.enabled;
-			}
-
-			// call default action
-			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-		});
-
-		wrap(HC.Axis.prototype, 'drawCrosshair', function (proceed, e, point) {
-			
-			// call default action
-			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-		});
-	}
-
 	HC.Chart.prototype.customEvent = {
 		/**
 		 * @description Example: [HC.Series, ['drawPoints', 'drawDataLabels']]
