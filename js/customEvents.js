@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.8 (2017-01-19)
+* Custom events v2.0.9 (2017-02-14)
 *
 * (c) 2012-2016 Black Label
 *
@@ -127,7 +127,8 @@
 				[seriesTypes.areasplinerange, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.errorbar, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.boxplot, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']]
+				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.heatmap, ['drawPoints', 'drawDataLabels']]
 			];
 		},
 		/**
