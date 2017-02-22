@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.9 (2017-02-14)
+* Custom events v2.0.10 (2017-02-22)
 *
 * (c) 2012-2016 Black Label
 *
@@ -275,7 +275,7 @@
 									var chart = series.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
-									elemObj = series.searchPoint(normalizedEvent, true);
+									elemObj = series.searchPoint(normalizedEvent, series.kdDimensions === 1); // #87 - wrong searchPoint for scatter series
 								
 								}
 
