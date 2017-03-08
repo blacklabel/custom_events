@@ -5,13 +5,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <link rel="stylesheet" type="text/css" href="css/styles.css">
-</head>
-<body>
 <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-<script src="//code.highcharts.com/highcharts.js"></script>
-<script src="./customEvents.js"></script>
+<script src="//code.highcharts.com/js/highcharts.src.js"></script>
+<script src="./js/customEvents.js"></script>
+</head>
 
+<body>
 
+<div id="main-content">
 <h1>Custom events - Highcharts module</h1>
 
 <p>Go to project page to see this module in action: <a href="http://blacklabel.github.io/custom_events/">http://blacklabel.github.io/custom_events/</a></p>
@@ -40,10 +41,6 @@ $(function () {
     $('#chart').highcharts({
         chart: {
             renderTo: 'chart',
-            borderWidth: 5,
-            borderColor: '#e8eaeb',
-            borderRadius: 0,
-            backgroundColor: '#f7f7f7',
             marginTop: 70,
             events: {
                 load: function () {
@@ -55,13 +52,22 @@ $(function () {
                     ch.flashText = ch.renderer.text('<div id="flash"><div id="report"></div></div>', x , y +10, true).attr({
                         zIndex: 101
                     }).add();
+                },
+                dblclick: function () {
+                    reloadFlash();
+                    $('#report').html('dbclick on chart');
+                },
+                click: function () {
+                    reloadFlash();
+                    $('#report').html('click on chart');
+                },
+                contextmenu: function () {
+                    reloadFlash();
+                    $('#report').html('context menu on chart');
                 }
             }
         },
         title: {
-            style: {
-                'fontSize': '1em'
-            },
             useHTML: true,
             align: 'left',
             x: -5,
@@ -295,7 +301,7 @@ $(function () {
             }
         },
         series: [{
-            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
+            data: [99.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135, 43]
         }, {
             type: 'column',
             data: [50, 16, 21, 11, 22, 12]
@@ -316,6 +322,12 @@ $(function () {
 
 <ul>
 <li>Like any other Highcharts module (e.g. exporting), add <code>&lt;script&gt;</code> tag pointing to <code>customEvents.js</code> below Highcharts script tag.</li>
+
+
+<li>For NPM users:
+<code>var Highcharts = require('highcharts'),
+    HighchartsAnnotations = require('annotations')(Highcharts);</code>
+</li>
 </ul>
 
 <h3>Code</h3>
@@ -325,5 +337,6 @@ $(function () {
 <h3>Demo</h3>
 
 <p>Demos are available at project's github page: <a href="http://blacklabel.github.io/custom_events/">http://blacklabel.github.io/custom_events/</a></p>
+</div>
 </body>
 </html>
