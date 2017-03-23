@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.10 (2017-02-22)
+* Custom events v2.0.11 (2017-03-23)
 *
 * (c) 2012-2016 Black Label
 *
@@ -188,7 +188,7 @@
 							var elemPoint = pick(eventElement.elementPoint[j].graphic, eventElement.elementPoint[j]);
 
 							if (elemPoint && elemPoint !== UNDEFINED) {
-								customEvents.add(elemPoint, eventElement.eventsPoint, eventElement.elementPoint[j], eventElement, this);
+								customEvents.add(elemPoint, eventElement.eventsPoint, eventElement.elementPoint[j], eventElement, true);
 							}
 						}
 					}
@@ -218,9 +218,10 @@
 		 * @param {Object} series chart series
 		 * @memberof customEvents
 		 **/
-		add: function (SVGelem, events, elemObj, eventElement, series) {
+		add: function (SVGelem, events, elemObj, eventElement, isPoint) {
 
-			var eventObject = eventElement.eventObject;
+			var eventObject = eventElement.eventObject || elemObj.eventObject, //	Fix series reference #89
+				isSeries = elemObj.isSeries || eventElement.isSeries;
 
 			// stop when SVG element does not exist
 			if (!SVGelem || !SVGelem.element) {
@@ -239,6 +240,22 @@
 								
 								e.stopPropagation();
 								e.preventDefault();
+
+								if (elemObj && elemObj.textStr) { // labels
+									elemObj.value = elemObj.textStr;
+								}
+
+								if (isSeries) { 
+									var chart = eventObject.chart,
+										normalizedEvent = chart.pointer.normalize(e);
+
+									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1); // #87 - wrong searchPoint for scatter series
+									e.point = elemObj;	//	#89 point reference in mouse event
+								}
+
+								if (eventObject && !isPoint) {
+									elemObj = eventObject;
+								}
 
 								if (!tapped) {
 
@@ -270,16 +287,15 @@
 									elemObj.value = elemObj.textStr;
 								}
 
-								if (series && defaultOptions[series.type] && defaultOptions[series.type].marker) {
-
-									var chart = series.chart,
+								if (isSeries) { 
+									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
-									elemObj = series.searchPoint(normalizedEvent, series.kdDimensions === 1); // #87 - wrong searchPoint for scatter series
-								
+									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1); // #87 - wrong searchPoint for scatter series
+									e.point = elemObj;	//	#89 point reference in mouse event
 								}
 
-								if (eventObject) {
+								if (eventObject && !isPoint) {
 									elemObj = eventObject;
 								}
 
@@ -452,7 +468,9 @@
 					events: events,
 					element: element,
 					eventsPoint: eventsPoint,
-					elementPoint: elementPoint
+					elementPoint: elementPoint,
+					eventObject: this,
+					isSeries: true
 				};
 			},
 			/**
@@ -469,19 +487,19 @@
 				};
 			},
 			/**
-			 * @description Extracts SVG elements from crosshair 
+			 * @description Extracts SVG elements from crosshair
 			 * @property {Object} events events for crosshair
 			 * @property {Array} element crosshair SVG element
 			 * @return {Object} { events: object, element: object }
 			 * @memberof customEvents
 			 **/
-			drawCrosshair: function() {
+			drawCrosshair: function () {
 				var crosshair = this.options.crosshair;
 
 				return {
 					events: crosshair && crosshair.events,
 					element: this.cross
-				}
+				};
 			}
 		}
 	};
