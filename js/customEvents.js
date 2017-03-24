@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.11 (2017-03-23)
+* Custom events v2.0.12 (2017-03-24)
 *
 * (c) 2012-2016 Black Label
 *
@@ -291,7 +291,7 @@
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
-									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1); // #87 - wrong searchPoint for scatter series
+									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1) || elemObj; // #87 - wrong searchPoint for scatter series
 									e.point = elemObj;	//	#89 point reference in mouse event
 								}
 
@@ -458,7 +458,7 @@
 					eventsPoint = op.customEvents ? op.customEvents.point : op.point.events,
 					elementPoint;
 
-				if (defaultOptions[type] && defaultOptions[type].marker) {
+				if (defaultOptions[type] && defaultOptions[type].marker && !this.bubblePadding) {
 					elementPoint = [this.markerGroup]; //	get markers when enabled
 				} else {
 					elementPoint = this.points; //	extract points
