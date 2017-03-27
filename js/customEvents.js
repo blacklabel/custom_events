@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.12 (2017-03-24)
+* Custom events v2.0.13 (2017-03-27)
 *
 * (c) 2012-2016 Black Label
 *
@@ -249,7 +249,7 @@
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
-									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1); // #87 - wrong searchPoint for scatter series
+									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1) || elemObj; // #87 - wrong searchPoint for scatter series
 									e.point = elemObj;	//	#89 point reference in mouse event
 								}
 
@@ -293,6 +293,7 @@
 
 									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1) || elemObj; // #87 - wrong searchPoint for scatter series
 									e.point = elemObj;	//	#89 point reference in mouse event
+
 								}
 
 								if (eventObject && !isPoint) {
@@ -463,6 +464,11 @@
 				} else {
 					elementPoint = this.points; //	extract points
 				}
+
+
+				if (!this.kdTree && !this.buildingKdTree) {
+                    this.buildKDTree(); //	#86, missing reference to point on first mouseover
+                }
 
 				return {
 					events: events,
