@@ -76,25 +76,34 @@
 			var chartOptions = chart.options,
 				plotOptions = chartOptions.plotOptions,
 				seriesOptions = chartOptions.plotOptions.series,
-				userOptions = merge(seriesOptions, plotOptions[this.type], options); // Fixed #70
+				userOptions = merge(seriesOptions, plotOptions[this.type], options),
+				userOptionsEvents = userOptions && userOptions.events,
+				userOptionsPointEvents = userOptions && userOptions.point && userOptions.point.events; // Fixed #70
 
 			// reset default events on series and series point
-			options.events = false;
+			options.events = {};
 			options.point = {
-				events: false
+				events: {}
 			};
 
-			// Add support for legendItemClick.
-			if (userOptions && userOptions.events && userOptions.events.legendItemClick) {
+			// Add support for legendItemClick
+			if (userOptionsEvents) {
 				options.events = {
-					legendItemClick: userOptions.events.legendItemClick
+					legendItemClick: userOptionsEvents && userOptionsEvents.legendItemClick
+				};
+			}
+
+			// Add support for legendItemClick in pie chart
+			if (userOptionsPointEvents) {
+				options.point.events = {
+					legendItemClick: userOptionsPointEvents && userOptionsPointEvents.legendItemClick
 				};
 			}
 
 			// attach events to custom object, which is used in attach event
 			options.customEvents = {
-				series: userOptions && userOptions.events,
-				point: userOptions && userOptions.point && userOptions.point.events
+				series: userOptionsEvents,
+				point: userOptionsPointEvents
 			};
 
 			// call default action
