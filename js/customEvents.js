@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.13 (2017-03-27)
+* Custom events v2.0.14 (2017-04-06)
 *
 * (c) 2012-2016 Black Label
 *
@@ -72,7 +72,6 @@
 	}
 	if (seriesProto) { // # condition for highmaps and custom builds
 		wrap(seriesProto, 'init', function (proceed, chart, options) {
-
 			var chartOptions = chart.options,
 				plotOptions = chartOptions.plotOptions,
 				seriesOptions = chartOptions.plotOptions.series,
@@ -254,7 +253,7 @@
 									elemObj.value = elemObj.textStr;
 								}
 
-								if (isSeries) { 
+								if (isSeries && !eventObject.directTouch) { // #93
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
@@ -296,7 +295,7 @@
 									elemObj.value = elemObj.textStr;
 								}
 
-								if (isSeries) { 
+								if (isSeries && !eventObject.directTouch) { // #93
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
