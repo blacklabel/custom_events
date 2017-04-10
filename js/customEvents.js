@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.14 (2017-04-06)
+* Custom events v2.0.15 (2017-04-10)
 *
 * (c) 2012-2016 Black Label
 *
@@ -36,6 +36,7 @@
 		addEvent = HC.addEvent,
 		isTouchDevice = HC.isTouchDevice,
 		isObject = HC.isObject,
+		isNumber = HC.isNumber,
 		defaultOptions = HC.getOptions().plotOptions,
 		axisProto = HC.Axis && HC.Axis.prototype,
 		plotLineOrBandProto = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
@@ -228,8 +229,11 @@
 		 **/
 		add: function (SVGelem, events, elemObj, eventElement, isPoint) {
 
+//console.log(eventElement.eventObject, elemObj.eventObject);
+
 			var eventObject = eventElement.eventObject || elemObj.eventObject, //	Fix series reference #89
 				isSeries = elemObj.isSeries || eventElement.isSeries;
+
 
 			// stop when SVG element does not exist
 			if (!SVGelem || !SVGelem.element) {
@@ -249,10 +253,6 @@
 								e.stopPropagation();
 								e.preventDefault();
 
-								if (elemObj && elemObj.textStr) { // labels
-									elemObj.value = elemObj.textStr;
-								}
-
 								if (isSeries && !eventObject.directTouch) { // #93
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
@@ -261,8 +261,13 @@
 									e.point = elemObj;	//	#89 point reference in mouse event
 								}
 
-								if (eventObject && !isPoint) {
+								if ((eventObject && !isPoint) || (isNumber(eventObject.value))) { // #95 
+									eventObject.value = elemObj.textStr;
 									elemObj = eventObject;
+								}
+
+								if (elemObj && elemObj.textStr) { // labels
+									elemObj.value = elemObj.textStr;
 								}
 
 								if (!tapped) {
@@ -291,10 +296,6 @@
 								e.stopPropagation();
 								e.preventDefault();
 
-								if (elemObj && elemObj.textStr) { // labels
-									elemObj.value = elemObj.textStr;
-								}
-
 								if (isSeries && !eventObject.directTouch) { // #93
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
@@ -304,8 +305,13 @@
 
 								}
 
-								if (eventObject && !isPoint) {
+								if ((eventObject && !isPoint) || (eventObject && isNumber(eventObject.value))) { // #95 wrong reference for axis labels
+									eventObject.value = elemObj.textStr; // #95 wrong reference for axis labels
 									elemObj = eventObject;
+								}
+
+								if (elemObj && elemObj.textStr) { // labels
+									elemObj.value = elemObj.textStr;
 								}
 
 								events[event].call(elemObj, e);
