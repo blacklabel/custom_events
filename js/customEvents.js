@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.15 (2017-04-10)
+* Custom events v2.0.16 (2017-05-23)
 *
 * (c) 2012-2016 Black Label
 *
@@ -229,8 +229,6 @@
 		 **/
 		add: function (SVGelem, events, elemObj, eventElement, isPoint) {
 
-//console.log(eventElement.eventObject, elemObj.eventObject);
-
 			var eventObject = eventElement.eventObject || elemObj.eventObject, //	Fix series reference #89
 				isSeries = elemObj.isSeries || eventElement.isSeries;
 
@@ -306,7 +304,7 @@
 								}
 
 								if ((eventObject && !isPoint) || (eventObject && isNumber(eventObject.value))) { // #95 wrong reference for axis labels
-									eventObject.value = elemObj.textStr; // #95 wrong reference for axis labels
+									eventObject.value = elemObj.textStr || eventObject.value; // #95, #98 wrong reference for axis labels
 									elemObj = eventObject;
 								}
 
