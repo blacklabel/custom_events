@@ -1,7 +1,7 @@
 /**
-* Custom events v2.0.16 (2017-05-23)
+* Custom events v2.0.17 (2017-05-23)
 *
-* (c) 2012-2016 Black Label
+* (c) 2012-2017 Black Label
 *
 * License: Creative Commons Attribution (CC)
 */
@@ -137,7 +137,8 @@
 				[seriesTypes.errorbar, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.boxplot, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.heatmap, ['drawPoints', 'drawDataLabels']]
+				[seriesTypes.heatmap, ['drawPoints', 'drawDataLabels']],
+				[seriesTypes.xrange, ['drawPoints', 'drawDataLabels']]
 			];
 		},
 		/**
