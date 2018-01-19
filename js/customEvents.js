@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.18 (2018-01-10)
+* Custom events v2.0.19 (2018-01-19)
 *
 * (c) 2012-2018 Black Label
 *
@@ -169,7 +169,7 @@
 		 **/
 		attach: function (proto, hcMethod) {
 			
-			wrap(proto, hcMethod, function (proceed) {
+			wrap(proto, hcMethod, function (proceed, param) {
 				var eventElement = {
 						events: UNDEFINED,
 						element: UNDEFINED
@@ -182,7 +182,7 @@
 				proceedObject = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
 				//	call
-				eventElement = customEvents.eventElement[hcMethod].call(this);
+				eventElement = customEvents.eventElement[hcMethod].call(this, param);
 
 				//  stop, when events and SVG element do not exist
 				if (!eventElement.events && !eventElement.eventsPoint) {
@@ -500,10 +500,11 @@
 			 * @return {Object} { events: object, element: object }
 			 * @memberof customEvents
 			 **/
-			renderItem: function () {
+			renderItem: function (item) {
 				return {
 					events: this.options.itemEvents,
-					element: this.group
+					element: this.group,
+					eventObject: item
 				};
 			},
 			/**
