@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.19 (2018-01-19)
+* Custom events v2.0.20 (2018-01-24)
 *
 * (c) 2012-2018 Black Label
 *
@@ -503,7 +503,7 @@
 			renderItem: function (item) {
 				return {
 					events: this.options.itemEvents,
-					element: this.group,
+					element: item.legendGroup,
 					eventObject: item
 				};
 			},
