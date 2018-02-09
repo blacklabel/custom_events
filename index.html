@@ -50,7 +50,8 @@ $(function () {
                         y = 57;
                     
                     ch.flashText = ch.renderer.text('<div id="flash"><div id="report"></div></div>', x , y +10, true).attr({
-                        zIndex: 101
+                        zIndex: 101,
+                        translateY: 100
                     }).add();
                 },
                 dblclick: function () {
