@@ -1,5 +1,5 @@
 /**
-* Custom events v2.0.20 (2018-01-24)
+* Custom events v2.1.0 (2018-02-09)
 *
 * (c) 2012-2018 Black Label
 *
@@ -296,7 +296,7 @@
 								e.stopPropagation();
 								e.preventDefault();
 
-								if (isSeries && !eventObject.directTouch) { // #93
+								if (isSeries) {// #108, #93 - references in e.point and this after chart.update()
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
