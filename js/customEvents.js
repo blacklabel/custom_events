@@ -184,8 +184,14 @@
 				//	call
 				eventElement = customEvents.eventElement[hcMethod].call(this, param);
 
+				
+
+				if (eventElement.eventsSubtitle) {
+					console.log('s1', eventElement, eventElement.eventsSubtitle, !eventElement.events, !eventElement.eventsPoint);
+				}
+
 				//  stop, when events and SVG element do not exist
-				if (!eventElement.events && !eventElement.eventsPoint) {
+				if (!eventElement.events && !eventElement.eventsSubtitle && !eventElement.eventsPoint) {
 					return proceedObject;
 				}
 				
@@ -206,7 +212,10 @@
 				}
 
 				// attach event to subtitle
+				console.log('ss', eventElement, eventElement.eventsSubtitle);
+
 				if (eventElement.eventsSubtitle) {
+					console.log('subtitle');
 					customEvents.add(eventElement.elementSubtitle, eventElement.eventsSubtitle, eventElement, this);
 				}
 
@@ -388,6 +397,7 @@
 			 * @memberof customEvents
 			 **/
 			setTitle: function () {
+				console.log('setTitle');
 				var events = this.options.title && this.options.title.events,
 					element = this.title,
 					eventsSubtitle = this.options.subtitle && this.options.subtitle.events,
