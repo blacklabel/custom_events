@@ -1,5 +1,5 @@
 /**
-* Custom events v2.1.0 (2018-02-09)
+* Custom events v2.1.1 (2018-03-16)
 *
 * (c) 2012-2018 Black Label
 *
@@ -139,7 +139,7 @@
 				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.heatmap, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.xrange, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.candlestick, ['drawPoints', 'drawDataLabels']]
+				[seriesTypes.candlestick, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.sunburst, ['drawPoints', 'drawDataLabels']]
 			];
 		},
@@ -151,14 +151,15 @@
 			var eventsProtoMethods = this.getEventsProtoMethods(); // array of pairs [object, [methods]]
 
 			each(eventsProtoMethods, function (protoMethod) {
-console.log(protoMethod);
-				proto = protoMethod[0] && protoMethod[0].prototype;
-				methods = protoMethod[1];
+				if (HC.isArray(protoMethod)) {
+					proto = protoMethod[0] && protoMethod[0].prototype;
+					methods = protoMethod[1];
 
-				if (proto) {
-					each(methods, function (method) {
-						customEvents.attach(proto, method);
-					});
+					if (proto) {
+						each(methods, function (method) {
+							customEvents.attach(proto, method);
+						});
+					}
 				}
 			});
 		},
@@ -190,7 +191,7 @@ console.log(protoMethod);
 					return proceedObject;
 				}
 				
-				if (eventElement.eventsPoint) { //
+				if (eventElement.eventsPoint) {
 
 					len = eventElement.elementPoint.length;
 
@@ -207,10 +208,7 @@ console.log(protoMethod);
 				}
 
 				// attach event to subtitle
-				console.log('ss', eventElement, eventElement.eventsSubtitle);
-
 				if (eventElement.eventsSubtitle) {
-					console.log('subtitle');
 					customEvents.add(eventElement.elementSubtitle, eventElement.eventsSubtitle, eventElement, this);
 				}
 
@@ -392,7 +390,6 @@ console.log(protoMethod);
 			 * @memberof customEvents
 			 **/
 			setTitle: function () {
-				console.log('setTitle');
 				var events = this.options.title && this.options.title.events,
 					element = this.title,
 					eventsSubtitle = this.options.subtitle && this.options.subtitle.events,
