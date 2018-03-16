@@ -184,12 +184,6 @@
 				//	call
 				eventElement = customEvents.eventElement[hcMethod].call(this, param);
 
-				
-
-				if (eventElement.eventsSubtitle) {
-					console.log('s1', eventElement, eventElement.eventsSubtitle, !eventElement.events, !eventElement.eventsPoint);
-				}
-
 				//  stop, when events and SVG element do not exist
 				if (!eventElement.events && !eventElement.eventsSubtitle && !eventElement.eventsPoint) {
 					return proceedObject;
