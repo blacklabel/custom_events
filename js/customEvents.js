@@ -140,6 +140,7 @@
 				[seriesTypes.heatmap, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.xrange, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.candlestick, ['drawPoints', 'drawDataLabels']]
+				[seriesTypes.sunburst, ['drawPoints', 'drawDataLabels']]
 			];
 		},
 		/**
@@ -150,7 +151,7 @@
 			var eventsProtoMethods = this.getEventsProtoMethods(); // array of pairs [object, [methods]]
 
 			each(eventsProtoMethods, function (protoMethod) {
-
+console.log(protoMethod);
 				proto = protoMethod[0] && protoMethod[0].prototype;
 				methods = protoMethod[1];
 
