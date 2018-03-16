@@ -28,7 +28,6 @@
     "gulp-jsdoc3": "^0.3.0"
   },
   "dependencies": {
-    "express": "^4.15.2",
     "highcharts": "^5.0.9"
   }
 }
