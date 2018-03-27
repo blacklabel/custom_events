@@ -28,6 +28,6 @@
     "gulp-jsdoc3": "^0.3.0"
   },
   "dependencies": {
-    "highcharts": "^5.0.9"
+    "highcharts": ">=5.0.9"
   }
 }
