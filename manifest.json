@@ -1,6 +1,6 @@
 {
         "name": "Custom-Events",
-        "version": "2.1.2",
+        "version": "2.1.3",
         "title": "Custom-Events",
         "author": {
                 "name": "Black Label",
@@ -23,7 +23,8 @@
                 "highcharts",
                 "highstock",
                 "highmaps",
-                "events"
+                "events",
+                "highcharts-addons"
         ],
         "maintainers": [
                 {
