@@ -1,6 +1,6 @@
 {
   "name": "highcharts-custom-events",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "homepage": "http://blacklabel.github.io/custom_events/",
   "authors": [
     "Sebastian Bochan <sebastian@blacklabel.pl>",
@@ -14,7 +14,7 @@
     "highstock",
     "highmaps",
     "events",
-    "highcharts-addons"
+    "highcharts-addon"
   ],
   "license": "Creative Commons Attribution (CC)",
   "ignore": [
