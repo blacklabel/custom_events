@@ -141,6 +141,7 @@
 				[seriesTypes.xrange, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.candlestick, ['drawPoints', 'drawDataLabels']],
 				[seriesTypes.sunburst, ['drawPoints', 'drawDataLabels']]
+				[seriesTypes.wordcloud, ['drawPoints', 'drawDataLabels']]
 			];
 		},
 		/**
