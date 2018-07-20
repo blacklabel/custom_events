@@ -114,29 +114,24 @@
 		 * @returns {Array} array of pairs: prototype, array of methods to wrap
 		 **/
 		getEventsProtoMethods: function () {
-			return [
+			var protoMethods = [
 				[HC.Tick, ['addLabel']],
 				[HC.Axis, ['render']],
 				[HC.Axis, ['drawCrosshair']],
 				[HC.Chart, ['setTitle']],
 				[HC.Legend, ['renderItem']],
 				[HC.PlotLineOrBand, ['render']],
-				[HC.Series, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.column, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.bar, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.pie, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.bubble, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.columnrange, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.arearange, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.areasplinerange, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.errorbar, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.boxplot, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.flags, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.heatmap, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.xrange, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.candlestick, ['drawPoints', 'drawDataLabels']],
-				[seriesTypes.sunburst, ['drawPoints', 'drawDataLabels']]
+				[HC.Series, ['drawPoints', 'drawDataLabels']]
 			];
+	  
+			// support for extra series
+			objectEach(seriesTypes, function (fn, seriesType) {
+				protoMethods.push([
+					seriesTypes[seriesType], ['drawPoints', 'drawDataLabels']
+				]);
+			});
+	
+			return protoMethods;
 		},
 		/**
 		 * @description Init method, based on getEventsProtoMethods() array. Iterates on array of prototypes and methods to wrap
@@ -297,7 +292,7 @@
 								e.stopPropagation();
 								e.preventDefault();
 
-								if (isSeries) {// #108, #93 - references in e.point and this after chart.update()
+								if (isSeries) { // #108, #93 - references in e.point and this after chart.update()
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
@@ -486,8 +481,8 @@
 
 
 				if (!this.kdTree && !this.buildingKdTree) {
-                    this.buildKDTree(); //	#86, missing reference to point on first mouseover
-                }
+					this.buildKDTree(); //	#86, missing reference to point on first mouseover
+				}
 
 				return {
 					events: events,
