@@ -1,5 +1,5 @@
 /**
-* Custom events v2.1.5 (2018-07-20)
+* Custom events v2.1.6 (2018-07-20)
 *
 * (c) 2012-2018 Black Label
 *
@@ -34,6 +34,7 @@
 		wrap = HC.wrap,
 		merge = HC.merge,
 		isArray = HC.isArray,
+		objectEach = HC.objectEach,
 		addEvent = HC.addEvent,
 		isTouchDevice = HC.isTouchDevice,
 		isObject = HC.isObject,
