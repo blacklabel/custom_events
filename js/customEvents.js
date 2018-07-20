@@ -33,6 +33,7 @@
 		pick = HC.pick,
 		wrap = HC.wrap,
 		merge = HC.merge,
+		isArray = HC.isArray,
 		addEvent = HC.addEvent,
 		isTouchDevice = HC.isTouchDevice,
 		isObject = HC.isObject,
@@ -45,14 +46,6 @@
 		customEvents,
 		proto,
 		methods;
-
-	/**
-	 * @memberof customEvents
-	 * @returns {Boolean} true if object is array
-	 **/
-	function isArray(obj) {
-		return Object.prototype.toString.call(obj) === '[object Array]';
-	}
 
 	/**
 	 * WRAPPED FUNCTIONS
@@ -153,7 +146,7 @@
 			var eventsProtoMethods = this.getEventsProtoMethods(); // array of pairs [object, [methods]]
 
 			each(eventsProtoMethods, function (protoMethod) {
-				if (HC.isArray(protoMethod)) {
+				if (isArray(protoMethod)) {
 					proto = protoMethod[0] && protoMethod[0].prototype;
 					methods = protoMethod[1];
 
