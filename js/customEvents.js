@@ -1,5 +1,5 @@
 /**
-* Custom events v2.1.4 (2018-03-27)
+* Custom events v2.1.5 (2018-07-20)
 *
 * (c) 2012-2018 Black Label
 *
@@ -96,7 +96,9 @@
 			// Add support for legendItemClick in pie chart
 			if (userOptionsPointEvents) {
 				options.point.events = {
-					legendItemClick: userOptionsPointEvents && userOptionsPointEvents.legendItemClick
+					legendItemClick: userOptionsPointEvents && userOptionsPointEvents.legendItemClick,
+					select: userOptionsPointEvents && userOptionsPointEvents.select,
+					unselect: userOptionsPointEvents && userOptionsPointEvents.unselect
 				};
 			}
 
