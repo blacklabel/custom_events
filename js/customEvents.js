@@ -1,5 +1,5 @@
 /**
-* Custom events v2.1.6 (2018-07-20)
+* Custom events v2.1.7 (2018-09-24)
 *
 * (c) 2012-2018 Black Label
 *
@@ -33,8 +33,6 @@
 		pick = HC.pick,
 		wrap = HC.wrap,
 		merge = HC.merge,
-		isArray = HC.isArray,
-		objectEach = HC.objectEach,
 		addEvent = HC.addEvent,
 		isTouchDevice = HC.isTouchDevice,
 		isObject = HC.isObject,
@@ -44,9 +42,28 @@
 		plotLineOrBandProto = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
 		seriesTypes = HC.seriesTypes,
 		seriesProto = HC.Series && HC.Series.prototype,
+		isArray,
+		objectEach,
 		customEvents,
 		proto,
 		methods;
+
+	/*
+	 * Back compatibility
+	 */
+
+	isArray = HC.isArray || function(obj) {
+		var str = Object.prototype.toString.call(obj);
+		return str === '[object Array]' || str === '[object Array Iterator]';
+	};
+	
+	objectEach = HC.objectEach || function(obj, fn, ctx) {
+		for (var key in obj) {
+	    	if (obj.hasOwnProperty(key)) {
+	    		fn.call(ctx, obj[key], key, obj);
+	    	}
+		}
+	};
 
 	/**
 	 * WRAPPED FUNCTIONS
