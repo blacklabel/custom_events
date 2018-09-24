@@ -1,5 +1,5 @@
 /**
-* Custom events v2.1.7 (2018-09-24)
+* Custom events v2.1.8 (2018-09-24)
 *
 * (c) 2012-2018 Black Label
 *
@@ -35,13 +35,13 @@
 		merge = HC.merge,
 		addEvent = HC.addEvent,
 		isTouchDevice = HC.isTouchDevice,
-		isObject = HC.isObject,
-		isNumber = HC.isNumber,
 		defaultOptions = HC.getOptions().plotOptions,
 		axisProto = HC.Axis && HC.Axis.prototype,
 		plotLineOrBandProto = HC.PlotLineOrBand && HC.PlotLineOrBand.prototype,
 		seriesTypes = HC.seriesTypes,
 		seriesProto = HC.Series && HC.Series.prototype,
+		isObject,
+		isNumber,
 		isArray,
 		objectEach,
 		customEvents,
@@ -52,18 +52,26 @@
 	 * Back compatibility
 	 */
 
-	isArray = HC.isArray || function(obj) {
+	isArray = HC.isArray || function (obj) {
 		var str = Object.prototype.toString.call(obj);
 		return str === '[object Array]' || str === '[object Array Iterator]';
 	};
 	
-	objectEach = HC.objectEach || function(obj, fn, ctx) {
+	objectEach = HC.objectEach || function (obj, fn, ctx) {
 		for (var key in obj) {
 	    	if (obj.hasOwnProperty(key)) {
 	    		fn.call(ctx, obj[key], key, obj);
 	    	}
 		}
 	};
+
+	isNumber = HC.isNumber || function (n) {
+		return typeof n === 'number' && !isNaN(n);
+	};
+
+	isObject = HC.isObject || function (obj) {
+		return obj && typeof obj === 'object';
+	}
 
 	/**
 	 * WRAPPED FUNCTIONS
