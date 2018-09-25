@@ -1,5 +1,5 @@
 /**
-* Custom events v2.1.8 (2018-09-24)
+* Custom events v2.1.9 (2018-09-25)
 *
 * (c) 2012-2018 Black Label
 *
@@ -271,15 +271,18 @@
 								e.stopPropagation();
 								e.preventDefault();
 
-								if (isSeries && !eventObject.directTouch) { // #93
+								if (isSeries) { // #93
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
-									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1) || elemObj; // #87 - wrong searchPoint for scatter series
+									if (!eventObject.directTouch) {
+										elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1);
+									}
+
 									e.point = elemObj;	//	#89 point reference in mouse event
 								}
 
-								if ((eventObject && !isPoint) || (isNumber(eventObject.value))) { // #95 
+								if ((eventObject && !isPoint) || (eventObject && isNumber(eventObject.value))) { // #95 
 									eventObject.value = elemObj.textStr;
 									elemObj = eventObject;
 								}
@@ -322,9 +325,11 @@
 									var chart = eventObject.chart,
 										normalizedEvent = chart.pointer.normalize(e);
 
-									elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1) || elemObj; // #87 - wrong searchPoint for scatter series
-									e.point = elemObj;	//	#89 point reference in mouse event
+									if (!eventObject.directTouch) {
+										elemObj = eventObject.searchPoint(normalizedEvent, eventObject.kdDimensions === 1);
+									}
 
+									e.point = elemObj;	//	#89 point reference in mouse event
 								}
 
 								if ((eventObject && !isPoint) || (eventObject && isNumber(eventObject.value))) { // #95 wrong reference for axis labels
@@ -504,7 +509,6 @@
 				} else {
 					elementPoint = this.points; //	extract points
 				}
-
 
 				if (!this.kdTree && !this.buildingKdTree) {
 					this.buildKDTree(); //	#86, missing reference to point on first mouseover
