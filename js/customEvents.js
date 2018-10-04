@@ -1,5 +1,5 @@
 /**
-* Custom events v2.1.9 (2018-09-25)
+* Custom events v2.2.0 (2018-10-04)
 *
 * (c) 2012-2018 Black Label
 *
@@ -228,6 +228,25 @@
 					customEvents.add(eventElement.elementSubtitle, eventElement.eventsSubtitle, eventElement, this);
 				}
 
+				// attach event to each datalabal and add reference to each point
+				if (eventElement.dataLabelsPoints) {
+					var dataLabelsPoints = eventElement.dataLabelsPoints;
+					
+					len = dataLabelsPoints.length;
+
+					for (j = 0; j < len; j++) {
+						customEvents.add(
+							dataLabelsPoints[j].dataLabel,
+							eventElement.events,
+							{
+								dataLabel: dataLabelsPoints[j].dataLabel,
+								point: dataLabelsPoints[j]
+							},
+							this
+						);
+					}
+				}
+
 				// attach event to stackLabels
 				if (eventElement.eventsStackLabel) {
 					customEvents.add(eventElement.elementStackLabel, eventElement.eventsStackLabel, eventElement, this);
@@ -439,11 +458,13 @@
 			 * @memberof customEvents
 			 **/
 			drawDataLabels: function () {
-				var dataLabelsGroup = this.dataLabelsGroup;
+				var dataLabelsGroup = this.dataLabelsGroup,
+					dataLabelEvents = dataLabelsGroup && this.options.dataLabels.events;
 
 				return {
-					events: dataLabelsGroup ? this.options.dataLabels.events : UNDEFINED,
-					element: dataLabelsGroup ? this.dataLabelsGroup : UNDEFINED
+					events: dataLabelEvents,
+					element: dataLabelsGroup,
+					dataLabelsPoints: this.points
 				};
 			},
 			/**
