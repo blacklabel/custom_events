@@ -1,5 +1,5 @@
 /**
-* Custom events v2.2.0 (2018-10-04)
+* Custom events v2.2.1 (2018-10-09)
 *
 * (c) 2012-2018 Black Label
 *
@@ -310,7 +310,7 @@
 									elemObj.value = elemObj.textStr;
 								}
 
-								if (elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
+								if (elemObj && elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
 									elemObj.doDrilldown(undefined, undefined, e);
 								}
 
@@ -360,7 +360,7 @@
 									elemObj.value = elemObj.textStr;
 								}
 
-								if (elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
+								if (elemObj && elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
 									elemObj.doDrilldown(undefined, undefined, e);
 								}
 
