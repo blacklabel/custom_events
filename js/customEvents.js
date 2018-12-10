@@ -1,5 +1,5 @@
 /**
-* Custom events v2.2.1 (2018-10-09)
+* Custom events v2.2.2 (2018-12-10)
 *
 * (c) 2012-2018 Black Label
 *
@@ -117,7 +117,10 @@
 				options.point.events = {
 					legendItemClick: userOptionsPointEvents && userOptionsPointEvents.legendItemClick,
 					select: userOptionsPointEvents && userOptionsPointEvents.select,
-					unselect: userOptionsPointEvents && userOptionsPointEvents.unselect
+					unselect: userOptionsPointEvents && userOptionsPointEvents.unselect,
+					click: userOptionsPointEvents && userOptionsPointEvents.click,
+					mouseOut: userOptionsPointEvents && userOptionsPointEvents.mouseOut,
+					mouseOver: userOptionsPointEvents && userOptionsPointEvents.mouseOver
 				};
 			}
 
