@@ -24,12 +24,12 @@
     "js/customEvents.js"
   ],
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-eslint": "^2.0.0",
-    "gulp-jsdoc3": "^0.3.0"
+    "gulp": "^4.0.0",
+    "gulp-eslint": "^5.0.0",
+    "gulp-jsdoc3": "^2.0.0",
+    "gulp-jsmin": "^0.1.5"
   },
   "dependencies": {
-    "gulp-jsmin": "^0.1.5",
     "highcharts": ">=5.0.9"
   }
 }
