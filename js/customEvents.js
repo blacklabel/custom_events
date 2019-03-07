@@ -1,5 +1,5 @@
 /**
-* Custom events v2.2.2 (2018-12-10)
+* Custom events v2.2.3 (2019-03-07)
 *
 * (c) 2012-2018 Black Label
 *
@@ -569,11 +569,18 @@
 			 * @memberof customEvents
 			 **/
 			drawCrosshair: function () {
-				var crosshair = this.options.crosshair;
+				var cross = this.cross,
+					crosshairOptions = this.options.crosshair;
+
+				if (cross) {
+					cross.css({
+						'pointer-events': 'auto'
+					});
+				}
 
 				return {
-					events: crosshair && crosshair.events,
-					element: this.cross
+					events: crosshairOptions && crosshairOptions.events,
+					element: cross
 				};
 			}
 		}
