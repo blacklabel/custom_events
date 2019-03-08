@@ -1,5 +1,5 @@
 /**
-* Custom events v2.2.3 (2019-03-07)
+* Custom events v2.2.4 (2019-03-08)
 *
 * (c) 2012-2018 Black Label
 *
@@ -321,7 +321,9 @@
 
 									tapped = setTimeout(function () {
 										tapped = null;
-										events[CLICK].call(elemObj, e); //	call single click action
+										if (events[CLICK]) {
+											events[CLICK].call(elemObj, e); //	call single click action
+										}
 									}, 300);
 
 								} else {
