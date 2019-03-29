@@ -1,5 +1,5 @@
 /**
-* Custom events v2.2.4 (2019-03-08)
+* Custom events v2.2.5 (2019-03-29)
 *
 * (c) 2012-2018 Black Label
 *
@@ -289,8 +289,7 @@
 							var tapped = false;
 
 							addEvent(SVGelem.element, TOUCHSTART, function (e) {
-								
-								e.stopPropagation();
+
 								e.preventDefault();
 
 								if (isSeries) { // #93
