@@ -1,5 +1,5 @@
 /**
-* Custom events v2.2.5 (2019-03-29)
+* Custom events v2.2.6 (2019-04-26)
 *
 * (c) 2012-2018 Black Label
 *
@@ -428,7 +428,8 @@
 						isLast: this.isLast,
 						chart: axis.chart,
 						dateTimeLabelFormat: axisOptions.dateTimeLabelFormats,
-						value: this.pos
+						value: this.pos,
+						pos: this.pos
 					}
 				};
 			},
