@@ -6,7 +6,7 @@ Go to project page to see this module in action: [http://blacklabel.github.io/cu
 
 ### Requirements
 
-* Plugin requires the latest Highcharts (tested with 3.0.7)
+* Plugin requires the latest Highcharts (tested with 6.1.4)
 
 ### Installation
 
