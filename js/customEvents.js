@@ -1,7 +1,7 @@
 /**
-* Custom events v2.2.6 (2019-04-26)
+* Custom events v3.0.0 (2019-05-21)
 *
-* (c) 2012-2018 Black Label
+* (c) 2012-2019 Black Label
 *
 * License: Creative Commons Attribution (CC)
 */
@@ -14,11 +14,18 @@
  **/
 
 (function (factory) {
-	if (typeof module === 'object' && module.exports) {
-		module.exports = factory;
-	} else {
-		factory(Highcharts);
-	}
+    if (typeof module === 'object' && module.exports) {
+        factory['default'] = factory;
+        module.exports = factory;
+    } else if (typeof define === 'function' && define.amd) {
+        define('highcharts-custom-events', ['highcharts'], function (Highcharts) {
+            factory(Highcharts);
+            factory.Highcharts = Highcharts;
+            return factory;
+        });
+    } else {
+        factory(Highcharts);
+    }
 }(function (HC) {
 
 	/* global Highcharts :true, window */
