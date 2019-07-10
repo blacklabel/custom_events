@@ -1,5 +1,5 @@
 /**
-* Custom events v3.0.1 (2019-05-23)
+* Custom events v3.0.2 (2019-07-10)
 *
 * (c) 2012-2019 Black Label
 *
@@ -327,7 +327,7 @@
 
 									tapped = setTimeout(function () {
 										tapped = null;
-										if (events[CLICK]) {
+										if (events[CLICK] && elemObj && elemObj.drilldown === undefined) {
 											events[CLICK].call(elemObj, e); //	call single click action
 										}
 									}, 300);
@@ -336,8 +336,10 @@
 									clearTimeout(tapped);
 
 									tapped = null;
-									events[event].call(elemObj, e);
-
+									
+									if (elemObj && elemObj.drilldown === undefined) {
+										events[event].call(elemObj, e);
+									}
 								}
 
 								return false;
@@ -373,9 +375,9 @@
 
 								if (elemObj && elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
 									elemObj.doDrilldown(undefined, undefined, e);
+								} else {
+									events[event].call(elemObj, e);
 								}
-
-								events[event].call(elemObj, e);
 
 								return false;
 							});
