@@ -1,7 +1,7 @@
 /**
-* Custom events v2.2.2 (2018-12-10)
+* Custom events v3.0.2 (2019-07-10)
 *
-* (c) 2012-2018 Black Label
+* (c) 2012-2019 Black Label
 *
 * License: Creative Commons Attribution (CC)
 */
@@ -14,11 +14,18 @@
  **/
 
 (function (factory) {
-	if (typeof module === 'object' && module.exports) {
-		module.exports = factory;
-	} else {
-		factory(Highcharts);
-	}
+    if (typeof module === 'object' && module.exports) {
+        factory['default'] = factory;
+        module.exports = factory;
+    } else if (typeof define === 'function' && define.amd) {
+        define('highcharts-custom-events', ['highcharts'], function (Highcharts) {
+            factory(Highcharts);
+            factory.Highcharts = Highcharts;
+            return factory;
+        });
+    } else {
+        factory(Highcharts);
+    }
 }(function (HC) {
 
 	/* global Highcharts :true, window */
@@ -289,8 +296,7 @@
 							var tapped = false;
 
 							addEvent(SVGelem.element, TOUCHSTART, function (e) {
-								
-								e.stopPropagation();
+
 								e.preventDefault();
 
 								if (isSeries) { // #93
@@ -321,15 +327,19 @@
 
 									tapped = setTimeout(function () {
 										tapped = null;
-										events[CLICK].call(elemObj, e); //	call single click action
+										if (events[CLICK] && elemObj && elemObj.drilldown === undefined) {
+											events[CLICK].call(elemObj, e); //	call single click action
+										}
 									}, 300);
 
 								} else {
 									clearTimeout(tapped);
 
 									tapped = null;
-									events[event].call(elemObj, e);
-
+									
+									if (elemObj && elemObj.drilldown === undefined) {
+										events[event].call(elemObj, e);
+									}
 								}
 
 								return false;
@@ -365,9 +375,9 @@
 
 								if (elemObj && elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
 									elemObj.doDrilldown(undefined, undefined, e);
+								} else {
+									events[event].call(elemObj, e);
 								}
-
-								events[event].call(elemObj, e);
 
 								return false;
 							});
@@ -427,7 +437,8 @@
 						isLast: this.isLast,
 						chart: axis.chart,
 						dateTimeLabelFormat: axisOptions.dateTimeLabelFormats,
-						value: this.pos
+						value: this.pos,
+						pos: this.pos
 					}
 				};
 			},
@@ -569,11 +580,18 @@
 			 * @memberof customEvents
 			 **/
 			drawCrosshair: function () {
-				var crosshair = this.options.crosshair;
+				var cross = this.cross,
+					crosshairOptions = this.options.crosshair;
+
+				if (cross) {
+					cross.css({
+						'pointer-events': 'auto'
+					});
+				}
 
 				return {
-					events: crosshair && crosshair.events,
-					element: this.cross
+					events: crosshairOptions && crosshairOptions.events,
+					element: cross
 				};
 			}
 		}
