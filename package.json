@@ -1,6 +1,6 @@
 {
   "name": "highcharts-custom-events",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Plugin that allows you to add extra events, like double / right click on each chart element, for Highcharts.",
   "main": "js/customEvents.js",
   "repository": {

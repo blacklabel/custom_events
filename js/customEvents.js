@@ -1,5 +1,5 @@
 /**
-* Custom events v3.0.2 (2019-07-10)
+* Custom events v3.0.3 (2020-04-08)
 *
 * (c) 2012-2019 Black Label
 *
