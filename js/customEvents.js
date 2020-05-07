@@ -1,5 +1,5 @@
 /**
-* Custom events v3.0.3 (2020-04-08)
+* Custom events v3.0.4 (2020-05-07)
 *
 * (c) 2012-2019 Black Label
 *
@@ -508,9 +508,9 @@
 
 				if (stackLabels && stackLabels.enabled) {
 					eventsPoint = stackLabels.events;
-					elementPoint = this.stacks;
+					elementPoint = this.stacks || this.stacking.stacks;
 					eventsStackLabel = stackLabels.events;
-					elementStackLabel = this.stackTotalGroup;
+					elementStackLabel = this.stackTotalGroup || this.stacking.stackTotalGroup;
 				}
 
 				return {
