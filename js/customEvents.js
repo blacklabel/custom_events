@@ -36,7 +36,6 @@
 		DBLCLICK = 'dblclick',
 		TOUCHSTART = 'touchstart',
 		CLICK = 'click',
-		each = HC.each,
 		pick = HC.pick,
 		wrap = HC.wrap,
 		merge = HC.merge,
@@ -175,14 +174,14 @@
 		 **/
 		init: function () {
 			var eventsProtoMethods = this.getEventsProtoMethods(); // array of pairs [object, [methods]]
-
-			each(eventsProtoMethods, function (protoMethod) {
+			
+			eventsProtoMethods.forEach((protoMethod) => {
 				if (isArray(protoMethod)) {
 					proto = protoMethod[0] && protoMethod[0].prototype;
 					methods = protoMethod[1];
 
 					if (proto) {
-						each(methods, function (method) {
+						methods.forEach((method) => {
 							customEvents.attach(proto, method);
 						});
 					}
