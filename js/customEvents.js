@@ -1,7 +1,7 @@
 /**
-* Custom events v3.0.5 (2020-06-19)
+* Custom events v3.0.6 (2020-07-02)
 *
-* (c) 2012-2019 Black Label
+* (c) 2012-2020 Black Label
 *
 * License: Creative Commons Attribution (CC)
 */
@@ -350,7 +350,6 @@
 							addEvent(SVGelem.element, event, function (e) {
 								
 								e.stopPropagation();
-								e.preventDefault();
 
 								if (isSeries) { // #108, #93 - references in e.point and this after chart.update()
 									var chart = eventObject.chart,
@@ -370,6 +369,18 @@
 
 								if (elemObj && elemObj.textStr) { // labels
 									elemObj.value = elemObj.textStr;
+								}
+
+								if (isPoint && event === 'click' && elemObj.series.options.allowPointSelect) {
+									var defaultFunction = function (event) {
+										// Control key is for Windows, meta (= Cmd key) for Mac, Shift
+										// for Opera.
+										if (elemObj.select) { // #2911
+												elemObj.select(null, e.ctrlKey || e.metaKey || e.shiftKey);
+										}
+									};
+
+								  	HC.fireEvent(elemObj, event, e, defaultFunction);
 								}
 
 								if (elemObj && elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
