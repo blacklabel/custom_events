@@ -371,7 +371,13 @@
 									elemObj.value = elemObj.textStr;
 								}
 
-								if (isPoint && event === 'click' && elemObj.series.options.allowPointSelect) {
+								if (
+									isPoint &&
+									event === 'click' &&
+									elemObj.series &&
+									elemObj.series.options &&
+									elemObj.series.options.allowPointSelect
+								) {
 									var defaultFunction = function (event) {
 										// Control key is for Windows, meta (= Cmd key) for Mac, Shift
 										// for Opera.
