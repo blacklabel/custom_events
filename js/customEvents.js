@@ -1,5 +1,5 @@
 /**
-* Custom events v3.0.8 (2020-07-02)
+* Custom events v3.0.9 (2020-07-07)
 *
 * (c) 2012-2020 Black Label
 *
@@ -158,7 +158,7 @@
 				[HC.PlotLineOrBand, ['render']],
 				[HC.Series, ['drawPoints', 'drawDataLabels']]
 			];
-	  
+
 			// support for extra series
 			objectEach(seriesTypes, function (fn, seriesType) {
 				protoMethods.push([
@@ -175,13 +175,13 @@
 		init: function () {
 			var eventsProtoMethods = this.getEventsProtoMethods(); // array of pairs [object, [methods]]
 			
-			eventsProtoMethods.forEach((protoMethod) => {
+			eventsProtoMethods.forEach(function (protoMethod) {
 				if (isArray(protoMethod)) {
 					proto = protoMethod[0] && protoMethod[0].prototype;
 					methods = protoMethod[1];
 
 					if (proto) {
-						methods.forEach((method) => {
+						methods.forEach(function (method) {
 							customEvents.attach(proto, method);
 						});
 					}
