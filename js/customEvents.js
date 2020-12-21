@@ -1,5 +1,5 @@
 /**
-* Custom events v3.0.9 (2020-07-07)
+* Custom events v3.0.10 (2020-12-21)
 *
 * (c) 2012-2020 Black Label
 *
@@ -391,7 +391,7 @@
 
 								if (elemObj && elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
 									elemObj.doDrilldown(undefined, undefined, e);
-								} else {
+								} else if (events && events[event]) {
 									events[event].call(elemObj, e);
 								}
 
