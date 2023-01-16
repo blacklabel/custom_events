@@ -584,7 +584,7 @@
 			renderItem: function (item) {
 				return {
 					events: this.options.itemEvents,
-					element: item.legendGroup,
+					element: item.legendGroup || item.legendItem.group,
 					eventObject: item
 				};
 			},
