@@ -374,6 +374,7 @@
 								if (
 									isPoint &&
 									event === 'click' &&
+									elemObj &&
 									elemObj.series &&
 									elemObj.series.options &&
 									elemObj.series.options.allowPointSelect
