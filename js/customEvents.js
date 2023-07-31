@@ -390,7 +390,15 @@
 								}
 
 								if (elemObj && elemObj.drilldown) { // #114 - drillUp - undefined ddDupes []
-									elemObj.doDrilldown(undefined, undefined, e);
+									const series = elemObj.series;
+									if (isPoint && series.xAxis &&
+										series.chart.options.drilldown.allowPointDrilldown ===
+										false) {
+										series.xAxis.drilldownCategory(elemObj.x, e);
+									}
+									else {
+										elemObj.doDrilldown(undefined, undefined, e);
+									}
 								} else if (events && events[event]) {
 									events[event].call(elemObj, e);
 								}
