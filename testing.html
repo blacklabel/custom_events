@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Events</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="css/testing-styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title">Custom Events</h1>
+            <p class="subtitle">by Black Label</p>
+        </div>
+
+        <div class="content">
+            <div class="chart-section">
+                <div class="chart-container">
+                    <div id="chart"></div>
+                </div>
+
+                <div class="instructions">
+                    <h3>How to test:</h3>
+                    <ul>
+                        <li>Click on the chart title to trigger title events</li>
+                        <li>Click on the subtitle to trigger subtitle events</li>
+                        <li>Click on axis titles (X-Axis Title, Y-Axis Title) to trigger axis title events</li>
+                        <li>Watch the event log on the right for real-time feedback</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="log-section">
+                <div class="event-log">
+                    <div class="log-header">Event Log</div>
+                    <div class="log-content" id="log"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import Highcharts from 'https://code.highcharts.com/es-modules/masters/highcharts.src.js';
+        import ObjectEventsPlugin from './dist/customEvents.js';
+
+        ObjectEventsPlugin(Highcharts);
+        function logEvent(message) {
+            const log = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+
+            // Auto-scroll to bottom
+            log.scrollTop = log.scrollHeight;
+            console.log('logEvent', message);
+        }
+
+        Highcharts.chart('chart', {
+            title: {
+                text: 'Chart Title (Click Me)',
+                
+                events: {
+                    click: function () {
+                        logEvent('Chart title clicked');
+                    },
+                }
+            },
+            subtitle: {
+                text: 'Subtitle (Click Me)',
+                style: {
+                    fontSize: '16px'
+                },
+                events: {
+                    click: function () {
+                        logEvent('Subtitle clicked');
+                    }
+                }
+            },
+            xAxis: {
+                title: {
+                    text: 'X Axis Title (Click Me)',
+                    style: {
+                        color: '#333',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    },
+                    events: {
+                        click: function () {
+                            logEvent('X axis title clicked');
+                        }
+                    }
+                },
+                labels: {
+                    style: { color: '#666' }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Y Axis Title (Click Me)',
+                    style: {
+                        color: '#333',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    },
+                    events: {
+                        click: function () {
+                            logEvent('Y axis title clicked');
+                        }
+                    }
+                },
+                labels: {
+                    style: { color: '#666' }
+                }
+            },
+            series: [{
+                data: [10, 15, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+                color: '#007bff',
+            }, {
+                data: [5, 10, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95],
+                color: '#28a745',
+            }],
+            credits: { enabled: false },
+        });
+
+        logEvent('Chart initialized. Click on titles to test events.');
+    </script>
+</body>
+
+</html>

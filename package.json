@@ -26,13 +26,19 @@
     "js/customEvents.d.ts"
   ],
   "devDependencies": {
-    "gulp": "^4.0.0",
-    "gulp-eslint": "^5.0.0",
-    "gulp-jsdoc3": "^2.0.0",
-    "gulp-jsmin": "^0.1.5",
+    "gulp": "^5.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-bump": "^3.2.0",
+    "gulp-eslint": "^6.0.0",
+    "gulp-git": "^2.11.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.1.4",
+    "gulp-sourcemaps": "3.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "ts-node": "^10.9.1",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "highcharts": ">=5.0.9"
+    "highcharts": "^12.3.0"
   }
 }
