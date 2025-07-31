@@ -100,7 +100,12 @@
                     }
                 },
                 labels: {
-                    style: { color: '#666' }
+                    style: { color: '#666' },
+                    events: {
+                        click: function () {
+                            logEvent('X axis label clicked');
+                        }
+                    }
                 }
             },
             yAxis: {
@@ -118,9 +123,64 @@
                     }
                 },
                 labels: {
-                    style: { color: '#666' }
+                    style: { color: '#666' },
+                    events: {
+                        click: function () {
+                            logEvent('Y axis label clicked');
+                        }
+                    }
                 }
             },
+            legend: {
+                event: {
+                    click: function () {
+                        logEvent('Legend item clicked');
+                    }
+                }
+            },
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true,
+                        events: {
+                            dblclick: function () {
+                                logEvent('Double click on data label');
+                            },
+                            click: function () {
+                                logEvent('Click on data label');
+                            },
+                            contextmenu: function () {
+                                logEvent('Context menu on data label');
+                            }
+                        }
+                    },
+                    events: {
+                        dblclick: function () {
+                            logEvent('Double click on series');
+                        },
+                        click: function () {
+                            logEvent('Click on series');
+                        },
+                        contextmenu: function () {
+                            logEvent('Context menu on series');
+                        }
+                    },
+                    point: {
+                        events: {
+                            dblclick: function () {
+                                logEvent('Double click on series point');
+                            },
+                            click: function () {
+                                logEvent('Click on series point');
+                            },
+                            contextmenu: function () {
+                                logEvent('Context menu on series point');
+                            }
+                        }
+                    }
+                }
+            },
+        
             series: [{
                 data: [10, 15, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
                 color: '#007bff',

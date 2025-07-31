@@ -1,9 +1,22 @@
 import Highcharts from "highcharts";
 
 declare module "highcharts" {
+  interface LegendEventsOptions {
+    events?: ElementEvents;     
+  }
+
   interface Axis {
-	  title: Highcharts.SVGElement;
+	  axisTitle: Highcharts.SVGElement;
+	  labelGroup: Highcharts.SVGElement;
 	}
+
+  interface Series {
+    group: Highcharts.SVGElement;
+  }
+
+  interface Point {
+    dataLabel: Highcharts.SVGElement;
+  }
 
   export interface ElementEvents {
     click?: (e: Event | PointerEvent) => void;
@@ -35,7 +48,15 @@ declare module "highcharts" {
     events?: ElementEvents;
   }
 
-  export interface AxisLabelsOptions {
+  export interface XAxisLabelsOptions {
+    events?: ElementEvents;
+  }
+
+  export interface YAxisLabelsOptions {
+    events?: ElementEvents;
+  }
+
+  export interface ZAxisLabelsOptions {
     events?: ElementEvents;
   }
 
@@ -46,10 +67,6 @@ declare module "highcharts" {
   export interface SeriesOptionsType {
     events?: ElementEvents;
     dataLabels?: (DataLabelsOptions & { events?: ElementEvents });
-  }
-
-  export interface LegendOptions {
-    events?: ElementEvents;
   }
 
   export interface PlotLineOrBandOptions {
