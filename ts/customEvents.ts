@@ -10,9 +10,20 @@ import Highcharts, { Chart, SVGElement, SVGAttributes } from 'highcharts';
 
 /**
  * @namespace customEvents
- **/
+ * @description Plugin that adds custom event handling to Highcharts elements
+ */
 
-
+/**
+ * Type definition for element event handlers
+ * @typedef {Object} ElementEvents
+ * @property {Function} [click] - Click event handler
+ * @property {Function} [dblclick] - Double click event handler
+ * @property {Function} [contextmenu] - Right click event handler
+ * @property {Function} [mouseover] - Mouse over event handler
+ * @property {Function} [mouseout] - Mouse out event handler
+ * @property {Function} [mousedown] - Mouse down event handler
+ * @property {Function} [mousemove] - Mouse move event handler
+ */
 type ElementEvents = {
 	click?: (e: Event | PointerEvent) => void;
 	dblclick?: (e: Event | PointerEvent) => void;
@@ -23,20 +34,44 @@ type ElementEvents = {
 	mousemove?: (e: Event | PointerEvent) => void;
 };
 
-
+/**
+ * Highcharts Custom Events Plugin
+ * 
+ * This plugin extends Highcharts to support custom events on various chart elements
+ * including titles, axis elements, plot lines/bands, and data labels.
+ * 
+ * @param {typeof Highcharts} H - The Highcharts library instance
+ * @returns {void}
+ * 
+ * @example
+ * ```javascript
+ * import ObjectEventsPlugin from './customEvents';
+ * ObjectEventsPlugin(Highcharts);
+ * ```
+ */
 export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	/**
 	 * Binds DOM events to a Highcharts SVGElement safely,
 	 * avoiding duplicate bindings.
 	 *
-	 * @param el The Highcharts SVGElement
-	 * @param handlers An object mapping event names to callbacks
+	 * @param {Highcharts.SVGElement | undefined} el - The Highcharts SVGElement to bind events to
+	 * @param {ElementEvents} [handlers] - Object mapping event names to callback functions
+	 * @returns {void}
+	 * 
+	 * @example
+	 * ```javascript
+	 * bindElementEvents(chart.title, {
+	 *   click: function(e) { console.log('Title clicked!'); },
+	 *   mouseover: function(e) { console.log('Title hovered!'); }
+	 * });
+	 * ```
 	 */
 	function bindElementEvents(el: Highcharts.SVGElement | undefined, handlers?: ElementEvents) {
 		if (!el || !handlers) return;
 
 		Object.entries(handlers).forEach(([eventName, handler]) => {
 			if (handler) {
+				eventName = eventName;
 				// Avoid double binding
 				if (!(el as any)._eventBound) (el as any)._eventBound = {};
 				if (!(el as any)._eventBound[eventName]) {
@@ -47,10 +82,17 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		});
 	}
 
+	/**
+	 * Chart load event handler that binds custom events to chart elements
+	 * 
+	 * This function is called when a chart is loaded and sets up event bindings
+	 * for titles, subtitles, axes, plot lines/bands, and data labels.
+	 * 
+	 * @param {Chart} this - The chart instance
+	 * @returns {void}
+	 */
 	H.addEvent(H.Chart, "load", function (this: Chart) {
 		const chart = this;
-
-		console.log(chart);
 
 		// Title / Subtitle
 		bindElementEvents(chart.title, chart.options.title?.events);
@@ -58,41 +100,27 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 		// Axes
 		chart.axes.forEach(axis => {
-			// TypeScript fix: axis.options.title may not have 'events' property in its type.
-			// We need to safely access 'events' only if it exists, using type assertion or type guard.
-
+			// Axis Title
 			bindElementEvents(axis.axisTitle, axis.options.title?.events);
 
-			// If you want to enable labelGroup events, you may need to extend the type for axis.options.labels as well:
+			// Axis Labels
 			bindElementEvents(axis.labelGroup, axis.options.labels?.events);
 
-			// For crosshair events, similar type assertion is needed:
-			// if (axis.cross && axis.options.crosshair) {
-			//   const crosshairOptions = axis.options.crosshair as { events?: ElementEvents };
-			//   if (crosshairOptions.events) {
-			//     bindElementEvents(axis.cross, crosshairOptions.events);
-			//   }
-			// }
-			//});
-			// }
+			// AxisPlotLines and PlotBands Labels
+			if ((axis as any).plotLinesAndBands) {
+				(axis as any).plotLinesAndBands.forEach((plb: any) => {
+					if (plb.label) {
+						bindElementEvents(plb.label, plb.options.label?.events);
+					}
+				});
+			}
 
-			// axis.plotLinesAndBands?.forEach(plb => {
-			//   bindElementEvents(plb.svgElem, plb.options.events);
-			//   bindElementEvents(plb.label, plb.options.label?.events);
-			// });
 		});
 
-		// Series
-		  chart.series.forEach(series => {
-			bindElementEvents(series.group, series.options.events);
-			series.points.forEach(point => {
-			  if (point.graphic) bindElementEvents(point.graphic, point.options?.events); // TODO: check if this is correct
-			  //if (point.dataLabel) bindElementEvents(point.dataLabel, series.options.dataLabels?.events);
-			});
-		  });
-
-		  // Legend is now enabled 
-		  //bindElementEvents(chart.legend?.group, chart.options.legend?.events as ElementEvents);
+		// Series DataLabels
+		chart.series.forEach(series => {
+			bindElementEvents(series.dataLabelsGroup, series.options.dataLabels?.events);
+		});
 	});
 }
 

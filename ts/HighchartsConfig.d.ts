@@ -1,10 +1,6 @@
 import Highcharts from "highcharts";
 
 declare module "highcharts" {
-  interface LegendEventsOptions {
-    events?: ElementEvents;     
-  }
-
   interface Axis {
 	  axisTitle: Highcharts.SVGElement;
 	  labelGroup: Highcharts.SVGElement;
@@ -12,10 +8,13 @@ declare module "highcharts" {
 
   interface Series {
     group: Highcharts.SVGElement;
+    dataLabelsGroup: Highcharts.SVGElement;
   }
 
-  interface Point {
-    dataLabel: Highcharts.SVGElement;
+
+  interface SeriesOptions {
+    /** Allow dataLabels on all series options */
+    dataLabels?: Highcharts.DataLabelsOptionsObject | Highcharts.DataLabelsOptionsObject[];
   }
 
   export interface ElementEvents {
@@ -57,24 +56,6 @@ declare module "highcharts" {
   }
 
   export interface ZAxisLabelsOptions {
-    events?: ElementEvents;
-  }
-
-  export interface CrosshairOptions {
-    events?: ElementEvents;
-  }
-
-  export interface SeriesOptionsType {
-    events?: ElementEvents;
-    dataLabels?: (DataLabelsOptions & { events?: ElementEvents });
-  }
-
-  export interface PlotLineOrBandOptions {
-    events?: ElementEvents;
-    label?: (PlotLineOrBandLabelOptions & { events?: ElementEvents });
-  }
-
-  export interface FlagsSeriesOptions {
     events?: ElementEvents;
   }
 }
