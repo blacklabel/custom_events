@@ -119,38 +119,16 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	}
 
 	/**
-	 * Chart destroy event handler that cleans up all bound events
+	 * Binds events to all chart elements (used on load and redraw)
 	 * 
-	 * This function is called when a chart is destroyed to prevent memory leaks
-	 * by removing all custom event listeners.
-	 * 
-	 * @param {Chart} this - The chart instance
+	 * @param {Chart} chart - The chart instance
 	 * @returns {void}
 	 */
-	H.addEvent(H.Chart, "destroy", function (this: Chart) {
-		const chart = this;
-		
-		// Clean up all bound events
-		if ((chart as any)._customEventsBound) {
-			cleanupEvents((chart as any)._customEventsBound);
-			delete (chart as any)._customEventsBound;
+	function bindChartEvents(chart: Chart) {
+		// Initialize bound events tracking for this chart if not exists
+		if (!(chart as any)._customEventsBound) {
+			(chart as any)._customEventsBound = [];
 		}
-	});
-
-	/**
-	 * Chart load event handler that binds custom events to chart elements
-	 * 
-	 * This function is called when a chart is loaded and sets up event bindings
-	 * for titles, subtitles, axes, plot lines/bands, and data labels.
-	 * 
-	 * @param {Chart} this - The chart instance
-	 * @returns {void}
-	 */
-	H.addEvent(H.Chart, "load", function (this: Chart) {
-		const chart = this;
-		
-		// Initialize bound events tracking for this chart
-		(chart as any)._customEventsBound = [];
 
 		// Title / Subtitle
 		bindElementEvents(chart.title, chart.options.title?.events, (chart as any)._customEventsBound);
@@ -178,5 +156,90 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		chart.series.forEach(series => {
 			bindElementEvents(series.dataLabelsGroup, series.options.dataLabels?.events, (chart as any)._customEventsBound);
 		});
+	}
+
+	/**
+	 * Chart load event handler that binds custom events to chart elements
+	 * 
+	 * This function is called when a chart is loaded and sets up event bindings
+	 * for titles, subtitles, axes, plot lines/bands, and data labels.
+	 * 
+	 * @param {Chart} this - The chart instance
+	 * @returns {void}
+	 */
+	H.addEvent(H.Chart, "load", function (this: Chart) {
+		const chart = this;
+		bindChartEvents(chart);
 	});
+
+	/**
+	 * Chart redraw event handler that rebinds events to new elements
+	 * 
+	 * This function is called when a chart is redrawn to ensure events are bound
+	 * to any new elements that were created during the redraw.
+	 * 
+	 * @param {Chart} this - The chart instance
+	 * @returns {void}
+	 */
+	H.addEvent(H.Chart, "redraw", function (this: Chart) {
+		const chart = this;
+		
+		// Clean up existing events first to avoid duplicates
+		if ((chart as any)._customEventsBound) {
+			cleanupEvents((chart as any)._customEventsBound);
+		}
+		
+		// Rebind events to all elements (including new ones)
+		bindChartEvents(chart);
+	});
+
+	/**
+	 * Chart destroy event handler that cleans up all bound events
+	 * 
+	 * This function is called when a chart is destroyed to prevent memory leaks
+	 * by removing all custom event listeners.
+	 * 
+	 * @param {Chart} this - The chart instance
+	 * @returns {void}
+	 */
+	H.addEvent(H.Chart, "destroy", function (this: Chart) {
+		const chart = this;
+		
+		// Clean up all bound events
+		if ((chart as any)._customEventsBound) {
+			cleanupEvents((chart as any)._customEventsBound);
+			delete (chart as any)._customEventsBound;
+		}
+	});
+
+	/**
+	 * Wrap Axis.addPlotBand and Axis.addPlotLine to bind events to new plot bands/lines
+	 * 
+	 * This ensures that dynamically added plot bands and lines get event bindings.
+	 */
+	if (H.Axis && H.Axis.prototype) {
+		// Wrap addPlotBand
+		H.wrap(H.Axis.prototype, 'addPlotBand', function (proceed: Function, options: any) {
+			const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+			
+			// Bind events to the new plot band if it has a label
+			if (result && result.label && this.chart) {
+				bindElementEvents(result.label, options.label?.events, (this.chart as any)._customEventsBound);
+			}
+			
+			return result;
+		});
+
+		// Wrap addPlotLine
+		H.wrap(H.Axis.prototype, 'addPlotLine', function (proceed: Function, options: any) {
+			const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+			
+			// Bind events to the new plot line if it has a label
+			if (result && result.label && this.chart) {
+				bindElementEvents(result.label, options.label?.events, (this.chart as any)._customEventsBound);
+			}
+			
+			return result;
+		});
+	}
 }
