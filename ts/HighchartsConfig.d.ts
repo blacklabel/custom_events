@@ -4,6 +4,7 @@ declare module "highcharts" {
   interface Axis {
 	  axisTitle: Highcharts.SVGElement;
 	  labelGroup: Highcharts.SVGElement;
+	  plotLinesAndBands?: PlotLineOrBand[];
 	}
 
   interface Series {
@@ -11,6 +12,13 @@ declare module "highcharts" {
     dataLabelsGroup: Highcharts.SVGElement;
   }
 
+  interface Chart {
+    _customEventsBound?: BoundEvent[];
+  }
+
+  interface SVGElement {
+    _eventBound?: Record<string, boolean>;
+  }
 
   interface SeriesOptions {
     /** Allow dataLabels on all series options */
@@ -25,6 +33,52 @@ declare module "highcharts" {
     mouseout?: (e: Event | PointerEvent) => void;
     mousedown?: (e: Event | PointerEvent) => void;
     mousemove?: (e: Event | PointerEvent) => void;
+  }
+
+  export interface BoundEvent {
+    element: Highcharts.SVGElement;
+    eventName: string;
+    handler: (e: Event | PointerEvent) => void;
+  }
+
+  export interface PlotLineOrBand {
+    label?: Highcharts.SVGElement;
+    options?: {
+      label?: {
+        events?: ElementEvents;
+      };
+    };
+  }
+
+  export interface PlotOptions {
+    label?: {
+      events?: ElementEvents;
+    };
+  }
+
+  // Extend plot line/band label options to include events
+  interface XAxisPlotBandsLabelOptions {
+    events?: ElementEvents;
+  }
+
+  interface YAxisPlotBandsLabelOptions {
+    events?: ElementEvents;
+  }
+
+  interface ZAxisPlotBandsLabelOptions {
+    events?: ElementEvents;
+  }
+
+  interface XAxisPlotLinesLabelOptions {
+    events?: ElementEvents;
+  }
+
+  interface YAxisPlotLinesLabelOptions {
+    events?: ElementEvents;
+  }
+
+  interface ZAxisPlotLinesLabelOptions {
+    events?: ElementEvents;
   }
 
   export interface TitleOptions {

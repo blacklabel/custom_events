@@ -1,4 +1,4 @@
-import Highcharts, { Chart, SVGElement, SVGAttributes } from 'highcharts';
+import Highcharts, { Chart } from 'highcharts';
 
 /**
 * Custom events v4.0.0 (2025-07-30)
@@ -13,36 +13,6 @@ import Highcharts, { Chart, SVGElement, SVGAttributes } from 'highcharts';
  * @namespace customEvents
  * @description Plugin that adds custom event handling to Highcharts elements
  */
-
-/**
- * Type definition for element event handlers
- * @typedef {Object} ElementEvents
- * @property {Function} [click] - Click event handler
- * @property {Function} [dblclick] - Double click event handler
- * @property {Function} [contextmenu] - Right click event handler
- * @property {Function} [mouseover] - Mouse over event handler
- * @property {Function} [mouseout] - Mouse out event handler
- * @property {Function} [mousedown] - Mouse down event handler
- * @property {Function} [mousemove] - Mouse move event handler
- */
-type ElementEvents = {
-	click?: (e: Event | PointerEvent) => void;
-	dblclick?: (e: Event | PointerEvent) => void;
-	contextmenu?: (e: Event | PointerEvent) => void;
-	mouseover?: (e: Event | PointerEvent) => void;
-	mouseout?: (e: Event | PointerEvent) => void;
-	mousedown?: (e: Event | PointerEvent) => void;
-	mousemove?: (e: Event | PointerEvent) => void;
-};
-
-/**
- * Interface for tracking bound events for cleanup
- */
-interface BoundEvent {
-	element: Highcharts.SVGElement;
-	eventName: string;
-	handler: Function;
-}
 
 /**
  * Highcharts Custom Events Plugin
@@ -65,8 +35,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 * avoiding duplicate bindings and tracking for cleanup.
 	 *
 	 * @param {Highcharts.SVGElement | undefined} el - The Highcharts SVGElement to bind events to
-	 * @param {ElementEvents} [handlers] - Object mapping event names to callback functions
-	 * @param {BoundEvent[]} boundEvents - Array to track bound events for cleanup
+	 * @param {Highcharts.ElementEvents} [handlers] - Object mapping event names to callback functions
+	 * @param {Highcharts.BoundEvent[]} boundEvents - Array to track bound events for cleanup
 	 * @returns {void}
 	 * 
 	 * @example
@@ -77,16 +47,16 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 * }, boundEvents);
 	 * ```
 	 */
-	function bindElementEvents(el: Highcharts.SVGElement | undefined, handlers?: ElementEvents, boundEvents: BoundEvent[] = []) {
+	function bindElementEvents(el: Highcharts.SVGElement, handlers?: Highcharts.ElementEvents, boundEvents: Highcharts.BoundEvent[] = []) {
 		if (!el || !handlers) return;
 
 		Object.entries(handlers).forEach(([eventName, handler]) => {
 			if (handler) {
 				// Avoid double binding
-				if (!(el as any)._eventBound) (el as any)._eventBound = {};
-				if (!(el as any)._eventBound[eventName]) {
-					H.addEvent(el.element, eventName, handler as any);
-					(el as any)._eventBound[eventName] = true;
+				if (!el._eventBound) el._eventBound = {};
+				if (!el._eventBound[eventName]) {
+					H.addEvent(el.element, eventName, handler as EventListener);
+					el._eventBound[eventName] = true;
 					
 					// Track for cleanup
 					boundEvents.push({
@@ -102,16 +72,16 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	/**
 	 * Removes all bound events from a chart to prevent memory leaks
 	 * 
-	 * @param {BoundEvent[]} boundEvents - Array of bound events to remove
+	 * @param {Highcharts.BoundEvent[]} boundEvents - Array of bound events to remove
 	 * @returns {void}
 	 */
-	function cleanupEvents(boundEvents: BoundEvent[]) {
+	function cleanupEvents(boundEvents: Highcharts.BoundEvent[]) {
 		boundEvents.forEach(({ element, eventName, handler }) => {
 			if (element && element.element) {
-				H.removeEvent(element.element, eventName, handler as any);
+				H.removeEvent(element.element, eventName, handler as EventListener);
 				// Clear tracking
-				if ((element as any)._eventBound) {
-					delete (element as any)._eventBound[eventName];
+				if (element._eventBound) {
+					delete element._eventBound[eventName];
 				}
 			}
 		});
@@ -126,27 +96,27 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 */
 	function bindChartEvents(chart: Chart) {
 		// Initialize bound events tracking for this chart if not exists
-		if (!(chart as any)._customEventsBound) {
-			(chart as any)._customEventsBound = [];
+		if (!chart._customEventsBound) {
+			chart._customEventsBound = [];
 		}
 
 		// Title / Subtitle
-		bindElementEvents(chart.title, chart.options.title?.events, (chart as any)._customEventsBound);
-		bindElementEvents(chart.subtitle, chart.options.subtitle?.events, (chart as any)._customEventsBound);
+		bindElementEvents(chart.title, chart.options.title?.events, chart._customEventsBound);
+		bindElementEvents(chart.subtitle, chart.options.subtitle?.events, chart._customEventsBound);
 
 		// Axes
 		chart.axes.forEach(axis => {
 			// Axis Title
-			bindElementEvents(axis.axisTitle, axis.options.title?.events, (chart as any)._customEventsBound);
+			bindElementEvents(axis.axisTitle, axis.options.title?.events, chart._customEventsBound);
 
 			// Axis Labels
-			bindElementEvents(axis.labelGroup, axis.options.labels?.events, (chart as any)._customEventsBound);
+			bindElementEvents(axis.labelGroup, axis.options.labels?.events, chart._customEventsBound);
 
 			// AxisPlotLines and PlotBands Labels
-			if ((axis as any).plotLinesAndBands) {
-				(axis as any).plotLinesAndBands.forEach((plb: any) => {
+			if (axis.plotLinesAndBands) {
+				axis.plotLinesAndBands.forEach((plb: Highcharts.PlotLineOrBand) => {
 					if (plb.label) {
-						bindElementEvents(plb.label, plb.options.label?.events, (chart as any)._customEventsBound);
+						bindElementEvents(plb.label, plb.options?.label?.events, chart._customEventsBound);
 					}
 				});
 			}
@@ -154,44 +124,28 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 		// Series DataLabels
 		chart.series.forEach(series => {
-			bindElementEvents(series.dataLabelsGroup, series.options.dataLabels?.events, (chart as any)._customEventsBound);
+			bindElementEvents(series.dataLabelsGroup, series.options.dataLabels?.events, chart._customEventsBound);
 		});
 	}
 
 	/**
-	 * Chart load event handler that binds custom events to chart elements
+	 * Unified lifecycle handler for chart load and redraw events
 	 * 
-	 * This function is called when a chart is loaded and sets up event bindings
-	 * for titles, subtitles, axes, plot lines/bands, and data labels.
-	 * 
-	 * @param {Chart} this - The chart instance
-	 * @returns {void}
-	 */
-	H.addEvent(H.Chart, "load", function (this: Chart) {
-		const chart = this;
-		bindChartEvents(chart);
-	});
-
-	/**
-	 * Chart redraw event handler that rebinds events to new elements
-	 * 
-	 * This function is called when a chart is redrawn to ensure events are bound
-	 * to any new elements that were created during the redraw.
+	 * This function handles both initial load and redraw scenarios by cleaning up
+	 * existing events and rebinding to all elements (including new ones).
 	 * 
 	 * @param {Chart} this - The chart instance
 	 * @returns {void}
 	 */
-	H.addEvent(H.Chart, "redraw", function (this: Chart) {
-		const chart = this;
-		
-		// Clean up existing events first to avoid duplicates
-		if ((chart as any)._customEventsBound) {
-			cleanupEvents((chart as any)._customEventsBound);
+	const lifecycleHandler = function (this: Chart) {
+		if (this._customEventsBound) {
+			cleanupEvents(this._customEventsBound);
 		}
-		
-		// Rebind events to all elements (including new ones)
-		bindChartEvents(chart);
-	});
+		bindChartEvents(this);
+	};
+
+	H.addEvent(H.Chart, "load", lifecycleHandler);
+	H.addEvent(H.Chart, "redraw", lifecycleHandler);
 
 	/**
 	 * Chart destroy event handler that cleans up all bound events
@@ -206,9 +160,9 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		const chart = this;
 		
 		// Clean up all bound events
-		if ((chart as any)._customEventsBound) {
-			cleanupEvents((chart as any)._customEventsBound);
-			delete (chart as any)._customEventsBound;
+		if (chart._customEventsBound) {
+			cleanupEvents(chart._customEventsBound);
+			delete chart._customEventsBound;
 		}
 	});
 
@@ -219,24 +173,24 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 */
 	if (H.Axis && H.Axis.prototype) {
 		// Wrap addPlotBand
-		H.wrap(H.Axis.prototype, 'addPlotBand', function (proceed: Function, options: any) {
+		H.wrap(H.Axis.prototype, 'addPlotBand', function (proceed: Function, options: Highcharts.PlotOptions) {
 			const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 			
 			// Bind events to the new plot band if it has a label
 			if (result && result.label && this.chart) {
-				bindElementEvents(result.label, options.label?.events, (this.chart as any)._customEventsBound);
+				bindElementEvents(result.label, options.label?.events, this.chart._customEventsBound);
 			}
 			
 			return result;
 		});
 
 		// Wrap addPlotLine
-		H.wrap(H.Axis.prototype, 'addPlotLine', function (proceed: Function, options: any) {
+		H.wrap(H.Axis.prototype, 'addPlotLine', function (proceed: Function, options: Highcharts.PlotOptions) {
 			const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 			
 			// Bind events to the new plot line if it has a label
 			if (result && result.label && this.chart) {
-				bindElementEvents(result.label, options.label?.events, (this.chart as any)._customEventsBound);
+				bindElementEvents(result.label, options.label?.events, this.chart._customEventsBound);
 			}
 			
 			return result;
