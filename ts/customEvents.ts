@@ -1,4 +1,4 @@
-import Highcharts, { Chart } from 'highcharts';
+import Highcharts, { Chart, YAxisOptions } from 'highcharts';
 
 /**
 * Custom events v4.0.0 (2025-07-30)
@@ -57,7 +57,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				if (!el._eventBound[eventName]) {
 					H.addEvent(el.element, eventName, handler as EventListener);
 					el._eventBound[eventName] = true;
-					
+
 					// Track for cleanup
 					boundEvents.push({
 						element: el,
@@ -120,6 +120,16 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 					}
 				});
 			}
+
+			// Y Axis Stack Labels
+			if (axis.coll === 'yAxis' && axis.stacking?.stackTotalGroup) {
+				bindElementEvents(
+					axis.stacking.stackTotalGroup,
+					(axis.options as YAxisOptions).stackLabels?.events,
+					chart._customEventsBound
+				);
+			}
+
 		});
 
 		// Series DataLabels
@@ -158,7 +168,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 */
 	H.addEvent(H.Chart, "destroy", function (this: Chart) {
 		const chart = this;
-		
+
 		// Clean up all bound events
 		if (chart._customEventsBound) {
 			cleanupEvents(chart._customEventsBound);
@@ -175,25 +185,46 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		// Wrap addPlotBand
 		H.wrap(H.Axis.prototype, 'addPlotBand', function (proceed: Function, options: Highcharts.PlotOptions) {
 			const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-			
+
 			// Bind events to the new plot band if it has a label
 			if (result && result.label && this.chart) {
 				bindElementEvents(result.label, options.label?.events, this.chart._customEventsBound);
 			}
-			
+
 			return result;
 		});
 
 		// Wrap addPlotLine
 		H.wrap(H.Axis.prototype, 'addPlotLine', function (proceed: Function, options: Highcharts.PlotOptions) {
 			const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-			
+
 			// Bind events to the new plot line if it has a label
 			if (result && result.label && this.chart) {
 				bindElementEvents(result.label, options.label?.events, this.chart._customEventsBound);
 			}
-			
+
 			return result;
 		});
+
+		// Wrap drawCrosshair
+		H.wrap(H.Axis.prototype, 'drawCrosshair', function (
+			this: Highcharts.Axis,
+			proceed: (e?: Highcharts.PointerEventObject, point?: Highcharts.Point) => void,
+			e?: Highcharts.PointerEventObject,
+			point?: Highcharts.Point
+		  ): void {
+			console.log('calling wrap!');
+		  
+			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		  
+			if (this.cross && this.crosshair && this.chart && (this.chart as any)._customEventsBound) {
+			  bindElementEvents(
+				this.cross,
+				(this.crosshair as Highcharts.AxisCrosshairOptions).events,
+				this.chart._customEventsBound
+			  );
+			}
+		  });
+		  
 	}
 }

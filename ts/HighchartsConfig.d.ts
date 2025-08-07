@@ -5,6 +5,13 @@ declare module "highcharts" {
 	  axisTitle: Highcharts.SVGElement;
 	  labelGroup: Highcharts.SVGElement;
 	  plotLinesAndBands?: PlotLineOrBand[];
+	  cross?: Highcharts.SVGElement;
+    stacking?: {
+      stackTotalGroup?: Highcharts.SVGElement;
+    },
+    stackLabels?: {
+      events?: ElementEvents;
+    }
 	}
 
   interface Series {
@@ -54,6 +61,18 @@ declare module "highcharts" {
     label?: {
       events?: ElementEvents;
     };
+  }
+
+  export interface ZAxisOptions {
+    crosshair?: Highcharts.AxisCrosshairOptions;
+  }
+
+  export interface AxisCrosshairOptions {
+    events?: ElementEvents;
+  }
+
+  export interface YAxisStackLabelsOptions {
+    events?: ElementEvents;
   }
 
   // Extend plot line/band label options to include events
