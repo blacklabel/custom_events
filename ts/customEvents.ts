@@ -1,10 +1,10 @@
-import Highcharts, { Chart, YAxisOptions } from 'highcharts';
+import type Highcharts from 'highcharts';
+import type { Chart, YAxisOptions } from 'highcharts';
 
 /**
 * Custom events v4.0.0 (2025-07-30)
 *
 * (c) 2012-2025 Black Label
-* Created by: Dominik Chudy
 *
 * License: Creative Commons Attribution (CC)
 */
@@ -30,11 +30,18 @@ import Highcharts, { Chart, YAxisOptions } from 'highcharts';
  * ```
  */
 export default function ObjectEventsPlugin(H: typeof Highcharts) {
+	// This is a global flag to prevent the plugin from being loaded more than once
+	if (H.customEventsPluginLoaded) {
+		return;
+	} else { 
+		H.customEventsPluginLoaded = true;
+	}
+
 	/**
 	 * Binds DOM events to a Highcharts SVGElement safely,
 	 * avoiding duplicate bindings and tracking for cleanup.
 	 *
-	 * @param {Highcharts.SVGElement | undefined} el - The Highcharts SVGElement to bind events to
+	 * @param {Highcharts.SVGElement} el - The Highcharts SVGElement to bind events to
 	 * @param {Highcharts.ElementEvents} [handlers] - Object mapping event names to callback functions
 	 * @param {Highcharts.BoundEvent[]} boundEvents - Array to track bound events for cleanup
 	 * @returns {void}
@@ -47,7 +54,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 * }, boundEvents);
 	 * ```
 	 */
-	function bindElementEvents(el: Highcharts.SVGElement, handlers?: Highcharts.ElementEvents, boundEvents: Highcharts.BoundEvent[] = []) {
+	function bindElementEvents(el: Highcharts.SVGElement, handlers: Highcharts.ElementEvents, boundEvents: Highcharts.BoundEvent[] = []) {
 		if (!el || !handlers) return;
 
 		Object.entries(handlers).forEach(([eventName, handler]) => {
@@ -67,6 +74,22 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				}
 			}
 		});
+
+		// Mobile support
+		if (handlers.click && !el._eventBound?.touchstart) {
+			const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			if (isTouchDevice) {
+				H.addEvent(el.element, 'touchstart', handlers.click as EventListener);
+				el._eventBound.touchstart = true;
+				
+				boundEvents.push({
+					element: el,
+					eventName: 'touchstart',
+					handler: handlers.click
+				});
+			}
+		}
 	}
 
 	/**
@@ -183,8 +206,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 */
 	if (H.Axis && H.Axis.prototype) {
 		// Wrap addPlotBand
-		H.wrap(H.Axis.prototype, 'addPlotBand', function (proceed: Function, options: Highcharts.PlotOptions) {
-			const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		H.wrap(H.Axis.prototype, 'addPlotBand', function (this: Highcharts.Axis, proceed: Function, options: Highcharts.AxisPlotBandsOptions) {
+			const result: Highcharts.PlotLineOrBand = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
 			// Bind events to the new plot band if it has a label
 			if (result && result.label && this.chart) {
@@ -195,8 +218,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		});
 
 		// Wrap addPlotLine
-		H.wrap(H.Axis.prototype, 'addPlotLine', function (proceed: Function, options: Highcharts.PlotOptions) {
-			const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+		H.wrap(H.Axis.prototype, 'addPlotLine', function (this: Highcharts.Axis, proceed: Function, options: Highcharts.AxisPlotBandsOptions) {
+			const result: Highcharts.PlotLineOrBand = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
 			// Bind events to the new plot line if it has a label
 			if (result && result.label && this.chart) {
@@ -206,25 +229,25 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 			return result;
 		});
 
-		// Wrap drawCrosshair
+		// TODO: This needs to be taken care of
 		H.wrap(H.Axis.prototype, 'drawCrosshair', function (
 			this: Highcharts.Axis,
 			proceed: (e?: Highcharts.PointerEventObject, point?: Highcharts.Point) => void,
 			e?: Highcharts.PointerEventObject,
 			point?: Highcharts.Point
-		  ): void {
+		): void {
 			console.log('calling wrap!');
-		  
+
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-		  
+
 			if (this.cross && this.crosshair && this.chart && (this.chart as any)._customEventsBound) {
-			  bindElementEvents(
-				this.cross,
-				(this.crosshair as Highcharts.AxisCrosshairOptions).events,
-				this.chart._customEventsBound
-			  );
+				bindElementEvents(
+					this.cross,
+					(this.crosshair as Highcharts.AxisCrosshairOptions).events,
+					this.chart._customEventsBound
+				);
 			}
-		  });
-		  
+		});
+
 	}
 }

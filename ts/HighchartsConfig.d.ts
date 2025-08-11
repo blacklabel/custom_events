@@ -1,6 +1,8 @@
 import Highcharts from "highcharts";
 
 declare module "highcharts" {
+  export let customEventsPluginLoaded: boolean;
+
   interface Axis {
 	  axisTitle: Highcharts.SVGElement;
 	  labelGroup: Highcharts.SVGElement;
