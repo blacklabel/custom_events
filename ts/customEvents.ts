@@ -55,12 +55,13 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 * ```
 	 */
 	function bindElementEvents(el: Highcharts.SVGElement, handlers: Highcharts.ElementEvents, boundEvents: Highcharts.BoundEvent[] = []) {
+		// Safety check for JS callers bypassing TS type checks
 		if (!el || !handlers) return;
 
 		Object.entries(handlers).forEach(([eventName, handler]) => {
 			if (handler) {
 				// Avoid double binding
-				if (!el._eventBound) el._eventBound = {};
+				el._eventBound ??= {};
 				if (!el._eventBound[eventName]) {
 					H.addEvent(el.element, eventName, handler as EventListener);
 					el._eventBound[eventName] = true;
@@ -119,9 +120,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 */
 	function bindChartEvents(chart: Chart) {
 		// Initialize bound events tracking for this chart if not exists
-		if (!chart._customEventsBound) {
-			chart._customEventsBound = [];
-		}
+		chart._customEventsBound ??= [];
+
 
 		// Title / Subtitle
 		bindElementEvents(chart.title, chart.options.title?.events, chart._customEventsBound);
@@ -240,7 +240,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
-			if (this.cross && this.crosshair && this.chart && (this.chart as any)._customEventsBound) {
+			if (this.cross && this.crosshair && this.chart?._customEventsBound) {
 				bindElementEvents(
 					this.cross,
 					(this.crosshair as Highcharts.AxisCrosshairOptions).events,
