@@ -3,22 +3,22 @@ import type { Chart, YAxisOptions } from 'highcharts';
 
 
 const DEFAULT_HC_POINT_EVENTS = new Set([
-    'click', 'mouseover', 'mouseout', 'mouseOver', 'mouseOut',
-    'select', 'unselect', 'remove', 'update',
-    'dragStart', 'drag', 'drop'
+	'click', 'mouseover', 'mouseout', 'mouseOver', 'mouseOut',
+	'select', 'unselect', 'remove', 'update',
+	'dragStart', 'drag', 'drop'
 ]);
 
 function filterCustomOnlyEvents(
-    events: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>>,
-    defaultEvents: Set<string> = DEFAULT_HC_POINT_EVENTS
+	events: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>>,
+	defaultEvents: Set<string> = DEFAULT_HC_POINT_EVENTS
 ): Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> {
-    const result: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> = {};
-    for (const [name, handler] of Object.entries(events)) {
-        if (!defaultEvents.has(name)) {
-            result[name] = handler;
-        }
-    }
-    return result;
+	const result: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> = {};
+	for (const [name, handler] of Object.entries(events)) {
+		if (!defaultEvents.has(name)) {
+			result[name] = handler;
+		}
+	}
+	return result;
 }
 
 
@@ -76,22 +76,23 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 * }, boundEvents);
 	 * ```
 	 */
+
 	function bindElementEvents(
-		el: Highcharts.SVGElement, 
-		handlers: Highcharts.ElementEvents, 
-		boundEvents: Highcharts.BoundEvent[] = []
+		el: Highcharts.SVGElement,
+		handlers: Highcharts.ElementEvents,
+		boundEvents: Highcharts.BoundEvent[]
 	) {
 		// Safety check for JS callers bypassing TS type checks
-		if (!el || !handlers) return;
+		if (!el || !handlers || !boundEvents) return;
 
 		Object.entries(handlers).forEach(([eventName, handler]) => {
 			if (handler) {
-				//here it happens double binding for the crosshair
 				// Avoid double binding
 				el._eventBound ??= {};
 				if (!el._eventBound[eventName] && !el.element[`on${eventName}`]) {
 					H.addEvent(el.element, eventName, handler as EventListener);
 					el._eventBound[eventName] = true;
+
 					// Track for cleanup
 					boundEvents.push({
 						element: el,
@@ -151,13 +152,13 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 		// Title / Subtitle
 		bindElementEvents(
-			chart.title, 
-			chart.options.title?.events, 
+			chart.title,
+			chart.options.title?.events,
 			chart._customEventsBound
 		);
 		bindElementEvents(
-			chart.subtitle, 
-			chart.options.subtitle?.events, 
+			chart.subtitle,
+			chart.options.subtitle?.events,
 			chart._customEventsBound
 		);
 
@@ -165,15 +166,15 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		chart.axes.forEach(axis => {
 			// Axis Title
 			bindElementEvents(
-				axis.axisTitle, 
-				axis.options.title?.events, 
+				axis.axisTitle,
+				axis.options.title?.events,
 				chart._customEventsBound
 			);
 
 			// Axis Labels
 			bindElementEvents(
-				axis.labelGroup, 
-				axis.options.labels?.events, 
+				axis.labelGroup,
+				axis.options.labels?.events,
 				chart._customEventsBound
 			);
 
@@ -182,10 +183,10 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				axis.plotLinesAndBands.forEach((plb: Highcharts.PlotLineOrBand) => {
 					if (plb.label) {
 						bindElementEvents(
-						plb.label, 
-						plb.options?.label?.events, 
-						chart._customEventsBound
-					);
+							plb.label,
+							plb.options?.label?.events,
+							chart._customEventsBound
+						);
 					}
 				});
 			}
@@ -204,8 +205,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		// Series DataLabels
 		chart.series.forEach(series => {
 			bindElementEvents(
-				series.dataLabelsGroup, 
-				series.options.dataLabels?.events, 
+				series.dataLabelsGroup,
+				series.options.dataLabels?.events,
 				chart._customEventsBound
 			);
 
@@ -221,10 +222,10 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 					if (Object.keys(customOnlyEvents).length > 0) {
 						bindElementEvents(
-						point.graphic, 
-						customOnlyEvents, 
-						chart._customEventsBound
-					);
+							point.graphic,
+							customOnlyEvents,
+							chart._customEventsBound
+						);
 					}
 
 				}
@@ -294,95 +295,95 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	if (H.Axis && H.Axis.prototype) {
 		// Wrap addPlotBand
 		H.wrap(
-			H.Axis.prototype, 
-			'addPlotBand', 
+			H.Axis.prototype,
+			'addPlotBand',
 			function (
-				this: Highcharts.Axis, 
-				proceed: Function, 
+				this: Highcharts.Axis,
+				proceed: Function,
 				options: Highcharts.AxisPlotBandsOptions
 			) {
-			const result: Highcharts.PlotLineOrBand = proceed.apply(
-				this, 
-				Array.prototype.slice.call(arguments, 1)
-			);
-
-			// Bind events to the new plot band if it has a label
-			if (result && result.label && this.chart) {
-				bindElementEvents(
-					result.label, 
-					options.label?.events, 
-					this.chart._customEventsBound
+				const result: Highcharts.PlotLineOrBand = proceed.apply(
+					this,
+					Array.prototype.slice.call(arguments, 1)
 				);
-			}
 
-			return result;
-		});
+				// Bind events to the new plot band if it has a label
+				if (result && result.label && this.chart) {
+					bindElementEvents(
+						result.label,
+						options.label?.events,
+						this.chart._customEventsBound
+					);
+				}
+
+				return result;
+			});
 
 		// Wrap addPlotLine
 		H.wrap(
-			H.Axis.prototype, 
-			'addPlotLine', 
+			H.Axis.prototype,
+			'addPlotLine',
 			function (
-				this: Highcharts.Axis, 
-				proceed: Function, 
+				this: Highcharts.Axis,
+				proceed: Function,
 				options: Highcharts.AxisPlotBandsOptions
 			) {
-			const result: Highcharts.PlotLineOrBand = proceed.apply(
-				this, 
-				Array.prototype.slice.call(arguments, 1)
-			);
-
-			// Bind events to the new plot line if it has a label
-			if (result && result.label && this.chart) {
-				bindElementEvents(
-					result.label, 
-					options.label?.events, 
-					this.chart._customEventsBound
+				const result: Highcharts.PlotLineOrBand = proceed.apply(
+					this,
+					Array.prototype.slice.call(arguments, 1)
 				);
-			}
 
-			return result;
-		});
+				// Bind events to the new plot line if it has a label
+				if (result && result.label && this.chart) {
+					bindElementEvents(
+						result.label,
+						options.label?.events,
+						this.chart._customEventsBound
+					);
+				}
+
+				return result;
+			});
 
 		// TODO: This needs to be taken care of
 		H.wrap(
-			H.Axis.prototype, 
-			'drawCrosshair', 
+			H.Axis.prototype,
+			'drawCrosshair',
 			function (
 				this: Highcharts.Axis,
 				proceed: (
-					e?: Highcharts.PointerEventObject, 
+					e?: Highcharts.PointerEventObject,
 					point?: Highcharts.Point
 				) => void,
 				// e?: Highcharts.PointerEventObject,
 				// point?: Highcharts.Point
 			): void {
 
-			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-			//			const axis = this;
-			// 			const chart = axis.chart;
-			// 			chart._customEventsBound.forEach((boundEvent) => {
-			// 				if (boundEvent.element === axis.cross) {
-			// 					H.removeEvent(
-			// 						boundEvent.element,
-			// 						boundEvent.eventName,
-			// 						boundEvent.handler
-			//					);
-			// 					console.log('removed event!');
-			// 				}
-			// 				if (boundEvent.element._eventBound) {
-			// 					delete boundEvent.element._eventBound[boundEvent.eventName];
-			// 				}
-			// 			});
+				proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+				//			const axis = this;
+				// 			const chart = axis.chart;
+				// 			chart._customEventsBound.forEach((boundEvent) => {
+				// 				if (boundEvent.element === axis.cross) {
+				// 					H.removeEvent(
+				// 						boundEvent.element,
+				// 						boundEvent.eventName,
+				// 						boundEvent.handler
+				//					);
+				// 					console.log('removed event!');
+				// 				}
+				// 				if (boundEvent.element._eventBound) {
+				// 					delete boundEvent.element._eventBound[boundEvent.eventName];
+				// 				}
+				// 			});
 
-			if (this.cross && this.crosshair && this.chart?._customEventsBound) {
-				bindElementEvents(
-				    this.cross,
-					(this.crosshair as Highcharts.AxisCrosshairOptions).events,
-					this.chart._customEventsBound
-				);
-			}
-		});
+				if (this.cross && this.crosshair && this.chart?._customEventsBound) {
+					bindElementEvents(
+						this.cross,
+						(this.crosshair as Highcharts.AxisCrosshairOptions).events,
+						this.chart._customEventsBound
+					);
+				}
+			});
 
 	}
 }
