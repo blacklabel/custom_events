@@ -21,6 +21,10 @@ declare module "highcharts" {
     dataLabelsGroup: Highcharts.SVGElement;
   }
 
+  interface Point {
+    dataLabel: Highcharts.SVGLabel;
+  }
+
   interface Chart {
     _customEventsBound?: BoundEvent[];
   }
@@ -29,9 +33,14 @@ declare module "highcharts" {
     _eventBound?: Record<string, boolean>;
   }
 
+  export interface SeriesPointOptions {
+    events?: PointEventsOptions | ElementEvents;
+}
+
   interface SeriesOptions {
     /** Allow dataLabels on all series options */
     dataLabels?: Highcharts.DataLabelsOptionsObject | Highcharts.DataLabelsOptionsObject[];
+    point?: SeriesPointOptions;
   }
 
   export interface ElementEvents {

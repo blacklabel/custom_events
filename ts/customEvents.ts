@@ -1,6 +1,27 @@
 import type Highcharts from 'highcharts';
 import type { Chart, YAxisOptions } from 'highcharts';
 
+
+const DEFAULT_HC_POINT_EVENTS = new Set([
+    'click', 'mouseover', 'mouseout', 'mouseOver', 'mouseOut',
+    'select', 'unselect', 'remove', 'update',
+    'dragStart', 'drag', 'drop'
+]);
+
+function filterCustomOnlyEvents(
+    events: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>>,
+    defaultEvents: Set<string> = DEFAULT_HC_POINT_EVENTS
+): Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> {
+    const result: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> = {};
+    for (const [name, handler] of Object.entries(events)) {
+        if (!defaultEvents.has(name)) {
+            result[name] = handler;
+        }
+    }
+    return result;
+}
+
+
 /**
 * Custom events v4.0.0 (2025-07-30)
 *
@@ -33,7 +54,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	// This is a global flag to prevent the plugin from being loaded more than once
 	if (H.customEventsPluginLoaded) {
 		return;
-	} else { 
+	} else {
 		H.customEventsPluginLoaded = true;
 	}
 
@@ -60,12 +81,12 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 		Object.entries(handlers).forEach(([eventName, handler]) => {
 			if (handler) {
+				//here it happens double binding for the crosshair
 				// Avoid double binding
 				el._eventBound ??= {};
-				if (!el._eventBound[eventName]) {
+				if (!el._eventBound[eventName] && !el.element[`on${eventName}`]) {
 					H.addEvent(el.element, eventName, handler as EventListener);
 					el._eventBound[eventName] = true;
-
 					// Track for cleanup
 					boundEvents.push({
 						element: el,
@@ -79,11 +100,11 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		// Mobile support
 		if (handlers.click && !el._eventBound?.touchstart) {
 			const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-			
+
 			if (isTouchDevice) {
 				H.addEvent(el.element, 'touchstart', handlers.click as EventListener);
 				el._eventBound.touchstart = true;
-				
+
 				boundEvents.push({
 					element: el,
 					eventName: 'touchstart',
@@ -158,6 +179,21 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		// Series DataLabels
 		chart.series.forEach(series => {
 			bindElementEvents(series.dataLabelsGroup, series.options.dataLabels?.events, chart._customEventsBound);
+
+			series.data.forEach(point => {
+				// �� POINT EVENTS: Only add non-default events
+				if (point.graphic && series.options.point?.events) {
+					const pointEvents = series.options.point.events;
+
+					// Filter out events that Highcharts already handle
+					const customOnlyEvents = filterCustomOnlyEvents(pointEvents);
+
+					if (Object.keys(customOnlyEvents).length > 0) {
+						bindElementEvents(point.graphic, customOnlyEvents, (chart as any)._customEventsBound);
+					}
+
+				}
+			});
 		});
 	}
 
@@ -199,6 +235,21 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		}
 	});
 
+	// H.addEvent(H.Axis, "afterHideCrosshair", function (this: Highcharts.Axis) {
+	// // Unbind crosshair events when the crosshair is hidden to prevent memory leaks or duplicate bindings.
+	// const axis = this;
+	// const chart = axis.chart;
+	// chart._customEventsBound.forEach((boundEvent) => {
+	// 	if (boundEvent.element === axis.cross) {
+	// 		H.removeEvent(boundEvent.element, boundEvent.eventName, boundEvent.handler);
+	// 		console.log('removed event!');
+	// 	}
+	// 	if (boundEvent.element._eventBound) {
+	// 		delete boundEvent.element._eventBound[boundEvent.eventName];
+	// 	}
+	// });
+	// });
+
 	/**
 	 * Wrap Axis.addPlotBand and Axis.addPlotLine to bind events to new plot bands/lines
 	 * 
@@ -236,9 +287,19 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 			e?: Highcharts.PointerEventObject,
 			point?: Highcharts.Point
 		): void {
-			console.log('calling wrap!');
 
 			proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+			// 			const axis = this;
+			// 			const chart = axis.chart;
+			// 			chart._customEventsBound.forEach((boundEvent) => {
+			// 				if (boundEvent.element === axis.cross) {
+			// 					H.removeEvent(boundEvent.element, boundEvent.eventName, boundEvent.handler);
+			// 					console.log('removed event!');
+			// 				}
+			// 				if (boundEvent.element._eventBound) {
+			// 					delete boundEvent.element._eventBound[boundEvent.eventName];
+			// 				}
+			// 			});
 
 			if (this.cross && this.crosshair && this.chart?._customEventsBound) {
 				bindElementEvents(

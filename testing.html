@@ -129,11 +129,11 @@
                         }
                     }
                 },
-                crosshair: {
+                _crosshair: {
                     enabled: true,
                     width: 20,
                     zIndex: 1000,
-                    color: 'rgba(52, 152, 219, 0.2)',
+                    color: 'rgba(52, 152, 219, 1.2)',
                     className: 'custom-crosshair',
                     events: {
                         click: function () {
@@ -239,6 +239,16 @@
             plotOptions: {
                 series: {
                     stacking: 'normal',
+                    point:{
+                        events: {
+                            click: function () {
+                                logEvent('Point clicked');
+                            },
+                            dblclick: function () {
+                                logEvent('Point double clicked');
+                            }
+                        }
+                    },
                     dataLabels: {
                         enabled: true,
                         style: {
@@ -267,6 +277,9 @@
                     name: 'Series A',
                     data: [10, 15, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
                     color: 'red',
+                    dataLabels:{
+                        enabled: false,
+                    },
                     marker: {
                         enabled: true,
                         radius: 4,
