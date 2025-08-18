@@ -1,3 +1,5 @@
+import type Highcharts from 'highcharts';
+
 //TODO: Use this file in customEvents.ts
 const DEFAULT_HC_POINT_EVENTS = new Set([
     'click', 'mouseover', 'mouseout', 'mouseOver', 'mouseOut',

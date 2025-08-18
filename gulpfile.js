@@ -1,16 +1,8 @@
 'use strict';
 var gulp = require('gulp'),
-	eslint = require('gulp-eslint'),
 	jsmin = require('gulp-jsmin'),
 	rename = require('gulp-rename'),
 	jsdoc = require('gulp-jsdoc3');
-
-gulp.task('lint', function () {
-	return gulp.src(['js/*.js'])
-		.pipe(eslint())
-		.pipe(eslint.failOnError())
-		.pipe(eslint.formatEach());
-});
 
 gulp.task('jsdoc', function (cb) {
 	// Consider using https://github.com/englercj/tsd-jsdoc to generate typescript definitions from JSDoc comments
