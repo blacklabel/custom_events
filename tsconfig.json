@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "ESNext",
+    "module": "es6",
     "moduleResolution": "Node",
     "outDir": "./dist",
     "rootDir": "./ts",

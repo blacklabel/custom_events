@@ -11,6 +11,8 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/testing-styles.css">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="dist/customEvents.js"></script>
 </head>
 
 <body>
@@ -61,11 +63,7 @@
         </div>
     </div>
 
-    <script type="module">
-        import Highcharts from 'https://code.highcharts.com/es-modules/masters/highcharts.src.js';
-        import ObjectEventsPlugin from './dist/customEvents.js';
-
-        ObjectEventsPlugin(Highcharts);
+    <script>
         function logEvent(message) {
             const log = document.getElementById('log');
             const entry = document.createElement('div');
@@ -239,7 +237,7 @@
             plotOptions: {
                 series: {
                     stacking: 'normal',
-                    point:{
+                    point: {
                         events: {
                             click: function () {
                                 logEvent('Point clicked');

@@ -1,5 +1,6 @@
 import type Highcharts from 'highcharts';
 import type { Chart, YAxisOptions } from 'highcharts';
+import "./HighchartsConfig";
 
 
 const DEFAULT_HC_POINT_EVENTS = new Set([
@@ -20,15 +21,6 @@ function filterCustomOnlyEvents(
 	}
 	return result;
 }
-
-
-/**
-* Custom events v4.0.0 (2025-07-30)
-*
-* (c) 2012-2025 Black Label
-*
-* License: Creative Commons Attribution (CC)
-*/
 
 /**
  * @namespace customEvents
@@ -115,9 +107,9 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 					element: el,
 					eventName: 'touchstart',
 					handler: handlers.click
-				});
-			}
-		}
+						});
+					}
+				}
 	}
 
 	/**
