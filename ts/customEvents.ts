@@ -107,9 +107,9 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 					element: el,
 					eventName: 'touchstart',
 					handler: handlers.click
-						});
-					}
-				}
+				});
+			}
+		}
 	}
 
 	/**
@@ -263,22 +263,6 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		}
 	});
 
-	// H.addEvent(H.Axis, "afterHideCrosshair", function (this: Highcharts.Axis) {
-	// // Unbind crosshair events when the crosshair is hidden to prevent memory leaks 
-	// // or duplicate bindings.
-	// const axis = this;
-	// const chart = axis.chart;
-	// chart._customEventsBound.forEach((boundEvent) => {
-	// 	if (boundEvent.element === axis.cross) {
-	// 		H.removeEvent(boundEvent.element, boundEvent.eventName, boundEvent.handler);
-	// 		console.log('removed event!');
-	// 	}
-	// 	if (boundEvent.element._eventBound) {
-	// 		delete boundEvent.element._eventBound[boundEvent.eventName];
-	// 	}
-	// });
-	// });
-
 	/**
 	 * Wrap Axis.addPlotBand and Axis.addPlotLine to bind events to new plot bands/lines
 	 * 
@@ -337,45 +321,15 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				return result;
 			});
 
-		// TODO: This needs to be taken care of
-		H.wrap(
-			H.Axis.prototype,
-			'drawCrosshair',
-			function (
-				this: Highcharts.Axis,
-				proceed: (
-					e?: Highcharts.PointerEventObject,
-					point?: Highcharts.Point
-				) => void,
-				// e?: Highcharts.PointerEventObject,
-				// point?: Highcharts.Point
-			): void {
-
-				proceed.apply(this, Array.prototype.slice.call(arguments, 1));
-				//			const axis = this;
-				// 			const chart = axis.chart;
-				// 			chart._customEventsBound.forEach((boundEvent) => {
-				// 				if (boundEvent.element === axis.cross) {
-				// 					H.removeEvent(
-				// 						boundEvent.element,
-				// 						boundEvent.eventName,
-				// 						boundEvent.handler
-				//					);
-				// 					console.log('removed event!');
-				// 				}
-				// 				if (boundEvent.element._eventBound) {
-				// 					delete boundEvent.element._eventBound[boundEvent.eventName];
-				// 				}
-				// 			});
-
-				if (this.cross && this.crosshair && this.chart?._customEventsBound) {
-					bindElementEvents(
-						this.cross,
-						(this.crosshair as Highcharts.AxisCrosshairOptions).events,
-						this.chart._customEventsBound
-					);
-				}
-			});
-
+		H.addEvent(H.Axis, "afterDrawCrosshair", function (this: Highcharts.Axis) {
+			if (this.cross && this.crosshair && this.chart?._customEventsBound) {
+				this.cross?.css({ 'pointer-events': 'auto' });
+				bindElementEvents(
+					this.cross,
+					(this.crosshair as Highcharts.AxisCrosshairOptions).events,
+					this.chart._customEventsBound
+				);
+			}
+		});
 	}
 }

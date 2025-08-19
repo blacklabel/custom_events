@@ -74,10 +74,15 @@ ObjectEventsPlugin(Highcharts);
 // Lint task using modern ESLint
 gulp.task('lint', async () => {
 	try {
-		await execAsync('npx eslint ts/**/*.ts');
+		const { stdout, stderr } = await execAsync('npx eslint ts/**/*.ts');
+		if (stdout) log(stdout);
+		if (stderr) log(stderr);
 		log(colors.green('✓ ESLint passed'));
 	} catch (error) {
 		log(colors.red('✗ ESLint failed'));
+		// Show the actual ESLint errors
+		if (error.stdout) log(error.stdout);
+		if (error.stderr) log(error.stderr);
 		throw error;
 	}
 });
