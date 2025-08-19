@@ -77,13 +77,6 @@
         }
 
         Highcharts.chart('chart', {
-            chart: {
-                events: {
-                    click: function () {
-                        console.log(this.xAxis[0])
-                    }
-                }
-            },
             title: {
                 text: 'Chart Title (Click Me)',
                 style: {
@@ -127,7 +120,7 @@
                         }
                     }
                 },
-                _crosshair: {
+                crosshair: {
                     enabled: true,
                     width: 20,
                     zIndex: 1000,

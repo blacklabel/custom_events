@@ -9,6 +9,7 @@ const rename = require('gulp-rename');
 const { exec } = require('child_process');
 const { promisify } = require('util');
 const execAsync = promisify(exec);
+const fs = require('fs');
 
 // TypeScript project (reads tsconfig.json)
 const tsProject = gulpTypescript.createProject('tsconfig.json');
@@ -32,11 +33,12 @@ gulp.task('tsc', () => {
 		.pipe(tsProject())
 		.js
 		.pipe(rename('customEvents.js'))
+		.pipe(gulp.dest('dist/tmp')); // Output to temp directory first
 });
 
 // Step 2: Wrap into UMD
 gulp.task('wrap', () => {
-	return gulp.src('dist/customEvents.js')
+	return gulp.src('dist/tmp/customEvents.js')
 		.pipe(through2.obj(function (file, _encoding, callback) {
 			if (file.isBuffer()) {
 				let fileContent = file.contents.toString('utf8');
@@ -79,8 +81,17 @@ gulp.task('lint', async () => {
 		throw error;
 	}
 });
-// Combined build (lint → tsc → wrap)
-gulp.task('build', gulp.series('lint', 'tsc', 'wrap'));
+// Clean up temporary files
+gulp.task('clean', (done) => {
+	if (fs.existsSync('dist/tmp')) {
+		fs.rmSync('dist/tmp', { recursive: true, force: true });
+	}
+	log(colors.green('✓ Cleaned temp files'));
+	done();
+});
+
+// Combined build (lint → tsc → wrap → clean)
+gulp.task('build', gulp.series('lint', 'tsc', 'wrap', 'clean'));
 
 // Watch (skip lint for speed)
 gulp.task('watch', () => {
