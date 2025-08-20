@@ -10,6 +10,18 @@
 
 ---
 
+## Table of Contents
+- [Getting Started](#getting-started)
+  - [Compatibility](#compatibility)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Available Events](#available-events)
+- [Supported Elements](#supported-elements)
+- [Development Setup](#development-setup)
+- [Using the Plugin Locally in index.html](#using-the-plugin-locally-in-indexhtml)
+
+---
+
 ## Getting Started
 
 ### Compatibility
@@ -111,3 +123,58 @@ Highcharts.chart('container', {
 | `dataLabels`  | Series data labels |
 | `flags`       | Flags series       |
 | `crosshair`   | Crosshairs         |
+
+
+---
+
+## Development Setup
+
+If you want to work on this plugin locally:
+
+1. Clone the repository
+```bash
+git clone https://github.com/blacklabel/custom_events.git
+cd custom_events
+```
+2. Install dependencies
+```bash
+npm install
+# or
+yarn install
+```
+3. Start a local dev server
+```bash
+npm start
+```
+This will launch a local server (via http-server or similar) and open the demo page in your browser.
+
+4. Build the plugin
+```bash
+npm run build
+```
+The compiled file will be available in the dist/ folder.
+
+---
+## Using the Plugin Locally in index.html
+After building, include the plugin file after Highcharts in your index.html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Highcharts Custom Events - Local Dev</title>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="dist/custom_events.js"></script>
+</head>
+<body>
+  <div id="container"></div>
+  <script>
+    Highcharts.chart('container', {
+      series: [{
+        data: [1, 2, 3, 4, 5]
+      }]
+    });
+  </script>
+</body>
+</html>
+```
