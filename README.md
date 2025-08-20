@@ -1,91 +1,113 @@
+# Custom Events – Highcharts Module
 
-# Custom events - Highcharts module
+[![npm version](https://img.shields.io/npm/v/highcharts-custom-events)](https://www.npmjs.com/package/highcharts-custom-events)
+[![license](https://img.shields.io/github/license/blacklabel/custom_events)](./LICENSE)
 
-Go to project page to see this module in action: [http://blacklabel.github.io/custom_events/](http://blacklabel.github.io/custom_events/)
+**Custom Events** extends Highcharts by allowing you to bind native DOM-like events (`click`, `dblclick`, `contextmenu`, etc.) directly to chart elements such as labels, titles, series, and crosshairs.
 
+👉 [Live demo](https://blacklabel.github.io/custom_events/)  
+👉 [GitHub repository](https://github.com/blacklabel/custom_events)
 
-### Requirements
+---
 
-* Plugin requires the latest Highcharts (tested with 6.1.4)
+## Getting Started
 
-### Installation
+### Compatibility
 
-* Like any other Highcharts module (e.g. exporting), add `<script>` tag pointing to `custom_events.js` below Highcharts script tag.
+| Custom Events Version | Highcharts Version |
+| --------------------- | ------------------ |
+| **4.0.0+**            | `>= 9.0.0`         |
+| **3.x.x**             | `< 9.0.0`          |
 
-* For NPM users:
-```
-var Highcharts = require('highcharts'),
-    HighchartsCustomEvents = require('highcharts-custom-events')(Highcharts);
-```
+---
 
-* For BOWER users:
+## Installation
 
-```
-bower install highcharts-custom-events
-```
+Install via NPM:
 
-### Code
-
-The latest code is available on github: [https://github.com/blacklabel/custom_events/](https://github.com/blacklabel/custom_events/)
-
-### Usage and demos
-
-It's quite simple and intuitive, just pass function as other events:
-
-```
-events: {
-                        dblclick: function () {
-                            $('#report').html('dbclick on xAxis label');
-                        },
-                        click: function () {
-                            $('#report').html('click on xAxis label');
-                        },
-                        contextmenu: function () {
-                            $('#report').html('context menu on xAxis label');
-                        }
-}
+```bash
+npm install highcharts highcharts-custom-events
+# or
+yarn add highcharts highcharts-custom-events
+# or
+pnpm add highcharts highcharts-custom-events
 ```
 
-Crosshairs
+Then import and initialize:
+```js
+import Highcharts from "highcharts";
+import HighchartsCustomEvents from "highcharts-custom-events";
 
+HighchartsCustomEvents(Highcharts);
 ```
-crosshair: {
+
+Or include via a <script> tag after loading Highcharts:
+```js
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://blacklabel.github.io/custom_events/js/customEvents.js"></script>
+```
+
+---
+
+## Usage
+
+Attach events in the same way you would with Highcharts’ built-in event handlers:
+```js
+Highcharts.chart('container', {
+  xAxis: {
+    labels: {
+        events: {
+          click: function () {
+            console.log('Click on xAxis label');
+          },
+          dblclick: function () {
+            console.log('Double click on xAxis label');
+          },
+          contextmenu: function () {
+            console.log('Right click on xAxis label');
+          }
+        }
+    }    
+  },
+  crosshair: {
     enabled: true,
     events: {
-                        dblclick: function () {
-                            $('#report').html('dbclick on xAxis label');
-                        },
-                        click: function () {
-                            $('#report').html('click on xAxis label');
-                        },
-                        contextmenu: function () {
-                            $('#report').html('context menu on xAxis label');
-                        }
+      mouseover: function () {
+        console.log('Mouse over crosshair');
+      }
     }
-}
+  },
+  series: [{
+    data: [1, 2, 3, 4, 5]
+  }]
+});
 ```
 
-### Available events
+---
 
-* click
-* double click (including mobile devices)
-* right click (context menu)
-* mouse over
-* mouse out
-* mouse down
-* mouse move
+## Available Events
+| Event         | Description                              |
+| ------------- | ---------------------------------------- |
+| `click`       | Fires on click                           |
+| `dblclick`    | Fires on double click (desktop & mobile) |
+| `contextmenu` | Fires on right click                     |
+| `mouseover`   | Fires when hovering over element         |
+| `mouseout`    | Fires when leaving element               |
+| `mousedown`   | Fires when mouse button pressed          |
+| `mousemove`   | Fires when moving cursor over element    |
 
-### Elements
-
-* title
-* subtitle
-* axis labels
-* axis title
-* plotLines
-* plotBands, including labels
-* point
-* series
-* legend
-* datalabels
-* flags
-* crosshairs
+## Supported Elements
+| Element       | Notes              |
+| ------------- | ------------------ |
+| `title`       | Chart title        |
+| `subtitle`    | Chart subtitle     |
+| `axis.labels` | Axis labels        |
+| `axis.title`  | Axis title         |
+| `plotLines`   | Including labels   |
+| `plotBands`   | Including labels   |
+| `point`       | Single data point  |
+| `series`      | Entire series      |
+| `legend`      | Legend items       |
+| `dataLabels`  | Series data labels |
+| `flags`       | Flags series       |
+| `crosshair`   | Crosshairs         |
