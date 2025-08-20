@@ -36,7 +36,7 @@
                                 <div class="install-methods">
                                     <h4>NPM</h4>
                                     <code>npm install highcharts-custom-events</code>
-                                    
+
                                     <h4>CDN</h4>
                                     <code>&lt;script src="https://unpkg.com/highcharts-custom-events@latest/dist/customEvents.js"&gt;&lt;/script&gt;</code>
                                 </div>
@@ -52,17 +52,20 @@
                                 <br />
                                 <h3>Code</h3>
                                 <ul>
-                                    <li><strong>Code:</strong> <a href="https://github.com/blacklabel/custom_events" target="_blank">Source Code</a></li>
-                                    <li><strong>Issues:</strong> <a href="https://github.com/blacklabel/custom_events/issues" target="_blank">Bug Reports</a></li>
+                                    <li><strong>Code:</strong> <a href="https://github.com/blacklabel/custom_events"
+                                            target="_blank">Source Code</a></li>
+                                    <li><strong>Issues:</strong> <a
+                                            href="https://github.com/blacklabel/custom_events/issues"
+                                            target="_blank">Bug Reports</a></li>
                                 </ul>
                             </div>
 
                         </div>
 
                         <div class="requirement-card">
-                        <div class="usage-example">
-                            <h3>💡 Usage Example</h3>
-                            <pre><code>// After loading Highcharts and the plugin
+                            <div class="usage-example">
+                                <h3>💡 Usage Example</h3>
+                                <pre><code>// After loading Highcharts and the plugin
 Highcharts.chart('container', {
     title: {
         text: 'Chart Title',
@@ -76,7 +79,7 @@ Highcharts.chart('container', {
         }
     }
 });</code></pre>
-                        </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -223,7 +226,7 @@ Highcharts.chart('container', {
                 },
                 stackLabels: {
                     enabled: true,
-                    events:{
+                    events: {
                         click: function () {
                             logEvent('Y axis stack label clicked');
                         }
@@ -256,6 +259,14 @@ Highcharts.chart('container', {
             plotOptions: {
                 series: {
                     stacking: 'normal',
+                    events: {
+                        click: function () {
+                            logEvent('Series clicked');
+                        },
+                        dblclick: function () {
+                            logEvent('Series double clicked');
+                        }
+                    },
                     point: {
                         events: {
                             click: function () {
@@ -294,7 +305,7 @@ Highcharts.chart('container', {
                     name: 'Series A',
                     data: [10, 15, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
                     color: 'red',
-                    dataLabels:{
+                    dataLabels: {
                         enabled: false,
                     },
                     marker: {

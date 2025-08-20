@@ -194,14 +194,35 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 		});
 
-		// Series DataLabels
+		// Series Events
 		chart.series.forEach(series => {
-			bindElementEvents(
-				series.dataLabelsGroup,
-				series.options.dataLabels?.events,
-				chart._customEventsBound
+			const seriesEvents = series.options.events;
+			// Filter out events that Highcharts already handle
+			const customOnlyEvents = filterCustomOnlyEvents(
+				seriesEvents as Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>>
 			);
 
+			if (series.group) {
+				if (Object.keys(customOnlyEvents).length > 0) {
+					bindElementEvents(
+						series.group,
+						customOnlyEvents,
+						chart._customEventsBound
+					);
+				}
+			}
+
+			console.log(series);
+			// Series DataLabels Events
+			if (series.dataLabelsGroup) {
+				bindElementEvents(
+					series.dataLabelsGroup,
+					series.options.dataLabels?.events,
+					chart._customEventsBound
+				);
+			}
+
+			// Point Events
 			series.data.forEach(point => {
 				// �� POINT EVENTS: Only add non-default events
 				if (point.graphic && series.options.point?.events) {
