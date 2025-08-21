@@ -108,6 +108,16 @@ Highcharts.chart('container', {
         }
 
         Highcharts.chart('chart', {
+            chart: {
+                events: {
+                    click: function () {
+                        logEvent('Chart clicked');
+                    },
+                    dblclick: function () {
+                        logEvent('Chart double clicked');
+                    }
+                }
+            },
             title: {
                 text: 'Chart Title (Click Me)',
                 style: {
@@ -152,7 +162,6 @@ Highcharts.chart('container', {
                     }
                 },
                 crosshair: {
-                    enabled: true,
                     width: 20,
                     color: 'rgba(52, 152, 219, 0.2)',
                     events: {
@@ -176,6 +185,14 @@ Highcharts.chart('container', {
                     value: 13,
                     width: 2,
                     color: '#ff6b6b',
+                    events: {
+                        click: function () {
+                            logEvent('Plot line clicked');
+                        },
+                        dblclick: function () {
+                            logEvent('Plot line double clicked');
+                        }
+                    },
                     label: {
                         text: 'Plot Line (Click Me)',
                         rotation: 0,
@@ -184,6 +201,9 @@ Highcharts.chart('container', {
                         events: {
                             click: function () {
                                 logEvent('Plot line label clicked');
+                            },
+                            dblclick: function () {
+                                logEvent('Plot line label double clicked');
                             }
                         },
                         style: {
@@ -196,6 +216,14 @@ Highcharts.chart('container', {
                     from: 5,
                     to: 10,
                     color: 'rgba(52, 152, 219, 0.2)',
+                    events: {
+                            click: function () {
+                                logEvent('Plot band clicked');
+                            },
+                            dblclick: function () {
+                                logEvent('Plot band double clicked');
+                            }
+                        },
                     label: {
                         text: 'Plot Band (Click Me)',
                         style: {
@@ -254,7 +282,15 @@ Highcharts.chart('container', {
             legend: {
                 enabled: true,
                 itemStyle: { color: '#333' },
-                itemHoverStyle: { color: '#007bff' }
+                itemHoverStyle: { color: '#007bff' },
+                events: {
+                    itemClick: function () {
+                        logEvent('Legend clicked');
+                    },
+                    dblclick: function () {
+                        logEvent('Legend double clicked');
+                    }
+                }
             },
             plotOptions: {
                 series: {

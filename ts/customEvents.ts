@@ -141,18 +141,46 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		// Initialize bound events tracking for this chart if not exists
 		chart._customEventsBound ??= [];
 
+		const chartEvents = chart.options.chart?.events;
+
+		// Filter out events that Highcharts already handle
+		const customOnlyEvents = filterCustomOnlyEvents(
+			chartEvents as Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>>
+		);
+
+		// Chart background events
+		if (chart.chartBackground) {
+			bindElementEvents(
+				chart.chartBackground,
+				customOnlyEvents,
+				chart._customEventsBound
+			);
+		}
 
 		// Title / Subtitle
-		bindElementEvents(
-			chart.title,
-			chart.options.title?.events,
-			chart._customEventsBound
-		);
-		bindElementEvents(
-			chart.subtitle,
-			chart.options.subtitle?.events,
-			chart._customEventsBound
-		);
+		if (chart.title) {
+			bindElementEvents(
+				chart.title,
+				chart.options.title?.events,
+				chart._customEventsBound
+			);
+		}
+		if (chart.subtitle) {
+			bindElementEvents(
+				chart.subtitle,
+				chart.options.subtitle?.events,
+				chart._customEventsBound
+			);
+		}
+
+		// Legend
+		if (chart.legend?.group) {
+			bindElementEvents(
+				chart.legend.group,
+				chart.options.legend?.events as Highcharts.ElementEvents,
+				chart._customEventsBound
+			);
+		}
 
 		// Axes
 		chart.axes.forEach(axis => {
@@ -197,6 +225,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 		// Series Events
 		chart.series.forEach(series => {
 			const seriesEvents = series.options.events;
+
 			// Filter out events that Highcharts already handle
 			const customOnlyEvents = filterCustomOnlyEvents(
 				seriesEvents as Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>>
@@ -212,7 +241,6 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				}
 			}
 
-			console.log(series);
 			// Series DataLabels Events
 			if (series.dataLabelsGroup) {
 				bindElementEvents(

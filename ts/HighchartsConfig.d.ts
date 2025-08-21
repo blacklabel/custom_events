@@ -3,18 +3,22 @@ import Highcharts from "highcharts";
 declare module "highcharts" {
   export let customEventsPluginLoaded: boolean;
 
+  interface Options {
+    events?: ElementEvents;
+  }
+
   interface Axis {
-	  axisTitle: Highcharts.SVGElement;
-	  labelGroup: Highcharts.SVGElement;
-	  plotLinesAndBands?: PlotLineOrBand[];
-	  cross?: Highcharts.SVGElement;
+    axisTitle: Highcharts.SVGElement;
+    labelGroup: Highcharts.SVGElement;
+    plotLinesAndBands?: PlotLineOrBand[];
+    cross?: Highcharts.SVGElement;
     stacking?: {
       stackTotalGroup?: Highcharts.SVGElement;
     },
     stackLabels?: {
       events?: ElementEvents;
     }
-	}
+  }
 
   interface Series {
     group: Highcharts.SVGElement;
@@ -26,6 +30,7 @@ declare module "highcharts" {
   }
 
   interface Chart {
+    chartBackground: Highcharts.SVGElement;
     _customEventsBound?: BoundEvent[];
   }
 
@@ -35,7 +40,7 @@ declare module "highcharts" {
 
   export interface SeriesPointOptions {
     events?: PointEventsOptions | ElementEvents;
-}
+  }
 
   interface SeriesOptions {
     /** Allow dataLabels on all series options */
