@@ -228,7 +228,10 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 			// Filter out events that Highcharts already handle
 			const customOnlyEvents = filterCustomOnlyEvents(
-				seriesEvents as Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>>
+				seriesEvents as Record<
+					string, 
+					Highcharts.EventCallbackFunction<Highcharts.SVGElement>
+				>
 			);
 
 			if (series.group) {
