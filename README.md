@@ -1,7 +1,7 @@
 # Custom Events – Highcharts Module
 
 [![npm version](https://img.shields.io/npm/v/highcharts-custom-events)](https://www.npmjs.com/package/highcharts-custom-events)
-[![license](https://img.shields.io/github/license/blacklabel/custom_events)](./license.txt)
+[![license](https://img.shields.io/github/license/blacklabel/custom_events)](https://github.com/blacklabel/custom_events/blob/master/license.txt)
 
 **Custom Events** extends Highcharts by allowing you to bind native DOM-like events (`click`, `dblclick`, `contextmenu`, etc.) directly to chart elements such as labels, titles, series, and crosshairs.
 
