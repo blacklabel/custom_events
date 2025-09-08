@@ -144,6 +144,7 @@ Highcharts.chart('container', {
             },
             title: {
                 text: 'Chart title <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
+                useHTML: true,
                 y:0,
                 style: {
                     color: '#1A1A18',
@@ -158,6 +159,7 @@ Highcharts.chart('container', {
             },
             subtitle: {
                 text: 'Subtitle <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
+                useHTML: true,
                 y:30,
                 style: {
                     color: '#AFAFAC',
@@ -176,6 +178,7 @@ Highcharts.chart('container', {
             xAxis: {
                 title: {
                     text: 'X axis title  <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
+                    useHTML: true,
                     style: {
                         color: '#1A1A18',
                         fontWeight: '400',
@@ -220,6 +223,7 @@ Highcharts.chart('container', {
                         }
                     },
                     label: {
+                        useHTML: true,
                         text: 'Plot line  <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
                         rotation: 0,
                         y: 20,
@@ -251,6 +255,7 @@ Highcharts.chart('container', {
                         }
                     },
                     label: {
+                        useHTML: true,
                         text: 'Plot band <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
                         align: 'left',
                         x: 10,
@@ -269,6 +274,7 @@ Highcharts.chart('container', {
             },
             yAxis: {
                 title: {
+                    useHTML: true,
                     text: 'Y axis title <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
                     style: {
                         color: '#1A1A18',
@@ -293,6 +299,7 @@ Highcharts.chart('container', {
                         color: '#333',
                         fontWeight: '500'
                     },
+                    useHTML: true,
                     formatter: function () {
                         if (this.x === 11) {
                             return this.cumulative + ' <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>'
@@ -301,6 +308,7 @@ Highcharts.chart('container', {
                     }
                 },
                 labels: {
+                    useHTML: true,
                     style: { color: '#AFAFAC',fontSize: '10px',},
                     events: {
                         click: function () {
@@ -345,6 +353,7 @@ Highcharts.chart('container', {
                     },
                     dataLabels: {
                         enabled: true,
+                        useHTML: true,
                         style: {
                             color: '#333',
                             fontWeight: '500'
