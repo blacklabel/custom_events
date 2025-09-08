@@ -5,7 +5,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 50%, #f0f0f0 100%);
+    background: #EFEFEF;
     font-family: 'Montserrat', sans-serif;
     color: #333;
     min-height: 100vh;
@@ -15,34 +15,60 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
 .header {
-    text-align: center;
-    padding: 20px 20px 15px 20px;
-    border-bottom: 1px solid #f0f0f0;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid  rgba(0, 0, 0, 0.30);
+    
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-section {
+    display: flex;
+    gap: 10px;
 }
 
 .main-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 4px;
+    color: #1A1A18;
+    font-family: 'Inter', sans-serif;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%; /* 64px */
+    letter-spacing: -0.64px;
 }
 
 .subtitle {
-    font-size: 12px;
-    color: #666;
+    color: #1A1A18;
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-style: normal;
     font-weight: 400;
+    line-height: 140%; /* 28px */
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+}
+
+.bl-logo {
+    width: 48.14px;
+height: 46.526px;
+aspect-ratio: 48.14/46.53;
 }
 
 .content {
     display: flex;
-    padding: 20px;
+    margin-top: 120px;
     gap: 20px;
     /* min-height: 600px; */
 }
@@ -56,7 +82,7 @@ body {
 .chart-container {
     background: #fff;
     border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 15px;
     flex: 1;
     /* min-height: 500px; */
@@ -72,12 +98,24 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    background-color: transparent;
+}
+
+.log-section h3 {
+    color: #1A1A18;
+    font-family: 'Inter', monospace;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 110%;
+    /* 33px */
+    gap: 15px;
 }
 
 .event-log {
-    background: #f8f9fa;
+    background: #FFFFFF;
     border: 1px solid #e9ecef;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 15px;
     flex: 1;
     /* min-height: 500px; */
@@ -90,9 +128,7 @@ body {
     font-size: 14px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 12px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 60px;
 }
 
 .log-content {
@@ -108,15 +144,21 @@ body {
     color: #333;
     margin-bottom: 6px;
     padding: 6px;
-    background: #fff;
     border-radius: 4px;
-    border-left: 2px solid #007bff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.30);
+    color: #000;
+    font-family: "Fira Mono";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
+    /* 16.8px */
 }
 
 .instructions {
     background: #f8f9fa;
     border: 1px solid #e9ecef;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 15px;
     margin-top: 15px;
 }
@@ -160,18 +202,43 @@ body {
         flex: none;
     }
 
+    .header {
+        padding: 30px 20px 20px 20px;
+    }
+
     .main-title {
-        font-size: 28px;
+        font-size: 36px;
+    }
+
+    .bl-logo {
+        width: 40px;
+        height: 40px;
     }
 }
 
 @media (max-width: 768px) {
+    .header {
+        padding: 20px 15px 15px 15px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
     .main-title {
-        font-size: 24px;
+        font-size: 32px;
     }
 
     .subtitle {
         font-size: 12px;
+    }
+
+    .bl-logo {
+        width: 48.14px;
+height: 46.526px;
+aspect-ratio: 48.14/46.53;
     }
 
     .content {
@@ -199,10 +266,14 @@ body {
 .requirements-section {
     background: #fff;
     margin: 20px 0;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 20px;
     border: 1px solid #e9ecef;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.requirement-card-header {
+    margin-bottom: 40px;
 }
 
 .requirements-content h2 {
@@ -221,23 +292,52 @@ body {
 }
 
 .requirement-card {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.50);
     border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 15px;
+    border-radius: 10px;
+    padding: 30px;
+    margin-top: 20px;
     transition: box-shadow 0.2s ease;
 }
 
+.requirement-card ul {
+    list-style-type: none;
+    list-style: none;
+}
+
+.requirement-card li {
+    border-top: 1px solid rgba(0, 0, 0, 0.30);
+    margin-top: 10px;
+    padding-top: 10px;
+    margin-bottom: 20px;
+    color: #000;
+    font-family: "Inter";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
+}
 
 .requirement-card h3 {
-    color: #333;
-    font-size: 16px;
-    font-weight: 600;
+    color: #1A1A18;
+    font-family: 'Inter', monospace;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 110%;
+    /* 33px */
     margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 15px;
 }
+
+.h3-arrow {
+    width: 26px;
+    height: 26px;
+
+}
+
 
 .requirement-card h4 {
     color: #666;
@@ -252,30 +352,13 @@ body {
     margin: 0;
 }
 
-.requirement-card li {
-    color: #666;
-    margin-bottom: 6px;
-    font-size: 13px;
-    line-height: 1.4;
-    padding-left: 16px;
-    position: relative;
-}
-
-.requirement-card li:before {
-    content: "•";
-    color: #007bff;
-    position: absolute;
-    left: 0;
-    font-weight: bold;
-}
-
 .requirement-card strong {
     color: #333;
     font-weight: 600;
 }
 
 .requirement-card a {
-    color: #007bff;
+    color: #1F79FF;
     text-decoration: none;
     transition: color 0.2s ease;
 }
@@ -285,25 +368,29 @@ body {
     text-decoration: underline;
 }
 
+.install-method {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .install-methods code {
-    background: #f8f9fa;
-    color: #495057;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 15px 10px;
+    width: 100%;
+    color: #000;
+    font-family: "Fira Mono";
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
     font-size: 11px;
     display: block;
     margin: 6px 0;
     border: 1px solid #e9ecef;
 }
 
-.usage-example {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 15px;
-}
 
 .usage-example h3 {
     color: #333;
@@ -317,7 +404,7 @@ body {
 
 .usage-example pre {
     background: #fff;
-    border-radius: 6px;
+    border-radius: 10px;
     padding: 12px;
     overflow-x: auto;
     margin: 0;
@@ -337,16 +424,16 @@ body {
         padding: 15px;
         margin: 15px 0;
     }
-    
+
     .requirements-grid {
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .requirement-card {
         padding: 12px;
     }
-    
+
     .requirements-content h2 {
         font-size: 18px;
     }

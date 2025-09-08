@@ -5,11 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom Events</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
-        rel="stylesheet" />
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="dist/customEvents.js"></script>
@@ -18,8 +21,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="main-title">Custom Events</h1>
-            <p class="subtitle">by Black Label</p>
+            <div class="header-content">
+                <div class="title-section">
+                    <h1 class="main-title">Custom events</h1>
+                    <p class="subtitle">by Black Label</p>
+                </div>
+                <div class="header-logo">
+                    <img src="assets/icons/blLogo.svg" alt="Black Label Logo" class="bl-logo">
+                </div>
+            </div>
         </div>
 
         <div class="content">
@@ -28,44 +38,51 @@
                     <div id="chart"></div>
                 </div>
 
-                <div class="requirements-section">
-                    <div class="requirements-content">
-                        <div class="requirements-grid">
-                            <div class="requirement-card">
-                                <h3>Installation</h3>
-                                <div class="install-methods">
-                                    <h4>NPM</h4>
-                                    <code>npm install highcharts-custom-events</code>
 
-                                    <h4>CDN</h4>
-                                    <code>&lt;script src="https://unpkg.com/highcharts-custom-events@latest/dist/customEvents.js"&gt;&lt;/script&gt;</code>
-                                </div>
-
+                <div class="requirements-content">
+                    <div class="requirement-card">
+                        <div class="requirement-card-header">
+                            <h3><img src="assets/icons/arrow.svg" alt="Arrow" class="h3-arrow">Requirements</h3>
+                        </div>
+                        <ul>
+                            <li>Highcharts: 9.0.0 or newer</li>
+                            <!-- TODO: Add a tabel showing which version of the plugin works with which HC version, the newest (4.0.0) from 9.0.0  the older (3.1.0) from 3.1 to 9.0.0 -->
+                        </ul>
+                    </div>
+                    <div class="requirement-card">
+                        <div class="requirement-card-header">
+                            <h3><img src="assets/icons/arrow.svg" alt="Arrow" class="h3-arrow">Code</h3>
+                        </div>
+                        <ul>
+                            <li><span style="display: inline-block; width: 80px">Code</span><a href="https://github.com/blacklabel/custom_events"
+                                    target="_blank">Source Code</a></li>
+                            <li><span style="display: inline-block; width: 80px">Issues</span><a href="https://github.com/blacklabel/custom_events/issues"
+                                    target="_blank">Bug Reports</a></li>
+                        </ul>
+                    </div>
+                    <div class="requirement-card">
+                        <div class="requirement-card-header">
+                            <h3><img src="assets/icons/arrow.svg" alt="Arrow" class="h3-arrow">Installation</h3>
+                        </div>
+                        <div class="install-methods">
+                            <div class="install-method">
+                                <span style="display: inline-block; width: 80px">NPM</span>
+                                <code>npm install highcharts-custom-events</code>
                             </div>
-
-                            <div class="requirement-card">
-                                <h3>Requirements</h3>
-                                <ul>
-                                    <li><strong>Highcharts:</strong> 9.0.0 or newer</li>
-                                    <!-- TODO: Add a tabel showing which version of the plugin works with which HC version, the newest (4.0.0) from 9.0.0  the older (3.1.0) from 3.1 to 9.0.0 -->
-                                </ul>
-                                <br />
-                                <h3>Code</h3>
-                                <ul>
-                                    <li><strong>Code:</strong> <a href="https://github.com/blacklabel/custom_events"
-                                            target="_blank">Source Code</a></li>
-                                    <li><strong>Issues:</strong> <a
-                                            href="https://github.com/blacklabel/custom_events/issues"
-                                            target="_blank">Bug Reports</a></li>
-                                </ul>
+                            <div class="install-method">
+                                <span style="display: inline-block; width: 80px">CDN</span>
+                                <code>&lt;script src="https://unpkg.com/highcharts-custom-events@latest/dist/customEvents.js"&gt;&lt;/script&gt;</code>
                             </div>
-
                         </div>
 
-                        <div class="requirement-card">
-                            <div class="usage-example">
-                                <h3>💡 Usage Example</h3>
-                                <pre><code>// After loading Highcharts and the plugin
+                    </div>
+
+                    <div class="requirement-card">
+                        <div class="requirement-card-header">
+                            <h3><img src="assets/icons/arrow.svg" alt="Arrow" class="h3-arrow">Usage example</h3>
+                        </div>
+                        <div class="usage-example">
+                            <pre><code>// After loading Highcharts and the plugin
 Highcharts.chart('container', {
     title: {
         text: 'Chart Title',
@@ -79,15 +96,18 @@ Highcharts.chart('container', {
         }
     }
 });</code></pre>
-                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="log-section">
                 <div class="event-log">
-                    <div class="log-header">Event Log</div>
+                    <div class="log-header">
+                        <h3 style="display: flex;"><img src="assets/icons/arrow.svg" alt="Arrow" class="h3-arrow">Event
+                            log</h3>
+                    </div>
                     <div class="log-content" id="log"></div>
                 </div>
             </div>
@@ -109,6 +129,7 @@ Highcharts.chart('container', {
 
         Highcharts.chart('chart', {
             chart: {
+                spacingTop: 30,
                 events: {
                     click: function () {
                         logEvent('Chart clicked');
@@ -116,14 +137,18 @@ Highcharts.chart('container', {
                     dblclick: function () {
                         logEvent('Chart double clicked');
                     }
+                },
+                style: {
+                    fontFamily: 'Inter',
                 }
             },
             title: {
-                text: 'Chart Title (Click Me)',
+                text: 'Chart title <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
+                y:0,
                 style: {
-                    color: '#333',
-                    fontWeight: '600',
-                    fontSize: '18px'
+                    color: '#1A1A18',
+                    fontWeight: '400',
+                    fontSize: '30px'
                 },
                 events: {
                     click: function () {
@@ -132,11 +157,12 @@ Highcharts.chart('container', {
                 }
             },
             subtitle: {
-                text: 'Subtitle (Click Me)',
+                text: 'Subtitle <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
+                y:30,
                 style: {
-                    color: '#666',
+                    color: '#AFAFAC',
                     fontWeight: '400',
-                    fontSize: '14px'
+                    fontSize: '16px'
                 },
                 events: {
                     click: function () {
@@ -149,11 +175,11 @@ Highcharts.chart('container', {
             },
             xAxis: {
                 title: {
-                    text: 'X Axis Title (Click Me)',
+                    text: 'X axis title  <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
                     style: {
-                        color: '#333',
-                        fontWeight: '500',
-                        fontSize: '14px'
+                        color: '#1A1A18',
+                        fontWeight: '400',
+                        fontSize: '16px'
                     },
                     events: {
                         click: function () {
@@ -174,7 +200,7 @@ Highcharts.chart('container', {
                     }
                 },
                 labels: {
-                    style: { color: '#666' },
+                    style: { color: '#AFAFAC',fontSize: '10px'},
                     events: {
                         click: function () {
                             logEvent('X axis label clicked');
@@ -184,7 +210,7 @@ Highcharts.chart('container', {
                 plotLines: [{
                     value: 13,
                     width: 2,
-                    color: '#ff6b6b',
+                    color: '#EFEFEF',
                     events: {
                         click: function () {
                             logEvent('Plot line clicked');
@@ -194,10 +220,10 @@ Highcharts.chart('container', {
                         }
                     },
                     label: {
-                        text: 'Plot Line (Click Me)',
+                        text: 'Plot line  <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
                         rotation: 0,
+                        y: 20,
                         x: 10,
-                        y: -10,
                         events: {
                             click: function () {
                                 logEvent('Plot line label clicked');
@@ -207,28 +233,31 @@ Highcharts.chart('container', {
                             }
                         },
                         style: {
-                            color: '#ff6b6b',
-                            fontWeight: '500'
+                            color: '#969696',
+                            fontSize: '12px'
                         }
                     }
                 }],
                 plotBands: [{
                     from: 5,
                     to: 10,
-                    color: 'rgba(52, 152, 219, 0.2)',
+                    color: '#EFEFEF',
                     events: {
-                            click: function () {
-                                logEvent('Plot band clicked');
-                            },
-                            dblclick: function () {
-                                logEvent('Plot band double clicked');
-                            }
+                        click: function () {
+                            logEvent('Plot band clicked');
                         },
+                        dblclick: function () {
+                            logEvent('Plot band double clicked');
+                        }
+                    },
                     label: {
-                        text: 'Plot Band (Click Me)',
+                        text: 'Plot band <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
+                        align: 'left',
+                        x: 10,
+                        y: 20,
                         style: {
-                            color: '#3498db',
-                            fontWeight: '500'
+                            color: '#969696',
+                            fontSize: '12px'
                         },
                         events: {
                             click: function () {
@@ -240,11 +269,11 @@ Highcharts.chart('container', {
             },
             yAxis: {
                 title: {
-                    text: 'Y Axis Title (Click Me)',
+                    text: 'Y axis title <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
                     style: {
-                        color: '#333',
-                        fontWeight: '500',
-                        fontSize: '14px'
+                        color: '#1A1A18',
+                        fontWeight: '400',
+                        fontSize: '16px'
                     },
                     events: {
                         click: function () {
@@ -254,6 +283,7 @@ Highcharts.chart('container', {
                 },
                 stackLabels: {
                     enabled: true,
+                    x: 25,
                     events: {
                         click: function () {
                             logEvent('Y axis stack label clicked');
@@ -265,13 +295,13 @@ Highcharts.chart('container', {
                     },
                     formatter: function () {
                         if (this.x === 11) {
-                            return this.cumulative + '<br/><span style="font-size:10px;">(Click Me)</span>';
+                            return this.cumulative + ' <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>'
                         }
                         return '';
                     }
                 },
                 labels: {
-                    style: { color: '#666' },
+                    style: { color: '#AFAFAC',fontSize: '10px',},
                     events: {
                         click: function () {
                             logEvent('Y axis label clicked');
@@ -319,9 +349,10 @@ Highcharts.chart('container', {
                             color: '#333',
                             fontWeight: '500'
                         },
+                        x: 26,
                         formatter: function () {
                             if (this.point && typeof this.point.index === 'number' && this.point.index === 11) {
-                                return this.y + '<br/><span style="font-size:10px;">(Click Me)</span>';
+                                return this.y + ' <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>';
                             }
                             return '';
                         },
@@ -338,9 +369,9 @@ Highcharts.chart('container', {
             },
             series: [
                 {
-                    name: 'Series A',
+                    name: 'series A',
                     data: [10, 15, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
-                    color: 'red',
+                    color: '#BB9FFF',
                     dataLabels: {
                         enabled: false,
                     },
@@ -348,18 +379,18 @@ Highcharts.chart('container', {
                         enabled: true,
                         radius: 4,
                         lineWidth: 2,
-                        lineColor: '#fff'
+                        lineColor: 'transparent'
                     }
                 },
                 {
-                    name: 'Series B',
+                    name: 'series B',
                     data: [10, 15, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
-                    color: '#007bff',
+                    color: '#F3B9B0',
                     marker: {
                         enabled: true,
                         radius: 4,
                         lineWidth: 2,
-                        lineColor: '#fff'
+                        lineColor: 'transparent'
                     }
                 }
             ],
