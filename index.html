@@ -45,7 +45,7 @@
                             <h3><img src="assets/icons/arrow.svg" alt="Arrow" class="h3-arrow">Requirements</h3>
                         </div>
                         <ul>
-                            <li>Highcharts: 9.0.0 or newer</li>
+                            <li><span style="display: inline-block; width: 90px">Highcharts</span> 9.0.0 or newer</li>
                             <!-- TODO: Add a tabel showing which version of the plugin works with which HC version, the newest (4.0.0) from 9.0.0  the older (3.1.0) from 3.1 to 9.0.0 -->
                         </ul>
                     </div>
@@ -54,9 +54,9 @@
                             <h3><img src="assets/icons/arrow.svg" alt="Arrow" class="h3-arrow">Code</h3>
                         </div>
                         <ul>
-                            <li><span style="display: inline-block; width: 80px">Code</span><a href="https://github.com/blacklabel/custom_events"
+                            <li><span style="display: inline-block; width: 90px">Code</span><a href="https://github.com/blacklabel/custom_events"
                                     target="_blank">Source Code</a></li>
-                            <li><span style="display: inline-block; width: 80px">Issues</span><a href="https://github.com/blacklabel/custom_events/issues"
+                            <li><span style="display: inline-block; width: 90px">Issues</span><a href="https://github.com/blacklabel/custom_events/issues"
                                     target="_blank">Bug Reports</a></li>
                         </ul>
                     </div>
@@ -66,11 +66,11 @@
                         </div>
                         <div class="install-methods">
                             <div class="install-method">
-                                <span style="display: inline-block; width: 80px">NPM</span>
+                                <span style="display: inline-block; width: 90px">NPM</span>
                                 <code>npm install highcharts-custom-events</code>
                             </div>
                             <div class="install-method">
-                                <span style="display: inline-block; width: 80px">CDN</span>
+                                <span style="display: inline-block; width: 90px">CDN</span>
                                 <code>&lt;script src="https://unpkg.com/highcharts-custom-events@latest/dist/customEvents.js"&gt;&lt;/script&gt;</code>
                             </div>
                         </div>
@@ -124,12 +124,12 @@ Highcharts.chart('container', {
 
             // Auto-scroll to bottom
             log.scrollTop = log.scrollHeight;
-            console.log('logEvent', message);
         }
 
         Highcharts.chart('chart', {
             chart: {
                 spacingTop: 30,
+                spacingLeft: 20,
                 events: {
                     click: function () {
                         logEvent('Chart clicked');
@@ -176,6 +176,7 @@ Highcharts.chart('container', {
                 enabled: false
             },
             xAxis: {
+                lineColor: '#AFAFAC',
                 title: {
                     text: 'X axis title  <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
                     useHTML: true,
@@ -274,6 +275,7 @@ Highcharts.chart('container', {
             },
             yAxis: {
                 title: {
+                    x: -15,
                     useHTML: true,
                     text: 'Y axis title <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>',
                     style: {
