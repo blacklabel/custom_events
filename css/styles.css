@@ -53,6 +53,14 @@ body {
     font-style: normal;
     font-weight: 400;
     line-height: 140%; /* 28px */
+    text-decoration: none;
+}
+
+.subtitle a {
+    text-decoration: none;
+}
+.subtitle a:visited {
+    color: #1A1A18;
 }
 
 .header-logo {
