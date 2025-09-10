@@ -1,7 +1,6 @@
 # Custom Events – Highcharts Module
 
 [![npm version](https://img.shields.io/npm/v/highcharts-custom-events)](https://www.npmjs.com/package/highcharts-custom-events)
-[![license](https://img.shields.io/github/license/blacklabel/custom_events)](https://github.com/blacklabel/custom_events/blob/master/license.txt)
 
 **Custom Events** is an official [Black Label](https://blacklabel.net/highcharts/) plugin for Highcharts, extending the charting library with DOM-like event binding (`click`, `dblclick`, `contextmenu`, etc.) for chart elements such as labels, titles, series, and crosshairs. The plugin is built as a separate add-on to the Highcharts library, owned and maintained by Highsoft AS.
 
