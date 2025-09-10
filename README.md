@@ -3,11 +3,15 @@
 [![npm version](https://img.shields.io/npm/v/highcharts-custom-events)](https://www.npmjs.com/package/highcharts-custom-events)
 [![license](https://img.shields.io/github/license/blacklabel/custom_events)](https://github.com/blacklabel/custom_events/blob/master/license.txt)
 
-**Custom Events** extends Highcharts by allowing you to bind native DOM-like events (`click`, `dblclick`, `contextmenu`, etc.) directly to chart elements such as labels, titles, series, and crosshairs.
+**Custom Events** is an official [Black Label](https://blacklabel.net/highcharts/) plugin for Highcharts, extending the charting library with DOM-like event binding (`click`, `dblclick`, `contextmenu`, etc.) for chart elements such as labels, titles, series, and crosshairs. The plugin is built as a separate add-on to the Highcharts library, owned and maintained by Highsoft AS.
+
+This module is the result of our long-standing collaboration with Highsoft, where we’ve been a trusted partner since 2010 — helping build, maintain, and expand the Highcharts ecosystem. With custom events, you can easily create richer interactivity and deliver better user experiences, without relying on complex workarounds.
+
 
 👉 [Live demo](https://blacklabel.github.io/custom_events/)  
 👉 [GitHub repository](https://github.com/blacklabel/custom_events)
 
+![Demo](assets/docs/customEvents.gif)
 ---
 
 ## Table of Contents
@@ -178,3 +182,26 @@ After building, include the plugin file after Highcharts in your index.html:
 </body>
 </html>
 ```
+
+---
+## Why Black Label Built This Plugin
+
+At Black Label, we specialize in pushing the boundaries of data visualization. Over the past 15 years, we’ve worked with companies worldwide to build charting solutions that go beyond out-of-the-box libraries.
+
+Highcharts is at the heart of much of our work, and this plugin grew directly out of real-world client needs:
+
+- Adding native-like event handling to chart elements  
+- Enabling intuitive UX for interactive dashboards  
+- Simplifying complex customization by extending the Highcharts core in a seamless way  
+
+**Custom Events** is one of many plugins we’ve created to make Highcharts more flexible, more powerful, and more developer-friendly.
+
+---
+
+## About Black Label
+
+We’re a Krakow-based team of data visualization experts, working closely with Highsoft and the global Highcharts community since 2010. Our expertise spans plugins, extensions, custom dashboards, and full-scale dataviz applications.
+
+Custom Events is just one of the many innovations we’ve open-sourced. Explore more on our [GitHub profile](https://github.com/blacklabel) or connect with us at **tech@blacklabel.net** to discuss how we can help bring your charts and dashboards to life.  
+
+👉 Learn more about us on our [website](https://blacklabel.net/highcharts/).

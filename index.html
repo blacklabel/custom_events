@@ -135,9 +135,6 @@ Highcharts.chart('container', {
                 spacingTop: 30,
                 spacingLeft: 20,
                 events: {
-                    click: function () {
-                        logEvent('Chart clicked');
-                    },
                     dblclick: function () {
                         logEvent('Chart double clicked');
                     }
@@ -305,7 +302,6 @@ Highcharts.chart('container', {
                         color: '#333',
                         fontWeight: '500'
                     },
-                    useHTML: true,
                     formatter: function () {
                         if (this.x === 11) {
                             return this.cumulative + ' <span style="vertical-align: middle; font-size: 10px; color: #AFAFAC;">← click me</span>'
@@ -314,7 +310,6 @@ Highcharts.chart('container', {
                     }
                 },
                 labels: {
-                    useHTML: true,
                     style: { color: '#AFAFAC',fontSize: '10px',},
                     events: {
                         click: function () {
@@ -359,7 +354,6 @@ Highcharts.chart('container', {
                     },
                     dataLabels: {
                         enabled: true,
-                        useHTML: true,
                         style: {
                             color: '#333',
                             fontWeight: '500'
