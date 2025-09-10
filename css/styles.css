@@ -1,97 +1,488 @@
-@import 'https://code.highcharts.com/css/highcharts.css';
-
-/* content wrapper */
-#main-content { max-width:900px; margin:0px auto; font-size: 1.3em; } 
-#main-content ul li { margin-bottom:10px; }
-
-/* Highcharts */
-
-.highcharts-title { width: calc(100% - 30px)!important; }
-
-.highcharts-background { fill: #f7f7f7; stroke: #e8eaeb; stroke-width: 5;}
-.highcharts-navigator-mask-outside { fill-opacity: 0; }
-.highcharts-plot-line { stroke-width: 10px; stroke: #a4c08e; }
-.highcharts-plot-band { fill: #FCFFC5; fill-opacity: 1; }
-
-/* Custom */
-
-.btn { float: left; background-color: #d4d4d4; border: none; color: #000; cursor: pointer; }
-
-#flash { color: #000000; background-color: rgb(90, 200, 90); display: none; height: 30px; width: calc(100% + 10px); }
-#report { padding: 7px 0px 7px 10px; }
-
-.chart-title { background-color: #3d3d3d; color: #fff; float: left; font-size: 0.756em; padding: 10px; width: calc(100% - 1px); }
-.chart-subtitle { line-height: 1.7em; font-size: 0.8em; padding-right: 10px; color: rgba(255, 0, 0, 0.8); float: right; }
-
-.chart-href, .chart-href a, .chart-href a:hover { float: right; color: red; text-decoration: none }
-
-h1, h2, h3, h4, h5, h6, p, blockquote { margin: 0; padding: 0; }
-
-body { background-color: #fff; color: #737373; font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif; font-size: 0.6em; margin: 10px 13px 10px 13px; line-height: 1.2em; }
-table { margin: 10px 0 15px 0; border-collapse: collapse; }
-td, th { border: 1px solid #ddd; padding: 3px 10px; }
-th {  padding: 5px 10px; }
-a {  color: #0069d6; }
-a:hover { color: #0050a3; text-decoration: none; }
-a img { border: none; }
-p { margin-bottom: 9px; }
-h1, h2, h3, h4, h5, h6 { color: #404040; line-height: 36px; }
-h1 { margin-bottom: 18px; font-size: 30px; }
-h2 { font-size: 24px; }
-h3 { font-size: 18px; }
-h4 { font-size: 16px; }
-h5 {font-size: 14px; }
-h6 { font-size: 13px; }
-hr { margin: 0 0 19px;  border: 0;  border-bottom: 1px solid #ccc; }
-
-blockquote {padding: 13px 13px 21px 15px;margin-bottom: 18px;font-family: georgia, serif;font-style: italic; }
-blockquote:before {content: "\201C";font-size: 40px;margin-left: -10px;font-family: georgia, serif;color: #eee; }
-blockquote p {font-size: 14px;font-weight: 300;line-height: 18px;margin-bottom: 0;font-style: italic; }
-code, pre {font-family: Monaco, Andale Mono, Courier New, monospace; }
-code {background-color: #fee9cc;color: rgba(0, 0, 0, 0.75);padding: 1px 3px;font-size: 12px;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; }
-pre {display: block;padding: 14px;margin: 0 0 18px;line-height: 16px;font-size: 11px;border: 1px solid #d9d9d9;white-space: pre-wrap;word-wrap: break-word; }
-pre code {background-color: #fff;color: #737373;font-size: 11px;padding: 0; }
-sup {font-size: 0.83em;vertical-align: super;line-height: 0; }
-
-* {-webkit-print-color-adjust: exact; }
-
-@media screen and (min-width: 914px) {
-    body {  width: 100%;  margin: 10px auto;} 
+/* Neue Montreal Font Family */
+@font-face {
+    font-family: 'Neue Montreal';
+    src: url('../assets/fonts/PPNeueMontreal-Regular.woff2') format('woff2'),
+         url('../assets/fonts/PPNeueMontreal-Regular.woff') format('woff'),
+         url('../assets/fonts/PPNeueMontreal-Regular.ttf') format('truetype'),
+         url('../assets/fonts/PPNeueMontreal-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
 }
 
-@media print {
-    body,code,pre code,h1,h2,h3,h4,h5,h6 {  color: black;}table,pre {  page-break-inside: avoid;} 
+@font-face {
+    font-family: 'Neue Montreal';
+    src: url('../assets/fonts/PPNeueMontreal-Medium.woff2') format('woff2'),
+         url('../assets/fonts/PPNeueMontreal-Medium.woff') format('woff'),
+         url('../assets/fonts/PPNeueMontreal-Medium.ttf') format('truetype'),
+         url('../assets/fonts/PPNeueMontreal-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
 }
 
-#chart, #chart-advanced, #chart-3d {height: 500px;width: 100%;position: relative; }
+@font-face {
+    font-family: 'Neue Montreal';
+    src: url('../assets/fonts/PPNeueMontreal-Bold.woff2') format('woff2'),
+         url('../assets/fonts/PPNeueMontreal-Bold.woff') format('woff'),
+         url('../assets/fonts/PPNeueMontreal-Bold.ttf') format('truetype'),
+         url('../assets/fonts/PPNeueMontreal-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #EFEFEF;
+    font-family: 'Neue Montreal', sans-serif;
+    color: #333;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.header {
+    padding-top: 60px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid  rgba(0, 0, 0, 0.30);
+    
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-section {
+    display: flex;
+    gap: 10px;
+}
+
+.main-title {
+    color: #1A1A18;
+    font-family: 'Neue Montreal', sans-serif;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%; /* 64px */
+    letter-spacing: -0.64px;
+}
+
+.subtitle {
+    color: #1A1A18;
+    font-family: 'Neue Montreal', sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 28px */
+    text-decoration: none;
+}
+
+.subtitle a {
+    text-decoration: none;
+    color: #1A1A18;
+}
+.subtitle a:visited {
+    color: #1A1A18;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+}
+
+.bl-logo {
+    width: 48.14px;
+height: 46.526px;
+aspect-ratio: 48.14/46.53;
+}
+
+.content {
+    display: flex;
+    margin-top: 120px;
+    gap: 20px;
+    /* min-height: 600px; */
+}
+
+.chart-section {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-container {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    flex: 1;
+    /* min-height: 500px; */
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.log-section {
+    flex: 1;
+    min-height: 50vh;
+    /* display: flex;
+    flex-direction: column;
+    background-color: transparent; */
+}
+
+.log-section h3 {
+    color: #1A1A18;
+    font-family: 'Neue Montreal', monospace;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 110%;
+    gap: 15px;
+}
+
+.event-log {
+    background: #FFFFFF;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.log-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 60px;
+}
+
+.log-content {
+    flex: 1;
+    overflow-y: auto;
+    font-family: 'Neue Montreal', monospace;
+    font-size: 12px;
+    line-height: 1.3;
+    min-height: 20vh;
+    max-height: 53vh;
+    height: auto;
+}
+
+.log-entry:first-child {
+    border-top: 1px solid rgba(0, 0, 0, 0.30);
+    padding-top:20px;
+}
+
+.log-entry {
+    color: #333;
+    margin-top: 20px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.30);
+    color: #000;
+    font-family: "Fira Mono";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
+    /* 16.8px */
+}
+
+.instructions {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.instructions h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.instructions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.instructions li {
+    color: #666;
+    margin-bottom: 6px;
+    padding-left: 16px;
+    position: relative;
+    font-size: 12px;
+}
+
+.instructions li:before {
+    content: "•";
+    color: #007bff;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+@media (max-width: 1200px) {
+    .content {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .chart-section,
+    .log-section {
+        flex: none;
+    }
+
+    .header {
+        padding: 30px 20px 20px 20px;
+    }
+
+    .main-title {
+        font-size: 36px;
+    }
+
+    .bl-logo {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 20px 15px 15px 15px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .main-title {
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+    }
+
+    .bl-logo {
+        width: 48.14px;
+height: 46.526px;
+aspect-ratio: 48.14/46.53;
+    }
+
+    .content {
+        padding: 8px;
+        gap: 15px;
+    }
+
+    .chart-container,
+    .event-log {
+        /* min-height: 400px; */
+        padding: 8px;
+    }
 
 
-/* Annotations UI */
+    .event-log {
+        max-height: 35vh;
+    }
 
-.form {margin-right: 10px;width: 160px;height: 330px;padding: 0px;background-color: #e8eaeb;padding: 5px;float: left;font-size: 1.4em; }
-.form .form-header {font-size: 1em;padding: 10px;background: #3d3d3d;color: #fff;line-height: 1.45em; }
-.form > p {padding: 5px 10px;margin: 0px; }
-.form > p:nth-child(2n) { background: #f7f7f7; }
-.form label {width: 140px;float: left;margin-top: 5px;padding-bottom: 3px; }
-.form input {width: 140px; }
-.form input[type="radio"] {width: auto;margin-left: 55px;margin-bottom: 3px; }
-.form .short {width: 60px;float: right;margin: 2px 0px 0px 0px; }
+    .log-content {
+        max-height: 25vh;
+    }
+}
 
-.highcharts-indicators { fill: none; }
-#chart-advanced .highcharts-yaxis .highcharts-axis-line { stroke-width: 2px; }
-#chart-advanced .highcharts-plot-line { stroke-width: 1px; stroke: orange; }
+/* Requirements Section Styles - Clean Minimalist Design */
+.requirements-section {
+    background: #fff;
+    margin: 20px 0;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.requirement-card-header {
+    margin-bottom: 40px;
+}
+
+.requirements-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.requirement-card {
+    background: rgba(255, 255, 255, 0.50);
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 30px;
+    margin-top: 20px;
+    transition: box-shadow 0.2s ease;
+}
+
+.requirement-card ul {
+    list-style-type: none;
+    list-style: none;
+}
+
+.requirement-card li {
+    border-top: 1px solid rgba(0, 0, 0, 0.30);
+    margin-top: 10px;
+    padding-top: 10px;
+    margin-bottom: 20px;
+    color: #000;
+    font-family: "Neue Montreal";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
+}
+
+.requirement-card h3 {
+    color: #1A1A18;
+    font-family: 'Neue Montreal', monospace;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 110%;
+    /* 33px */
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.h3-arrow {
+    width: 26px;
+    height: 26px;
+
+}
 
 
-/* ==== 3d ==== */
+.requirement-card h4 {
+    color: #666;
+    font-size: 13px;
+    font-weight: 500;
+    margin: 12px 0 6px 0;
+}
 
-#chart-3d .highcharts-background { fill: #000;}
-#chart-3d .highcharts-series.highcharts-series-0 path { stroke-width: 0; }
-#chart-3d .highcharts-grid-line { stroke-width: 1px; stroke: #d8d8d8;}
-#chart-3d .chart-title { width: calc(100% + 4px); }
+.requirement-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
-/* custom gradients */
-#chart-3d .moon { fill-opacity: 1; fill: url(#gradient-2); stroke-width:0; }
-#chart-3d .sun { fill-opacity: 1; fill: url(#gradient-1); stroke-width:0; }
-#chart-3d .planet { fill-opacity: 1; fill: url(#gradient-0); stroke-width:0; }
-#chart-3d .magneticFieldPink { fill-opacity: 1; fill: url(#magneticFieldPink); stroke-width:0; }
-#chart-3d .magneticFieldBlue { fill-opacity: 1; fill: url(#magneticFieldBlue); stroke-width:0; }
+.requirement-card strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.requirement-card a {
+    color: #1F79FF;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.requirement-card a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.install-method {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.install-methods code {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 15px 10px;
+    width: 100%;
+    color: #000;
+    font-family: "Fira Mono";
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
+    font-size: 11px;
+    display: block;
+    margin: 6px 0;
+}
+
+
+.usage-example h3 {
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.usage-example pre {
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px;
+    overflow-x: auto;
+    margin: 0;
+    border: 1px solid #e9ecef;
+}
+
+.usage-example code {
+    color: #495057;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Responsive adjustments for requirements section */
+@media (max-width: 768px) {
+    .requirements-section {
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    .requirements-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .requirement-card {
+        padding: 12px;
+    }
+
+    .requirements-content h2 {
+        font-size: 18px;
+    }
+}

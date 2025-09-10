@@ -1,91 +1,207 @@
+# Custom Events – Highcharts Module
 
-# Custom events - Highcharts module
+[![npm version](https://img.shields.io/npm/v/highcharts-custom-events)](https://www.npmjs.com/package/highcharts-custom-events)
+[![license](https://img.shields.io/github/license/blacklabel/custom_events)](https://github.com/blacklabel/custom_events/blob/master/license.txt)
 
-Go to project page to see this module in action: [http://blacklabel.github.io/custom_events/](http://blacklabel.github.io/custom_events/)
+**Custom Events** is an official [Black Label](https://blacklabel.net/highcharts/) plugin for Highcharts, extending the charting library with DOM-like event binding (`click`, `dblclick`, `contextmenu`, etc.) for chart elements such as labels, titles, series, and crosshairs. The plugin is built as a separate add-on to the Highcharts library, owned and maintained by Highsoft AS.
+
+This module is the result of our long-standing collaboration with Highsoft, where we’ve been a trusted partner since 2010 — helping build, maintain, and expand the Highcharts ecosystem. With custom events, you can easily create richer interactivity and deliver better user experiences, without relying on complex workarounds.
 
 
-### Requirements
+➖ [Live demo](https://blacklabel.github.io/custom_events/)  
+➖ [GitHub repository](https://github.com/blacklabel/custom_events)
 
-* Plugin requires the latest Highcharts (tested with 6.1.4)
+![Demo](assets/docs/customEvents.gif)
+---
 
-### Installation
+## Table of Contents
+- [Getting Started](#getting-started)
+  - [Compatibility](#compatibility)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Available Events](#available-events)
+- [Supported Elements](#supported-elements)
+- [Development Setup](#development-setup)
+- [Using the Plugin Locally in index.html](#using-the-plugin-locally-in-indexhtml)
 
-* Like any other Highcharts module (e.g. exporting), add `<script>` tag pointing to `custom_events.js` below Highcharts script tag.
+---
 
-* For NPM users:
+## Getting Started
+
+### Compatibility
+
+| Custom Events Version | Highcharts Version |
+| --------------------- | ------------------ |
+| **4.0.0+**            | `>= 9.0.0`         |
+| **3.x.x**             | `< 9.0.0`          |
+
+---
+
+## Installation
+
+Install via NPM:
+
+```bash
+npm install highcharts highcharts-custom-events
+# or
+yarn add highcharts highcharts-custom-events
+# or
+pnpm add highcharts highcharts-custom-events
 ```
-var Highcharts = require('highcharts'),
-    HighchartsCustomEvents = require('highcharts-custom-events')(Highcharts);
+
+Then import and initialize:
+```js
+import Highcharts from "highcharts";
+import HighchartsCustomEvents from "highcharts-custom-events";
+
+HighchartsCustomEvents(Highcharts);
 ```
 
-* For BOWER users:
-
-```
-bower install highcharts-custom-events
-```
-
-### Code
-
-The latest code is available on github: [https://github.com/blacklabel/custom_events/](https://github.com/blacklabel/custom_events/)
-
-### Usage and demos
-
-It's quite simple and intuitive, just pass function as other events:
-
-```
-events: {
-                        dblclick: function () {
-                            $('#report').html('dbclick on xAxis label');
-                        },
-                        click: function () {
-                            $('#report').html('click on xAxis label');
-                        },
-                        contextmenu: function () {
-                            $('#report').html('context menu on xAxis label');
-                        }
-}
+Or include via a <script> tag after loading Highcharts:
+```js
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://blacklabel.github.io/custom_events/js/customEvents.js"></script>
 ```
 
-Crosshairs
+---
 
-```
-crosshair: {
+## Usage
+
+Attach events in the same way you would with Highcharts’ built-in event handlers:
+```js
+Highcharts.chart('container', {
+  xAxis: {
+    labels: {
+        events: {
+          click: function () {
+            console.log('Click on xAxis label');
+          },
+          dblclick: function () {
+            console.log('Double click on xAxis label');
+          },
+          contextmenu: function () {
+            console.log('Right click on xAxis label');
+          }
+        }
+    }    
+  },
+  crosshair: {
     enabled: true,
     events: {
-                        dblclick: function () {
-                            $('#report').html('dbclick on xAxis label');
-                        },
-                        click: function () {
-                            $('#report').html('click on xAxis label');
-                        },
-                        contextmenu: function () {
-                            $('#report').html('context menu on xAxis label');
-                        }
+      mouseover: function () {
+        console.log('Mouse over crosshair');
+      }
     }
-}
+  },
+  series: [{
+    data: [1, 2, 3, 4, 5]
+  }]
+});
 ```
 
-### Available events
+---
 
-* click
-* double click (including mobile devices)
-* right click (context menu)
-* mouse over
-* mouse out
-* mouse down
-* mouse move
+## Available Events
+| Event         | Description                              |
+| ------------- | ---------------------------------------- |
+| `click`       | Fires on click                           |
+| `dblclick`    | Fires on double click (desktop & mobile) |
+| `contextmenu` | Fires on right click                     |
+| `mouseover`   | Fires when hovering over element         |
+| `mouseout`    | Fires when leaving element               |
+| `mousedown`   | Fires when mouse button pressed          |
+| `mousemove`   | Fires when moving cursor over element    |
 
-### Elements
+## Supported Elements
+| Element       | Notes              |
+| ------------- | ------------------ |
+| `title`       | Chart title        |
+| `subtitle`    | Chart subtitle     |
+| `axis.labels` | Axis labels        |
+| `axis.title`  | Axis title         |
+| `plotLines`   | Including labels   |
+| `plotBands`   | Including labels   |
+| `point`       | Single data point  |
+| `series`      | Entire series      |
+| `legend`      | Legend items       |
+| `dataLabels`  | Series data labels |
+| `flags`       | Flags series       |
+| `crosshair`   | Crosshairs         |
 
-* title
-* subtitle
-* axis labels
-* axis title
-* plotLines
-* plotBands, including labels
-* point
-* series
-* legend
-* datalabels
-* flags
-* crosshairs
+
+---
+
+## Development Setup
+
+If you want to work on this plugin locally:
+
+1. Clone the repository
+```bash
+git clone https://github.com/blacklabel/custom_events.git
+cd custom_events
+```
+2. Install dependencies
+```bash
+npm install
+# or
+yarn install
+```
+3. Start a local dev server
+```bash
+npm start
+```
+This will launch a local server (via http-server or similar) and open the demo page in your browser.
+
+4. Build the plugin
+```bash
+npm run build
+```
+The compiled file will be available in the dist/ folder.
+
+---
+## Using the Plugin Locally in index.html
+After building, include the plugin file after Highcharts in your index.html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Highcharts Custom Events - Local Dev</title>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="dist/custom_events.js"></script>
+</head>
+<body>
+  <div id="container"></div>
+  <script>
+    Highcharts.chart('container', {
+      series: [{
+        data: [1, 2, 3, 4, 5]
+      }]
+    });
+  </script>
+</body>
+</html>
+```
+
+---
+## Why Black Label Built This Plugin
+
+At Black Label, we specialize in pushing the boundaries of data visualization. Over the past 15 years, we’ve worked with companies worldwide to build charting solutions that go beyond out-of-the-box libraries.
+
+Highcharts is at the heart of much of our work, and this plugin grew directly out of real-world client needs:
+
+- Adding native-like event handling to chart elements  
+- Enabling intuitive UX for interactive dashboards  
+- Simplifying complex customization by extending the Highcharts core in a seamless way  
+
+**Custom Events** is one of many plugins we’ve created to make Highcharts more flexible, more powerful, and more developer-friendly.
+
+---
+
+## About Black Label
+
+We’re a Krakow-based team of data visualization experts, working closely with Highsoft and the global Highcharts community since 2010. Our expertise spans plugins, extensions, custom dashboards, and full-scale dataviz applications.
+
+Custom Events is just one of the many innovations we’ve open-sourced. Explore more on our [GitHub profile](https://github.com/blacklabel), read insights on our [Blog](https://blacklabel.net/blog/), or connect with us at **tech@blacklabel.net** to discuss how we can help bring your charts and dashboards to life.  
+
+➖ Learn more on our [LinkedIn page](https://www.linkedin.com/company/black-label).
