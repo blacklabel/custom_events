@@ -22,6 +22,10 @@ const DEFAULT_HC_POINT_EVENTS = new Set([
 ]);
 function filterCustomOnlyEvents(events, defaultEvents = DEFAULT_HC_POINT_EVENTS) {
     const result = {};
+    // Handle null/undefined events
+    if (!events) {
+        return result;
+    }
     for (const [name, handler] of Object.entries(events)) {
         if (!defaultEvents.has(name)) {
             result[name] = handler;

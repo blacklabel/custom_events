@@ -10,10 +10,19 @@ const DEFAULT_HC_POINT_EVENTS = new Set([
 ]);
 
 function filterCustomOnlyEvents(
-	events: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>>,
+	events: Record<
+		string,
+		Highcharts.EventCallbackFunction<Highcharts.SVGElement>
+	> | undefined | null,
 	defaultEvents: Set<string> = DEFAULT_HC_POINT_EVENTS
 ): Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> {
 	const result: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> = {};
+	
+	// Handle null/undefined events
+	if (!events) {
+		return result;
+	}
+	
 	for (const [name, handler] of Object.entries(events)) {
 		if (!defaultEvents.has(name)) {
 			result[name] = handler;
