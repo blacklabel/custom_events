@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "es6",
+    "moduleResolution": "Node",
+    "outDir": "./dist",
+    "rootDir": "./ts",
+    "strict": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "ts/**/*",
+    "ts/HighchartsConfig.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "js",
+    "css",
+    "docs"
+  ]
+}

@@ -1,48 +1,48 @@
 {
         "name": "Custom-Events",
-        "version": "3.0.10",
-        "title": "Custom-Events",
+        "version": "4.0.0",
+        "title": "Highcharts Custom Events Plugin",
         "author": {
                 "name": "Black Label",
-                "url": "http://www.blacklabel.pl/"
+                "url": "https://www.blacklabel.net/"
         },
-        "licenses": [
-                {
-                        "type": "Creative Commons Attribution (CC)",
-                        "url": "https://github.com/blacklabel/custom_events/blob/master/license.txt"
-                }
-        ],
+        "license": "MIT",
         "dependencies": {
-                "highcharts": ">=5.0.9"
+                "highcharts": ">=9.0.0"
         },
         "demo": [
-                "https://jsfiddle.net/BlackLabel/Utx8g/"
+                "https://blacklabel.github.io/custom_events/"
         ],
-        "description": "Plugin that allows you to add extra events, like double / right click on each chart element, for Highcharts.",
+        "description": "Highcharts plugin that allows you to add extra events, like double / right click on each chart element.",
         "keywords": [
                 "highcharts",
                 "highstock",
                 "highmaps",
                 "events",
-                "highcharts-addon"
+                "highcharts-plugin"
         ],
         "maintainers": [
                 {
-                        "name": "Sebastian Bochan",
-                        "email": "sebastian@blacklabel.pl",
-                        "url": "http://www.blacklabel.pl"
-                }, {
-                        "name": "Paweł Fus",
-                        "email": "pawel@blacklabel.pl",
-                        "url": "http://www.blacklabel.pl"
-                }, {
+                        "name": "Dominik Chudy",
+                        "email": "dominik.chudy@blacklabel.net",
+                        "url": "https://www.blacklabel.net"
+                },
+                {
                         "name": "Kacper Madej",
-                        "email": "kacper@blacklabel.pl",
-                        "url": "http://www.blacklabel.pl"
+                        "email": "kacper.madej@blacklabel.net",
+                        "url": "https://www.blacklabel.net"
                 }
         ],
-        "homepage": "http://blacklabel.github.io/custom_events/",        
-        "docs": "https://github.com/blacklabel/custom_events/",        
+        "homepage": "https://blacklabel.github.io/custom_events/",
         "bugs": "https://github.com/blacklabel/custom_events/issues",
-        "download": "https://github.com/blacklabel/custom_events/archive/master.zip"
+        "download": "https://github.com/blacklabel/custom_events/archive/master.zip",
+        "repository": {
+                "type": "git",
+                "url": "https://github.com/blacklabel/custom_events.git"
+        },
+        "engines": {
+                "node": ">=18.0.0"
+        },
+        "main": "dist/customEvents.js",
+        "types": "ts/customEvents.ts"
 }
