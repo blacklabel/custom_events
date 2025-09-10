@@ -202,6 +202,6 @@ Highcharts is at the heart of much of our work, and this plugin grew directly ou
 
 We’re a Krakow-based team of data visualization experts, working closely with Highsoft and the global Highcharts community since 2010. Our expertise spans plugins, extensions, custom dashboards, and full-scale dataviz applications.
 
-Custom Events is just one of the many innovations we’ve open-sourced. Explore more on our [GitHub profile](https://github.com/blacklabel) or connect with us at **tech@blacklabel.net** to discuss how we can help bring your charts and dashboards to life.  
+Custom Events is just one of the many innovations we’ve open-sourced. Explore more on our [GitHub profile](https://github.com/blacklabel), read insights on our [Blog](https://blacklabel.net/blog/), or connect with us at **tech@blacklabel.net** to discuss how we can help bring your charts and dashboards to life.  
 
-👉 Learn more about us on our [website](https://blacklabel.net/highcharts/).
+➖ Learn more on our [LinkedIn page](https://www.linkedin.com/company/black-label).
