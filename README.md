@@ -8,8 +8,8 @@
 This module is the result of our long-standing collaboration with Highsoft, where we’ve been a trusted partner since 2010 — helping build, maintain, and expand the Highcharts ecosystem. With custom events, you can easily create richer interactivity and deliver better user experiences, without relying on complex workarounds.
 
 
-👉 [Live demo](https://blacklabel.github.io/custom_events/)  
-👉 [GitHub repository](https://github.com/blacklabel/custom_events)
+➖ [Live demo](https://blacklabel.github.io/custom_events/)  
+➖ [GitHub repository](https://github.com/blacklabel/custom_events)
 
 ![Demo](assets/docs/customEvents.gif)
 ---
