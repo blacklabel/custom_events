@@ -15,7 +15,7 @@
         rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="dist/customEvents.js"></script>
+    <script src="js/customEvents.js"></script>
 </head>
 
 <body>
@@ -208,6 +208,7 @@ Highcharts.chart('container', {
                     style: { color: '#AFAFAC',fontSize: '10px'},
                     events: {
                         click: function () {
+                            console.log(this);
                             logEvent('X axis label clicked');
                         }
                     }
