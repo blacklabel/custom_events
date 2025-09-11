@@ -14,10 +14,23 @@ declare module "highcharts" {
     cross?: Highcharts.SVGElement;
     stacking?: {
       stackTotalGroup?: Highcharts.SVGElement;
+      stacks?: Record<string, Record<string, { label: Highcharts.SVGElement }>>;
     },
     stackLabels?: {
       events?: ElementEvents;
     }
+  }
+
+  export interface customAxisLabel {
+    element: Highcharts.SVGElement;
+    axis: Highcharts.Axis;
+    isFirst: boolean;
+    isLast: boolean;
+    chart: Highcharts.Chart;
+    dateTimeLabelFormat: Highcharts.DateTimeLabelFormats;
+    value: number;
+    pos: number;
+    _eventBound?: Record<string, boolean>;
   }
 
   interface Series {
@@ -49,19 +62,19 @@ declare module "highcharts" {
   }
 
   export interface ElementEvents {
-    click?: (e: Event | PointerEvent) => void;
-    dblclick?: (e: Event | PointerEvent) => void;
-    contextmenu?: (e: Event | PointerEvent) => void;
-    mouseover?: (e: Event | PointerEvent) => void;
-    mouseout?: (e: Event | PointerEvent) => void;
-    mousedown?: (e: Event | PointerEvent) => void;
-    mousemove?: (e: Event | PointerEvent) => void;
+    click?: (this: Highcharts.SVGElement, e: Event | PointerEvent) => void;
+    dblclick?: (this: Highcharts.SVGElement, e: Event | PointerEvent) => void;
+    contextmenu?: (this: Highcharts.SVGElement, e: Event | PointerEvent) => void;
+    mouseover?: (this: Highcharts.SVGElement, e: Event | PointerEvent) => void;
+    mouseout?: (this: Highcharts.SVGElement, e: Event | PointerEvent) => void;
+    mousedown?: (this: Highcharts.SVGElement, e: Event | PointerEvent) => void;
+    mousemove?: (this: Highcharts.SVGElement, e: Event | PointerEvent) => void;
   }
 
   export interface BoundEvent {
-    element: Highcharts.SVGElement;
+    element: Highcharts.SVGElement | Highcharts.HTMLElement;
     eventName: string;
-    handler: (e: Event | PointerEvent) => void;
+    handler: (this: Highcharts.SVGElement, e: Event | PointerEvent) => void;
   }
 
   export interface PlotLineOrBand {

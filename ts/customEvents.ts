@@ -1,5 +1,5 @@
 import type Highcharts from 'highcharts';
-import type { Chart, YAxisOptions } from 'highcharts';
+import type { Chart, customAxisLabel, YAxisOptions } from 'highcharts';
 import "./HighchartsConfig";
 
 
@@ -17,12 +17,12 @@ function filterCustomOnlyEvents(
 	defaultEvents: Set<string> = DEFAULT_HC_POINT_EVENTS
 ): Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> {
 	const result: Record<string, Highcharts.EventCallbackFunction<Highcharts.SVGElement>> = {};
-	
+
 	// Handle null/undefined events
 	if (!events) {
 		return result;
 	}
-	
+
 	for (const [name, handler] of Object.entries(events)) {
 		if (!defaultEvents.has(name)) {
 			result[name] = handler;
@@ -79,7 +79,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 */
 
 	function bindElementEvents(
-		el: Highcharts.SVGElement,
+		el: Highcharts.SVGElement | customAxisLabel,
 		handlers: Highcharts.ElementEvents,
 		boundEvents: Highcharts.BoundEvent[]
 	) {
@@ -91,14 +91,24 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				// Avoid double binding
 				el._eventBound ??= {};
 				if (!el._eventBound[eventName] && !el.element[`on${eventName}`]) {
-					H.addEvent(el.element, eventName, handler as EventListener);
+					// Create a wrapper function that preserves the Highcharts SVGElement as 'this'
+					const wrappedHandler = function (
+						this: Highcharts.SVGElement,
+						event: Event | PointerEvent
+					) {
+						// Call the original handler with the Highcharts SVGElement as 'this'
+						return handler.call(el, event);
+					};
+
+					const targetElement = 'axis' in el ? el.element.element : el.element;
+					H.addEvent(targetElement, eventName, wrappedHandler as EventListener);
 					el._eventBound[eventName] = true;
 
 					// Track for cleanup
 					boundEvents.push({
-						element: el,
+						element: targetElement,
 						eventName: eventName,
-						handler: handler
+						handler: wrappedHandler
 					});
 				}
 			}
@@ -109,13 +119,24 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 			const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 			if (isTouchDevice) {
-				H.addEvent(el.element, 'touchstart', handlers.click as EventListener);
+				// Wrapper for touchstart to preserve SVGElement 'this'
+				const wrappedTouchHandler = function (
+					this: Highcharts.SVGElement,
+					event: Event | PointerEvent
+				) {
+					// Call the original click handler with the Highcharts SVGElement as 'this'
+					return handlers.click!.call(el, event);
+				};
+
+				const targetElement = 'axis' in el ? el.element.element : el.element;
+				H.addEvent(targetElement, 'touchstart', wrappedTouchHandler as EventListener);
 				el._eventBound.touchstart = true;
 
+				// Track for cleanup
 				boundEvents.push({
-					element: el,
+					element: targetElement,
 					eventName: 'touchstart',
-					handler: handlers.click
+					handler: wrappedTouchHandler
 				});
 			}
 		}
@@ -201,11 +222,31 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 			);
 
 			// Axis Labels
-			bindElementEvents(
-				axis.labelGroup,
-				axis.options.labels?.events,
-				chart._customEventsBound
-			);
+			if (axis.ticks) {
+				const tickPositions = axis.tickPositions;
+
+				tickPositions.forEach(pos => {
+					const tick = axis.ticks[pos];
+					if (tick.label) {
+						const customAxisLabelObject: customAxisLabel = {
+							element: tick.label,
+							axis: axis,
+							isFirst: tick.isFirst,
+							isLast: tick.isLast,
+							chart: axis.chart,
+							dateTimeLabelFormat: axis.options.dateTimeLabelFormats,
+							value: tick.pos,
+							pos: tick.pos
+						};
+
+						bindElementEvents(
+							customAxisLabelObject,
+							axis.options.labels?.events,
+							chart._customEventsBound
+						);
+					}
+				});
+			}
 
 			// AxisPlotLines and PlotBands Labels
 			if (axis.plotLinesAndBands) {
@@ -222,11 +263,22 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 			// Y Axis Stack Labels
 			if (axis.coll === 'yAxis' && axis.stacking?.stackTotalGroup) {
-				bindElementEvents(
-					axis.stacking.stackTotalGroup,
-					(axis.options as YAxisOptions).stackLabels?.events,
-					chart._customEventsBound
-				);
+				const allStacks = chart.yAxis[0].stacking.stacks;
+
+				Object.keys(allStacks).forEach(stackKey => {
+					const stacks = allStacks[stackKey];
+
+					Object.keys(stacks).forEach(xValue => {
+						const stack = stacks[xValue];
+						if (stack.label) {
+							bindElementEvents(
+								stack.label,
+								(axis.options as YAxisOptions).stackLabels?.events,
+								chart._customEventsBound
+							);
+						}
+					});
+				});
 			}
 
 		});
@@ -238,7 +290,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 			// Filter out events that Highcharts already handle
 			const customOnlyEvents = filterCustomOnlyEvents(
 				seriesEvents as Record<
-					string, 
+					string,
 					Highcharts.EventCallbackFunction<Highcharts.SVGElement>
 				>
 			);

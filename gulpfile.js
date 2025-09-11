@@ -18,7 +18,7 @@ const decorator = [
 	'/**',
 	'----',
 	'*',
-	'* Custom Events v4.0.0 (2025-09-10)',
+	'* Custom Events v4.0.1 (2025-09-11)',
 	'*',
 	'* (c) 2012-2025 Black Label',
 	'*',
