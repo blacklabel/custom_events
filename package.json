@@ -61,12 +61,13 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-uglify": "^3.0.2",
+    "highcharts": "^12.3.0",
     "through2": "^4.0.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.8.3",
     "yargs": "^18.0.0"
   },
-  "dependencies": {
-    "highcharts": "^12.3.0"
+  "peerDependencies": {
+    "highcharts": ">=9.0.0"
   }
 }

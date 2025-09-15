@@ -1,4 +1,4 @@
-import Highcharts from "highcharts";
+import type Highcharts from "highcharts";
 
 declare module "highcharts" {
   export let customEventsPluginLoaded: boolean;
