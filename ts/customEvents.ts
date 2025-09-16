@@ -1,4 +1,4 @@
-import Highcharts from 'highcharts';
+import type Highcharts from 'highcharts';
 import type { Chart, customAxisLabel, YAxisOptions } from 'highcharts';
 import "./HighchartsConfig";
 
@@ -52,7 +52,6 @@ function filterCustomOnlyEvents(
  * ```
  */
 export default function ObjectEventsPlugin(H: typeof Highcharts) {
-	console.log('customEventsPlugin loaded');
 	// This is a global flag to prevent the plugin from being loaded more than once
 	if (H.customEventsPluginLoaded) {
 		return;
@@ -102,7 +101,6 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 					};
 
 					const targetElement = 'axis' in el ? el.element.element : el.element;
-					console.log('binding event', eventName, 'to', targetElement);
 					H.addEvent(targetElement, eventName, wrappedHandler as EventListener);
 					el._eventBound[eventName] = true;
 
@@ -216,7 +214,6 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 		// Axes
 		chart.axes.forEach(axis => {
-			console.log('binding axis events', axis);
 			// Axis Title
 			bindElementEvents(
 				axis.axisTitle,
@@ -241,7 +238,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 							value: tick.pos,
 							pos: tick.pos
 						};
-						console.log(customAxisLabelObject)
+
 						bindElementEvents(
 							customAxisLabelObject,
 							axis.options.labels?.events,

@@ -1,4 +1,4 @@
-import Highcharts from "highcharts";
+import type Highcharts from "highcharts";
 
 // Plugin function
 declare function HC_customEvents(H: typeof Highcharts): void;

@@ -18,7 +18,7 @@ const decorator = [
 	'/**',
 	'----',
 	'*',
-	'* Custom Events v4.0.1 (2025-09-11)',
+	'* Custom Events v4.0.1 (2025-09-16)',
 	'*',
 	'* (c) 2012-2025 Black Label',
 	'*',
@@ -53,34 +53,14 @@ gulp.task('wrap', () => {
 				// UMD wrapper
 				const wrappedFileContent = decorator.join('\n') +
 					`(function (factory) {
-    if (typeof module === 'object' && module.exports) {
-        // For Node.js/CommonJS environments (including Angular)
-        // Try to auto-initialize if Highcharts is available
-        try {
-            const Highcharts = require('highcharts');
-            factory(Highcharts);
-        } catch (e) {
-            // Highcharts not found via require, try global
-            if (typeof global !== 'undefined' && global.Highcharts) {
-                factory(global.Highcharts);
-            } else if (typeof window !== 'undefined' && window.Highcharts) {
-                factory(window.Highcharts);
-            }
-        }
-        // Export the factory for manual initialization if needed
-        module.exports = factory;
-        module.exports.default = factory;
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD
-        define(['highcharts'], factory);
-    } else {
-        // Browser globals
-        factory(Highcharts);
-    }
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory;
+  } else {
+    factory(Highcharts);
+  }
 }(function (Highcharts) {
 ${fileContent}
 ObjectEventsPlugin(Highcharts);
-return ObjectEventsPlugin;
 }));`;
 
 				file.contents = Buffer.from(wrappedFileContent, 'utf8');

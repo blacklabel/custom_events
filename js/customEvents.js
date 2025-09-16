@@ -1,37 +1,18 @@
 /**
 ----
 *
-* Custom Events v4.0.1 (2025-09-11)
+* Custom Events v4.0.1 (2025-09-16)
 *
 * (c) 2012-2025 Black Label
 *
 * License: Creative Commons Attribution (CC)
 */
 (function (factory) {
-    if (typeof module === 'object' && module.exports) {
-        // For Node.js/CommonJS environments (including Angular)
-        // Try to auto-initialize if Highcharts is available
-        try {
-            const Highcharts = require('highcharts');
-            factory(Highcharts);
-        } catch (e) {
-            // Highcharts not found via require, try global
-            if (typeof global !== 'undefined' && global.Highcharts) {
-                factory(global.Highcharts);
-            } else if (typeof window !== 'undefined' && window.Highcharts) {
-                factory(window.Highcharts);
-            }
-        }
-        // Export the factory for manual initialization if needed
-        module.exports = factory;
-        module.exports.default = factory;
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD
-        define(['highcharts'], factory);
-    } else {
-        // Browser globals
-        factory(Highcharts);
-    }
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory;
+  } else {
+    factory(Highcharts);
+  }
 }(function (Highcharts) {
 
 const DEFAULT_HC_POINT_EVENTS = new Set([
@@ -72,9 +53,6 @@ function filterCustomOnlyEvents(events, defaultEvents = DEFAULT_HC_POINT_EVENTS)
  * ```
  */
 function ObjectEventsPlugin(H) {
-    console.log('customEventsPlugin loaded');
-    // eslint-disable-next-line no-debugger
-    debugger;
     // This is a global flag to prevent the plugin from being loaded more than once
     if (H.customEventsPluginLoaded) {
         return;
@@ -117,7 +95,6 @@ function ObjectEventsPlugin(H) {
                         return handler.call(el, event);
                     };
                     const targetElement = 'axis' in el ? el.element.element : el.element;
-                    console.log('binding event', eventName, 'to', targetElement);
                     H.addEvent(targetElement, eventName, wrappedHandler);
                     el._eventBound[eventName] = true;
                     // Track for cleanup
@@ -199,7 +176,6 @@ function ObjectEventsPlugin(H) {
         // Axes
         chart.axes.forEach(axis => {
             var _a, _b;
-            console.log('binding axis events', axis);
             // Axis Title
             bindElementEvents(axis.axisTitle, (_a = axis.options.title) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
             // Axis Labels
@@ -219,7 +195,6 @@ function ObjectEventsPlugin(H) {
                             value: tick.pos,
                             pos: tick.pos
                         };
-                        console.log(customAxisLabelObject);
                         bindElementEvents(customAxisLabelObject, (_a = axis.options.labels) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
                     }
                 });
@@ -349,5 +324,4 @@ function ObjectEventsPlugin(H) {
 }
 
 ObjectEventsPlugin(Highcharts);
-return ObjectEventsPlugin;
 }));
