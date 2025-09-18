@@ -1,7 +1,7 @@
 /**
 ----
 *
-* Custom Events v4.0.0 (2025-07-30)
+* Custom Events v4.0.1 (2025-09-18)
 *
 * (c) 2012-2025 Black Label
 *
@@ -89,13 +89,19 @@ function ObjectEventsPlugin(H) {
                 // Avoid double binding
                 (_a = el._eventBound) !== null && _a !== void 0 ? _a : (el._eventBound = {});
                 if (!el._eventBound[eventName] && !el.element[`on${eventName}`]) {
-                    H.addEvent(el.element, eventName, handler);
+                    // Create a wrapper function that preserves the Highcharts SVGElement as 'this'
+                    const wrappedHandler = function (event) {
+                        // Call the original handler with the Highcharts SVGElement as 'this'
+                        return handler.call(el, event);
+                    };
+                    const targetElement = 'axis' in el ? el.element.element : el.element;
+                    H.addEvent(targetElement, eventName, wrappedHandler);
                     el._eventBound[eventName] = true;
                     // Track for cleanup
                     boundEvents.push({
-                        element: el,
+                        element: targetElement,
                         eventName: eventName,
-                        handler: handler
+                        handler: wrappedHandler
                     });
                 }
             }
@@ -104,12 +110,19 @@ function ObjectEventsPlugin(H) {
         if (handlers.click && !((_a = el._eventBound) === null || _a === void 0 ? void 0 : _a.touchstart)) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             if (isTouchDevice) {
-                H.addEvent(el.element, 'touchstart', handlers.click);
+                // Wrapper for touchstart to preserve SVGElement 'this'
+                const wrappedTouchHandler = function (event) {
+                    // Call the original click handler with the Highcharts SVGElement as 'this'
+                    return handlers.click.call(el, event);
+                };
+                const targetElement = 'axis' in el ? el.element.element : el.element;
+                H.addEvent(targetElement, 'touchstart', wrappedTouchHandler);
                 el._eventBound.touchstart = true;
+                // Track for cleanup
                 boundEvents.push({
-                    element: el,
+                    element: targetElement,
                     eventName: 'touchstart',
-                    handler: handlers.click
+                    handler: wrappedTouchHandler
                 });
             }
         }
@@ -162,11 +175,30 @@ function ObjectEventsPlugin(H) {
         }
         // Axes
         chart.axes.forEach(axis => {
-            var _a, _b, _c, _d;
+            var _a, _b;
             // Axis Title
             bindElementEvents(axis.axisTitle, (_a = axis.options.title) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
             // Axis Labels
-            bindElementEvents(axis.labelGroup, (_b = axis.options.labels) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound);
+            if (axis.ticks) {
+                const tickPositions = axis.tickPositions;
+                tickPositions.forEach(pos => {
+                    var _a;
+                    const tick = axis.ticks[pos];
+                    if (tick.label) {
+                        const customAxisLabelObject = {
+                            element: tick.label,
+                            axis: axis,
+                            isFirst: tick.isFirst,
+                            isLast: tick.isLast,
+                            chart: axis.chart,
+                            dateTimeLabelFormat: axis.options.dateTimeLabelFormats,
+                            value: tick.pos,
+                            pos: tick.pos
+                        };
+                        bindElementEvents(customAxisLabelObject, (_a = axis.options.labels) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
+                    }
+                });
+            }
             // AxisPlotLines and PlotBands Labels
             if (axis.plotLinesAndBands) {
                 axis.plotLinesAndBands.forEach((plb) => {
@@ -177,8 +209,18 @@ function ObjectEventsPlugin(H) {
                 });
             }
             // Y Axis Stack Labels
-            if (axis.coll === 'yAxis' && ((_c = axis.stacking) === null || _c === void 0 ? void 0 : _c.stackTotalGroup)) {
-                bindElementEvents(axis.stacking.stackTotalGroup, (_d = axis.options.stackLabels) === null || _d === void 0 ? void 0 : _d.events, chart._customEventsBound);
+            if (axis.coll === 'yAxis' && ((_b = axis.stacking) === null || _b === void 0 ? void 0 : _b.stackTotalGroup)) {
+                const allStacks = chart.yAxis[0].stacking.stacks;
+                Object.keys(allStacks).forEach(stackKey => {
+                    const stacks = allStacks[stackKey];
+                    Object.keys(stacks).forEach(xValue => {
+                        var _a;
+                        const stack = stacks[xValue];
+                        if (stack.label) {
+                            bindElementEvents(stack.label, (_a = axis.options.stackLabels) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
+                        }
+                    });
+                });
             }
         });
         // Series Events

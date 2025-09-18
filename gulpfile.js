@@ -18,7 +18,7 @@ const decorator = [
 	'/**',
 	'----',
 	'*',
-	'* Custom Events v4.0.0 (2025-09-10)',
+	'* Custom Events v4.0.1 (2025-09-18)',
 	'*',
 	'* (c) 2012-2025 Black Label',
 	'*',
@@ -33,12 +33,12 @@ gulp.task('tsc', () => {
 		.pipe(tsProject())
 		.js
 		.pipe(rename('customEvents.js'))
-		.pipe(gulp.dest('dist/tmp')); // Output to temp directory first
+		.pipe(gulp.dest('js/tmp')); // Output to temp directory first
 });
 
 // Step 2: Wrap into UMD
 gulp.task('wrap', () => {
-	return gulp.src('dist/tmp/customEvents.js')
+	return gulp.src('js/tmp/customEvents.js')
 		.pipe(through2.obj(function (file, _encoding, callback) {
 			if (file.isBuffer()) {
 				let fileContent = file.contents.toString('utf8');
@@ -68,7 +68,7 @@ ObjectEventsPlugin(Highcharts);
 			this.push(file);
 			callback();
 		}))
-		.pipe(gulp.dest('dist'));
+		.pipe(gulp.dest('js'));
 });
 
 // Lint task using modern ESLint
@@ -88,8 +88,8 @@ gulp.task('lint', async () => {
 });
 // Clean up temporary files
 gulp.task('clean', (done) => {
-	if (fs.existsSync('dist/tmp')) {
-		fs.rmSync('dist/tmp', { recursive: true, force: true });
+	if (fs.existsSync('js/tmp')) {
+		fs.rmSync('js/tmp', { recursive: true, force: true });
 	}
 	log(colors.green('✓ Cleaned temp files'));
 	done();
