@@ -2,3 +2,4 @@
 node_modules
 .cursor
 /.vscode
+package-lock.json
