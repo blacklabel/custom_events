@@ -2,7 +2,6 @@ import type Highcharts from 'highcharts';
 import type { Chart, customAxisLabel, YAxisOptions } from 'highcharts';
 import "./HighchartsConfig";
 
-
 const DEFAULT_HC_POINT_EVENTS = new Set([
 	'click', 'mouseover', 'mouseout', 'mouseOver', 'mouseOut',
 	'select', 'unselect', 'remove', 'update',
@@ -214,73 +213,76 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 		// Axes
 		chart.axes.forEach(axis => {
-			// Axis Title
-			bindElementEvents(
-				axis.axisTitle,
-				axis.options.title?.events,
-				chart._customEventsBound
-			);
+			if (axis.options.visible) {
+				if (axis.axisTitle) {
+					// Axis Title
+					bindElementEvents(
+						axis.axisTitle,
+						axis.options.title?.events,
+						chart._customEventsBound
+					);
+				}
 
-			// Axis Labels
-			if (axis.ticks) {
-				const tickPositions = axis.tickPositions;
+				// Axis Labels
+				if (axis.ticks) {
+					const tickPositions = axis.tickPositions;
 
-				tickPositions.forEach(pos => {
-					const tick = axis.ticks[pos];
-					if (tick.label) {
-						const customAxisLabelObject: customAxisLabel = {
-							element: tick.label,
-							axis: axis,
-							isFirst: tick.isFirst,
-							isLast: tick.isLast,
-							chart: axis.chart,
-							dateTimeLabelFormat: axis.options.dateTimeLabelFormats,
-							value: tick.pos,
-							pos: tick.pos
-						};
+					tickPositions.forEach(pos => {
+						const tick = axis.ticks[pos];
+						if (tick.label?.element) {
+							const customAxisLabelObject: customAxisLabel = {
+								element: tick.label,
+								axis: axis,
+								isFirst: tick.isFirst,
+								isLast: tick.isLast,
+								chart: axis.chart,
+								dateTimeLabelFormat: axis.options.dateTimeLabelFormats,
+								value: tick.pos,
+								pos: tick.pos
+							};
 
-						bindElementEvents(
-							customAxisLabelObject,
-							axis.options.labels?.events,
-							chart._customEventsBound
-						);
-					}
-				});
-			}
-
-			// AxisPlotLines and PlotBands Labels
-			if (axis.plotLinesAndBands) {
-				axis.plotLinesAndBands.forEach((plb: Highcharts.PlotLineOrBand) => {
-					if (plb.label) {
-						bindElementEvents(
-							plb.label,
-							plb.options?.label?.events,
-							chart._customEventsBound
-						);
-					}
-				});
-			}
-
-			// Y Axis Stack Labels
-			if (axis.coll === 'yAxis' && axis.stacking?.stackTotalGroup) {
-				const allStacks = chart.yAxis[0].stacking.stacks;
-
-				Object.keys(allStacks).forEach(stackKey => {
-					const stacks = allStacks[stackKey];
-
-					Object.keys(stacks).forEach(xValue => {
-						const stack = stacks[xValue];
-						if (stack.label) {
 							bindElementEvents(
-								stack.label,
-								(axis.options as YAxisOptions).stackLabels?.events,
+								customAxisLabelObject,
+								axis.options.labels?.events,
 								chart._customEventsBound
 							);
 						}
 					});
-				});
-			}
+				}
 
+				// AxisPlotLines and PlotBands Labels
+				if (axis.plotLinesAndBands) {
+					axis.plotLinesAndBands.forEach((plb: Highcharts.PlotLineOrBand) => {
+						if (plb.label) {
+							bindElementEvents(
+								plb.label,
+								plb.options?.label?.events,
+								chart._customEventsBound
+							);
+						}
+					});
+				}
+
+				// Y Axis Stack Labels
+				if (axis.coll === 'yAxis' && axis.stacking?.stackTotalGroup) {
+					const allStacks = axis.stacking.stacks;
+
+					Object.keys(allStacks).forEach(stackKey => {
+						const stacks = allStacks[stackKey];
+
+						Object.keys(stacks).forEach(xValue => {
+							const stack = stacks[xValue];
+							if (stack.label?.element) {
+								bindElementEvents(
+									stack.label,
+									(axis.options as YAxisOptions).stackLabels?.events,
+									chart._customEventsBound
+								);
+							}
+						});
+					});
+				}
+			}
 		});
 
 		// Series Events
