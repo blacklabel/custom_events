@@ -229,7 +229,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 					tickPositions.forEach(pos => {
 						const tick = axis.ticks[pos];
-						if (tick.label) {
+						if (tick.label?.element) {
 							const customAxisLabelObject: customAxisLabel = {
 								element: tick.label,
 								axis: axis,
@@ -265,14 +265,14 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 
 				// Y Axis Stack Labels
 				if (axis.coll === 'yAxis' && axis.stacking?.stackTotalGroup) {
-					const allStacks = chart.yAxis[0].stacking.stacks;
+					const allStacks = axis.stacking.stacks;
 
 					Object.keys(allStacks).forEach(stackKey => {
 						const stacks = allStacks[stackKey];
 
 						Object.keys(stacks).forEach(xValue => {
 							const stack = stacks[xValue];
-							if (stack.label) {
+							if (stack.label?.element) {
 								bindElementEvents(
 									stack.label,
 									(axis.options as YAxisOptions).stackLabels?.events,
