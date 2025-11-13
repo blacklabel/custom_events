@@ -176,51 +176,55 @@ function ObjectEventsPlugin(H) {
         // Axes
         chart.axes.forEach(axis => {
             var _a, _b;
-            // Axis Title
-            bindElementEvents(axis.axisTitle, (_a = axis.options.title) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
-            // Axis Labels
-            if (axis.ticks) {
-                const tickPositions = axis.tickPositions;
-                tickPositions.forEach(pos => {
-                    var _a;
-                    const tick = axis.ticks[pos];
-                    if (tick.label) {
-                        const customAxisLabelObject = {
-                            element: tick.label,
-                            axis: axis,
-                            isFirst: tick.isFirst,
-                            isLast: tick.isLast,
-                            chart: axis.chart,
-                            dateTimeLabelFormat: axis.options.dateTimeLabelFormats,
-                            value: tick.pos,
-                            pos: tick.pos
-                        };
-                        bindElementEvents(customAxisLabelObject, (_a = axis.options.labels) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
-                    }
-                });
-            }
-            // AxisPlotLines and PlotBands Labels
-            if (axis.plotLinesAndBands) {
-                axis.plotLinesAndBands.forEach((plb) => {
-                    var _a, _b;
-                    if (plb.label) {
-                        bindElementEvents(plb.label, (_b = (_a = plb.options) === null || _a === void 0 ? void 0 : _a.label) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound);
-                    }
-                });
-            }
-            // Y Axis Stack Labels
-            if (axis.coll === 'yAxis' && ((_b = axis.stacking) === null || _b === void 0 ? void 0 : _b.stackTotalGroup)) {
-                const allStacks = chart.yAxis[0].stacking.stacks;
-                Object.keys(allStacks).forEach(stackKey => {
-                    const stacks = allStacks[stackKey];
-                    Object.keys(stacks).forEach(xValue => {
-                        var _a;
-                        const stack = stacks[xValue];
-                        if (stack.label) {
-                            bindElementEvents(stack.label, (_a = axis.options.stackLabels) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
+            if (axis.options.visible) {
+                if (axis.axisTitle) {
+                    // Axis Title
+                    bindElementEvents(axis.axisTitle, (_a = axis.options.title) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
+                }
+                // Axis Labels
+                if (axis.ticks) {
+                    const tickPositions = axis.tickPositions;
+                    tickPositions.forEach(pos => {
+                        var _a, _b;
+                        const tick = axis.ticks[pos];
+                        if ((_a = tick.label) === null || _a === void 0 ? void 0 : _a.element) {
+                            const customAxisLabelObject = {
+                                element: tick.label,
+                                axis: axis,
+                                isFirst: tick.isFirst,
+                                isLast: tick.isLast,
+                                chart: axis.chart,
+                                dateTimeLabelFormat: axis.options.dateTimeLabelFormats,
+                                value: tick.pos,
+                                pos: tick.pos
+                            };
+                            bindElementEvents(customAxisLabelObject, (_b = axis.options.labels) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound);
                         }
                     });
-                });
+                }
+                // AxisPlotLines and PlotBands Labels
+                if (axis.plotLinesAndBands) {
+                    axis.plotLinesAndBands.forEach((plb) => {
+                        var _a, _b;
+                        if (plb.label) {
+                            bindElementEvents(plb.label, (_b = (_a = plb.options) === null || _a === void 0 ? void 0 : _a.label) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound);
+                        }
+                    });
+                }
+                // Y Axis Stack Labels
+                if (axis.coll === 'yAxis' && ((_b = axis.stacking) === null || _b === void 0 ? void 0 : _b.stackTotalGroup)) {
+                    const allStacks = axis.stacking.stacks;
+                    Object.keys(allStacks).forEach(stackKey => {
+                        const stacks = allStacks[stackKey];
+                        Object.keys(stacks).forEach(xValue => {
+                            var _a, _b;
+                            const stack = stacks[xValue];
+                            if ((_a = stack.label) === null || _a === void 0 ? void 0 : _a.element) {
+                                bindElementEvents(stack.label, (_b = axis.options.stackLabels) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound);
+                            }
+                        });
+                    });
+                }
             }
         });
         // Series Events
