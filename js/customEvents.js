@@ -182,12 +182,12 @@ function ObjectEventsPlugin(H) {
                     bindElementEvents(axis.axisTitle, (_a = axis.options.title) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
                 }
                 // Axis Labels
-                if (axis.ticks) {
+                if (axis.ticks && axis.tickPositions) {
                     const tickPositions = axis.tickPositions;
                     tickPositions.forEach(pos => {
                         var _a, _b;
                         const tick = axis.ticks[pos];
-                        if ((_a = tick.label) === null || _a === void 0 ? void 0 : _a.element) {
+                        if (tick && ((_a = tick.label) === null || _a === void 0 ? void 0 : _a.element)) {
                             const customAxisLabelObject = {
                                 element: tick.label,
                                 axis: axis,
