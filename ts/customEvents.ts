@@ -224,12 +224,12 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				}
 
 				// Axis Labels
-				if (axis.ticks) {
+         		if (axis.ticks && axis.tickPositions) {
 					const tickPositions = axis.tickPositions;
 
 					tickPositions.forEach(pos => {
 						const tick = axis.ticks[pos];
-						if (tick.label?.element) {
+						if (tick && tick.label?.element) {
 							const customAxisLabelObject: customAxisLabel = {
 								element: tick.label,
 								axis: axis,
