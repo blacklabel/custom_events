@@ -173,7 +173,7 @@ function ObjectEventsPlugin(H) {
         }
         // Legend
         if ((_e = chart.legend) === null || _e === void 0 ? void 0 : _e.group) {
-            bindElementEvents(chart.legend.group, (_f = chart.options.legend) === null || _f === void 0 ? void 0 : _f.events, chart._customEventsBound);
+            bindElementEvents(chart.legend.group, (_f = chart.options.legend) === null || _f === void 0 ? void 0 : _f.events, chart._customEventsBound, chart.legend);
         }
         // Axes
         chart.axes.forEach(axis => {

@@ -210,7 +210,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 			bindElementEvents(
 				chart.legend.group,
 				chart.options.legend?.events as Highcharts.ElementEvents,
-				chart._customEventsBound
+				chart._customEventsBound,
+				chart.legend
 			);
 		}
 
