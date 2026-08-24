@@ -68,6 +68,7 @@ function ObjectEventsPlugin(H) {
      * @param {Highcharts.ElementEvents} [handlers] - Object mapping event names to
      * callback functions
      * @param {Highcharts.BoundEvent[]} boundEvents - Array to track bound events for cleanup
+     * @param {unknown} handlerThis - The 'this' value to pass to the handler function
      * @returns {void}
      *
      * @example
@@ -78,7 +79,7 @@ function ObjectEventsPlugin(H) {
      * }, boundEvents);
      * ```
      */
-    function bindElementEvents(el, handlers, boundEvents) {
+    function bindElementEvents(el, handlers, boundEvents, handlerThis) {
         var _a;
         // Safety check for JS callers bypassing TS type checks
         if (!el || !handlers || !boundEvents)
@@ -92,7 +93,8 @@ function ObjectEventsPlugin(H) {
                     // Create a wrapper function that preserves the Highcharts SVGElement as 'this'
                     const wrappedHandler = function (event) {
                         // Call the original handler with the Highcharts SVGElement as 'this'
-                        return handler.call(el, event);
+                        // or the value passed to the function, #158
+                        return handler.call(handlerThis || el, event);
                     };
                     const targetElement = 'axis' in el ? el.element.element : el.element;
                     H.addEvent(targetElement, eventName, wrappedHandler);
@@ -251,7 +253,7 @@ function ObjectEventsPlugin(H) {
                     // Filter out events that Highcharts already handle
                     const customOnlyEvents = filterCustomOnlyEvents(pointEvents);
                     if (Object.keys(customOnlyEvents).length > 0) {
-                        bindElementEvents(point.graphic, customOnlyEvents, chart._customEventsBound);
+                        bindElementEvents(point.graphic, customOnlyEvents, chart._customEventsBound, point);
                     }
                 }
             });

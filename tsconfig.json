@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES6",
+    "lib": ["ES2017", "DOM"],
     "module": "es6",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "outDir": "js",
     "rootDir": "./ts",
     "strict": false,

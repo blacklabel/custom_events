@@ -66,6 +66,7 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	 * @param {Highcharts.ElementEvents} [handlers] - Object mapping event names to 
 	 * callback functions
 	 * @param {Highcharts.BoundEvent[]} boundEvents - Array to track bound events for cleanup
+	 * @param {unknown} handlerThis - The 'this' value to pass to the handler function
 	 * @returns {void}
 	 * 
 	 * @example
@@ -80,7 +81,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 	function bindElementEvents(
 		el: Highcharts.SVGElement | customAxisLabel,
 		handlers: Highcharts.ElementEvents,
-		boundEvents: Highcharts.BoundEvent[]
+		boundEvents: Highcharts.BoundEvent[],
+		handlerThis?: unknown
 	) {
 		// Safety check for JS callers bypassing TS type checks
 		if (!el || !handlers || !boundEvents) return;
@@ -96,7 +98,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 						event: Event | PointerEvent
 					) {
 						// Call the original handler with the Highcharts SVGElement as 'this'
-						return handler.call(el, event);
+						// or the value passed to the function, #158
+						return handler.call(handlerThis || el, event);
 					};
 
 					const targetElement = 'axis' in el ? el.element.element : el.element;
@@ -331,7 +334,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 						bindElementEvents(
 							point.graphic,
 							customOnlyEvents,
-							chart._customEventsBound
+							chart._customEventsBound,
+							point
 						);
 					}
 
