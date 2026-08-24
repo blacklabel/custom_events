@@ -92,8 +92,8 @@ function ObjectEventsPlugin(H) {
                 if (!el._eventBound[eventName] && !el.element[`on${eventName}`]) {
                     // Create a wrapper function that preserves the Highcharts SVGElement as 'this'
                     const wrappedHandler = function (event) {
-                        // Call the original handler with the Highcharts SVGElement as 'this'
-                        // or the value passed to the function, #158
+                        // Call the original handler with the Highcharts object as 'this'
+                        // or the SVGElement when no explicit context is provided, #158
                         return handler.call(handlerThis || el, event);
                     };
                     const targetElement = 'axis' in el ? el.element.element : el.element;
@@ -114,8 +114,8 @@ function ObjectEventsPlugin(H) {
             if (isTouchDevice) {
                 // Wrapper for touchstart to preserve SVGElement 'this'
                 const wrappedTouchHandler = function (event) {
-                    // Call the original click handler with the Highcharts SVGElement as 'this'
-                    return handlers.click.call(el, event);
+                    // Call the original click handler with the Highcharts object as 'this'
+                    return handlers.click.call(handlerThis || el, event);
                 };
                 const targetElement = 'axis' in el ? el.element.element : el.element;
                 H.addEvent(targetElement, 'touchstart', wrappedTouchHandler);
@@ -162,7 +162,7 @@ function ObjectEventsPlugin(H) {
         const customOnlyEvents = filterCustomOnlyEvents(chartEvents);
         // Chart background events
         if (chart.chartBackground) {
-            bindElementEvents(chart.chartBackground, customOnlyEvents, chart._customEventsBound);
+            bindElementEvents(chart.chartBackground, customOnlyEvents, chart._customEventsBound, chart);
         }
         // Title / Subtitle
         if (chart.title) {
@@ -209,7 +209,7 @@ function ObjectEventsPlugin(H) {
                     axis.plotLinesAndBands.forEach((plb) => {
                         var _a, _b;
                         if (plb.label) {
-                            bindElementEvents(plb.label, (_b = (_a = plb.options) === null || _a === void 0 ? void 0 : _a.label) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound);
+                            bindElementEvents(plb.label, (_b = (_a = plb.options) === null || _a === void 0 ? void 0 : _a.label) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound, plb);
                         }
                     });
                 }
@@ -222,7 +222,7 @@ function ObjectEventsPlugin(H) {
                             var _a, _b;
                             const stack = stacks[xValue];
                             if ((_a = stack.label) === null || _a === void 0 ? void 0 : _a.element) {
-                                bindElementEvents(stack.label, (_b = axis.options.stackLabels) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound);
+                                bindElementEvents(stack.label, (_b = axis.options.stackLabels) === null || _b === void 0 ? void 0 : _b.events, chart._customEventsBound, stack);
                             }
                         });
                     });
@@ -237,12 +237,12 @@ function ObjectEventsPlugin(H) {
             const customOnlyEvents = filterCustomOnlyEvents(seriesEvents);
             if (series.group) {
                 if (Object.keys(customOnlyEvents).length > 0) {
-                    bindElementEvents(series.group, customOnlyEvents, chart._customEventsBound);
+                    bindElementEvents(series.group, customOnlyEvents, chart._customEventsBound, series);
                 }
             }
             // Series DataLabels Events
             if (series.dataLabelsGroup) {
-                bindElementEvents(series.dataLabelsGroup, (_a = series.options.dataLabels) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound);
+                bindElementEvents(series.dataLabelsGroup, (_a = series.options.dataLabels) === null || _a === void 0 ? void 0 : _a.events, chart._customEventsBound, series);
             }
             // Point Events
             series.data.forEach(point => {
@@ -305,7 +305,7 @@ function ObjectEventsPlugin(H) {
             const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
             // Bind events to the new plot band if it has a label
             if (result && result.label && this.chart) {
-                bindElementEvents(result.label, (_a = options.label) === null || _a === void 0 ? void 0 : _a.events, this.chart._customEventsBound);
+                bindElementEvents(result.label, (_a = options.label) === null || _a === void 0 ? void 0 : _a.events, this.chart._customEventsBound, result);
             }
             return result;
         });
@@ -315,7 +315,7 @@ function ObjectEventsPlugin(H) {
             const result = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
             // Bind events to the new plot line if it has a label
             if (result && result.label && this.chart) {
-                bindElementEvents(result.label, (_a = options.label) === null || _a === void 0 ? void 0 : _a.events, this.chart._customEventsBound);
+                bindElementEvents(result.label, (_a = options.label) === null || _a === void 0 ? void 0 : _a.events, this.chart._customEventsBound, result);
             }
             return result;
         });
@@ -323,7 +323,7 @@ function ObjectEventsPlugin(H) {
             var _a, _b;
             if (this.cross && this.crosshair && ((_a = this.chart) === null || _a === void 0 ? void 0 : _a._customEventsBound)) {
                 (_b = this.cross) === null || _b === void 0 ? void 0 : _b.css({ 'pointer-events': 'auto' });
-                bindElementEvents(this.cross, this.crosshair.events, this.chart._customEventsBound);
+                bindElementEvents(this.cross, this.crosshair.events, this.chart._customEventsBound, this);
             }
         });
     }
