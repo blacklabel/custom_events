@@ -97,8 +97,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 						this: Highcharts.SVGElement,
 						event: Event | PointerEvent
 					) {
-						// Call the original handler with the Highcharts SVGElement as 'this'
-						// or the value passed to the function, #158
+						// Call the original handler with the Highcharts object as 'this'
+						// or the SVGElement when no explicit context is provided, #158
 						return handler.call(handlerThis || el, event);
 					};
 
@@ -126,8 +126,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 					this: Highcharts.SVGElement,
 					event: Event | PointerEvent
 				) {
-					// Call the original click handler with the Highcharts SVGElement as 'this'
-					return handlers.click!.call(el, event);
+					// Call the original click handler with the Highcharts object as 'this'
+					return handlers.click!.call(handlerThis || el, event);
 				};
 
 				const targetElement = 'axis' in el ? el.element.element : el.element;
@@ -185,7 +185,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 			bindElementEvents(
 				chart.chartBackground,
 				customOnlyEvents,
-				chart._customEventsBound
+				chart._customEventsBound,
+				chart
 			);
 		}
 
@@ -261,7 +262,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 							bindElementEvents(
 								plb.label,
 								plb.options?.label?.events,
-								chart._customEventsBound
+								chart._customEventsBound,
+								plb
 							);
 						}
 					});
@@ -280,7 +282,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 								bindElementEvents(
 									stack.label,
 									(axis.options as YAxisOptions).stackLabels?.events,
-									chart._customEventsBound
+									chart._customEventsBound,
+									stack
 								);
 							}
 						});
@@ -306,7 +309,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 					bindElementEvents(
 						series.group,
 						customOnlyEvents,
-						chart._customEventsBound
+						chart._customEventsBound,
+						series
 					);
 				}
 			}
@@ -316,7 +320,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				bindElementEvents(
 					series.dataLabelsGroup,
 					series.options.dataLabels?.events,
-					chart._customEventsBound
+					chart._customEventsBound,
+					series
 				);
 			}
 
@@ -408,7 +413,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 					bindElementEvents(
 						result.label,
 						options.label?.events,
-						this.chart._customEventsBound
+						this.chart._customEventsBound,
+						result
 					);
 				}
 
@@ -434,7 +440,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 					bindElementEvents(
 						result.label,
 						options.label?.events,
-						this.chart._customEventsBound
+						this.chart._customEventsBound,
+						result
 					);
 				}
 
@@ -447,7 +454,8 @@ export default function ObjectEventsPlugin(H: typeof Highcharts) {
 				bindElementEvents(
 					this.cross,
 					(this.crosshair as Highcharts.AxisCrosshairOptions).events,
-					this.chart._customEventsBound
+					this.chart._customEventsBound,
+					this
 				);
 			}
 		});
